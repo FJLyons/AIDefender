@@ -19,7 +19,7 @@ public:
 	void update();
 	void draw(sf::RenderWindow &window);
 
-	void swapScreen(OptionsLoader *options);
+	void swapScreen(sf::RenderWindow &window, OptionsLoader *options);
 	void backScreen(OptionsLoader *options, int screen);
 
 	void moveUp();

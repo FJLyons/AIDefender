@@ -33,9 +33,9 @@
 using namespace std;
 
 // Custom Classes
-#include "Engine.h"
+#include "SceneManager.h"
 
-Engine *engine;
+SceneManager *sceneManager;
 
 ///Entrypoint of application 
 int main()
@@ -46,16 +46,15 @@ int main()
 	// Create the main window 
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 4;
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "GAME", sf::Style::Default, settings);
+	sf::Vector2f screenSize = sf::Vector2f(1920, 1080);
+	sf::RenderWindow window(sf::VideoMode(screenSize.x, screenSize.y), "GAME", sf::Style::Default, settings);
 
 	// Set Frame Rate
 	window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(60);
 
 	// Classes
-	engine = new Engine();
-
-	sf::Vector2f screenSize = sf::Vector2f(1920, 1080);
+	sceneManager = new SceneManager();
 
 	// Start game loop 
 	while (window.isOpen())
@@ -64,110 +63,21 @@ int main()
 		sf::Event Event;
 		while (window.pollEvent(Event))
 		{
-			// Close window : exit 
-			if (Event.type == sf::Event::Closed)
-				window.close();
+			if (Event.type == Event.Closed) { window.close(); }
+			if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::Escape) { window.close(); }
 
-			// Escape key : exit 
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Escape))
-				window.close();
+			sceneManager->input(window, Event);
 
 			// Swap Menu Screens
-			if (engine->optionsLoader->getCurrentScreen() == engine->optionsLoader->SPLASH) // Splash to Main
-			{
-				if ((Event.type == sf::Event::KeyReleased) && (Event.key.code >= 0))
-					engine->splashScreen->swapScreen(engine->optionsLoader);
-				if ((Event.type == sf::Event::MouseButtonReleased))
-					engine->splashScreen->swapScreen(engine->optionsLoader);
-			}
-
-			else if (engine->optionsLoader->getCurrentScreen() == engine->optionsLoader->MAINMENU) // Main menu movement
-			{
-				if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::Up))
-					engine->mainMenu->moveUp();
-				else if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::Down))
-					engine->mainMenu->moveDown();
-
-				if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::Return))
-				{
-					engine->mainMenu->swapScreen(engine->optionsLoader);
-					if (engine->mainMenu->getPressedItem() == 5){ engine->mainMenu->exitGame(window); } // Quit Game
-				}
-
-				if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::BackSpace))
-				{
-					engine->mainMenu->backScreen(engine->optionsLoader, engine->optionsLoader->SPLASH);
-					engine->splashScreen->init();
-				}
-			}
-
-			else if (engine->optionsLoader->getCurrentScreen() == engine->optionsLoader->GAME) // Game
-			{
-				if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::BackSpace))
-				{
-					//engine->game->backScreen(engine->optionsLoader, engine->optionsLoader->SPLASH);
-					//engine->mainMenu->init();
-				}
-
-				if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::BackSpace))
-				{
-					engine->optionsMenu->backScreen(engine->optionsLoader, engine->optionsLoader->MAINMENU);
-				}
-			}
-
-			else if (engine->optionsLoader->getCurrentScreen() == engine->optionsLoader->LOAD) // Game
-			{
-				if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::BackSpace))
-				{
-					//engine->game->backScreen(engine->optionsLoader, engine->optionsLoader->SPLASH);
-					//engine->mainMenu->init();
-				}
-
-				if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::BackSpace))
-				{
-					engine->optionsMenu->backScreen(engine->optionsLoader, engine->optionsLoader->MAINMENU);
-				}
-			}
-
-			else if (engine->optionsLoader->getCurrentScreen() == engine->optionsLoader->OPTIONS) // Options menu movement
-			{
-				if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::Up))
-					engine->optionsMenu->moveUp();
-				else if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::Down))
-					engine->optionsMenu->moveDown();
-
-				if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::Return))
-				{
-					// Option functions
-				}
-
-				if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::BackSpace))
-				{
-					engine->optionsMenu->backScreen(engine->optionsLoader, engine->optionsLoader->MAINMENU);
-				}
-			}
-
-			else if (engine->optionsLoader->getCurrentScreen() == engine->optionsLoader->INSTRUCTIONS) // Game
-			{
-				if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::BackSpace))
-				{
-					//engine->game->backScreen(engine->optionsLoader, engine->optionsLoader->SPLASH);
-					//engine->mainMenu->init();
-				}
-
-				if ((Event.type == sf::Event::KeyReleased) && (Event.key.code == sf::Keyboard::BackSpace))
-				{
-					engine->optionsMenu->backScreen(engine->optionsLoader, engine->optionsLoader->MAINMENU);
-				}
-			}
+			
 		}
 
 		//prepare frame
 		window.clear();
 
 		// Update and Draw
-		engine->update();
-		engine->draw(window);
+		sceneManager->update();
+		sceneManager->draw(window);
 
 		// Finally, display rendered frame on screen 
 		window.display();

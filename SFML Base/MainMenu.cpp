@@ -61,7 +61,7 @@ void MainMenu::draw(sf::RenderWindow &window)
 	}
 }
 
-void MainMenu::swapScreen(OptionsLoader *options)
+void MainMenu::swapScreen(sf::RenderWindow &window, OptionsLoader *options)
 {
 	if (getPressedItem() == 0) {
 		options->setCurrentScreen(options->GAME);
@@ -82,6 +82,12 @@ void MainMenu::swapScreen(OptionsLoader *options)
 		options->setCurrentScreen(options->INSTRUCTIONS);
 		std::cout << "Instrctions" << std::endl;
 	}
+
+	if (getPressedItem() == 4)
+	{
+		std::cout << "Quit" << std::endl;
+		window.close();
+	}
 }
 
 void MainMenu::backScreen(OptionsLoader *options, int screen)
@@ -97,6 +103,12 @@ void MainMenu::moveUp()
 		selectedItemIndex--;
 		text[selectedItemIndex].setColor(sf::Color::Red);
 	}
+	else
+	{
+		text[selectedItemIndex].setColor(sf::Color::White);
+		selectedItemIndex = MAX_INDEX - 1;
+		text[selectedItemIndex].setColor(sf::Color::Red);
+	}
 }
 
 void MainMenu::moveDown()
@@ -107,18 +119,15 @@ void MainMenu::moveDown()
 		selectedItemIndex++;
 		text[selectedItemIndex].setColor(sf::Color::Red);
 	}
+	else
+	{
+		text[selectedItemIndex].setColor(sf::Color::White);
+		selectedItemIndex = 0;
+		text[selectedItemIndex].setColor(sf::Color::Red);
+	}
 }
 
 int MainMenu::getPressedItem()
 {
 	return selectedItemIndex;
-}
-
-void MainMenu::exitGame(sf::RenderWindow &window)
-{
-	if (getPressedItem() == 5) 
-	{
-		std::cout << "Quit" << std::endl;
-		window.close();
-	}
 }

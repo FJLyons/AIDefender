@@ -155,7 +155,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InstructionsScreen.cpp" />
     <ClCompile Include="LoadScreen.cpp" />
@@ -166,7 +167,8 @@
     <ClCompile Include="SplashScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InstructionsScreen.h" />
     <ClInclude Include="LoadScreen.h" />
