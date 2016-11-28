@@ -1,7 +1,8 @@
 #include "Game.h"
 
-Game::Game()
+Game::Game(InputManager* im)
 {
+	inputManager = im;
 	init();
 }
 
@@ -28,9 +29,22 @@ void Game::draw(sf::RenderWindow &window)
 	window.draw(text);
 }
 
+void Game::input(sf::Event Event)
+{
+	inputManager->update(Event);
+	controller(Event);
+}
+
 void Game::backScreen(OptionsLoader *options, int screen)
 {
 	options->setCurrentScreen(screen);
 }
 
-
+void Game::controller(sf::Event Event)
+{
+	if (Event.type == sf::Event::KeyPressed)
+	{
+		std::cout << Event.key.code << std::endl;
+	}
+	if (inputManager->KeyPressed(sf::Keyboard::A)) { std::cout << "A" << std::endl; }
+}

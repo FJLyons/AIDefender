@@ -63,13 +63,14 @@ int main()
 		sf::Event Event;
 		while (window.pollEvent(Event))
 		{
+			// Close Window
 			if (Event.type == Event.Closed) { window.close(); }
 			if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::Escape) { window.close(); }
 
-			sceneManager->input(window, Event);
-
-			// Swap Menu Screens
-			
+			// Update input
+			if (sceneManager->optionsLoader->getCurrentScreen() == sceneManager->optionsLoader->GAME) { sceneManager->game->input(Event); }
+			else
+				sceneManager->input(window, Event);
 		}
 
 		//prepare frame

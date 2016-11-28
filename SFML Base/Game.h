@@ -10,17 +10,19 @@
 #include <stdlib.h> 
 
 #include "OptionsLoader.h"
+#include "InputManager.h"
 
 class Game
 {
 public:
-	Game();
+	Game(InputManager* im);
 	~Game();
 
 	void init();
 	void update();
 	void draw(sf::RenderWindow &window);
 
+	void input(sf::Event Event);
 
 	void backScreen(OptionsLoader *options, int screen);
 
@@ -29,5 +31,8 @@ private:
 
 	sf::Font font;
 	sf::Text text;
+
+	InputManager* inputManager;
+	void controller(sf::Event Event);
 };
 

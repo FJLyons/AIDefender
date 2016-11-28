@@ -16,7 +16,7 @@ void SceneManager::init()
 
 	splashScreen = new SplashScreen();
 	mainMenu = new MainMenu();
-	game = new Game();
+	game = new Game(inputManager);
 	load = new LoadScreen();
 	optionsMenu = new OptionsMenu();
 	instructions = new InstructionsScreen();
