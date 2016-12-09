@@ -3,6 +3,7 @@
 Game::Game(InputManager* im)
 {
 	inputManager = im;
+	terrain = new Terrain();
 	init();
 }
 
@@ -19,7 +20,7 @@ void Game::init()
 	font.loadFromFile("content\\fonts\\kenvector_future.TTF");
 
 	player1 = new Player(playershipTexture, sf::Vector2f(200, 200), sf::Vector2f(20, 20));//set up player
-	
+
 }
 
 void Game::update()
@@ -29,8 +30,9 @@ void Game::update()
 
 void Game::draw(sf::RenderWindow &window)
 {
-	window.draw(backgroundSprite);
+	//window.draw(text);
 	player1->Draw(window);
+	terrain->draw(window);
 }
 
 void Game::input(sf::Event Event)
@@ -46,9 +48,8 @@ void Game::backScreen(OptionsLoader *options, int screen)
 
 void Game::controller(sf::Event Event)
 {
-	
-	if (inputManager->KeyPressed(sf::Keyboard::A)) 
-	{ 
+	if (inputManager->KeyPressed(sf::Keyboard::A))
+	{
 		player1->MoveLeft(true);
 	}
 	else if (inputManager->KeyReleased(sf::Keyboard::A))
