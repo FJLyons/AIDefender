@@ -12,6 +12,8 @@
 #include "OptionsLoader.h"
 #include "InputManager.h"
 
+#include "Terrain.h"
+
 class Game
 {
 public:
@@ -34,5 +36,8 @@ private:
 
 	InputManager* inputManager;
 	void controller(sf::Event Event);
+
+protected:
+	Terrain* terrain;
 };
 
