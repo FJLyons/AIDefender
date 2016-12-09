@@ -11,6 +11,7 @@
 
 #include "OptionsLoader.h"
 #include "InputManager.h"
+#include "Player.h"
 
 class Game
 {
@@ -29,9 +30,13 @@ public:
 private:
 	sf::Vector2f screenSize = sf::Vector2f(1920, 1080);
 
+	Player *player1;
+	sf::Texture playershipTexture, backgroundTexture,bulletTexture;
+	sf::Sprite backgroundSprite;
+
 	sf::Font font;
 	sf::Text text;
-
+	sf::Event *eve;
 	InputManager* inputManager;
 	void controller(sf::Event Event);
 };
