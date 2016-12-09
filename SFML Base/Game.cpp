@@ -13,21 +13,25 @@ Game::~Game()
 
 void Game::init()
 {
+	playershipTexture.loadFromFile("assets/player/PlayerShip.png");
+	playershipTexture.setSmooth(true);
+	backgroundTexture.loadFromFile("assets/background/background.png");
+	bulletTexture.loadFromFile("assets/player/bullet.png");
 	font.loadFromFile("content\\fonts\\kenvector_future.TTF");
-	text.setFont(font);
-	text.setString("Main Game");
-	text.setPosition(screenSize.x / 2, screenSize.y / 2);
-	text.setCharacterSize(18);
+
+	player1 = new Player(playershipTexture, sf::Vector2f(200, 200), sf::Vector2f(20, 20));//set up player
+
 }
 
 void Game::update()
 {
-
+	player1->Update();
 }
 
 void Game::draw(sf::RenderWindow &window)
 {
-	window.draw(text);
+	//window.draw(text);
+	player1->Draw(window);
 	terrain->draw(window);
 }
 
@@ -44,9 +48,44 @@ void Game::backScreen(OptionsLoader *options, int screen)
 
 void Game::controller(sf::Event Event)
 {
-	if (Event.type == sf::Event::KeyPressed)
+	if (inputManager->KeyPressed(sf::Keyboard::A))
 	{
-		std::cout << Event.key.code << std::endl;
+		player1->MoveLeft(true);
 	}
-	if (inputManager->KeyPressed(sf::Keyboard::A)) { std::cout << "A" << std::endl; }
+	else if (inputManager->KeyReleased(sf::Keyboard::A))
+	{
+		player1->MoveLeft(false);
+	}
+
+	if (inputManager->KeyPressed(sf::Keyboard::D))
+	{
+		player1->MoveRight(true);
+	}
+	else if (inputManager->KeyReleased(sf::Keyboard::D))
+	{
+		player1->MoveRight(false);
+	}
+
+	if (inputManager->KeyPressed(sf::Keyboard::W))
+	{
+		player1->MoveUp(true);
+	}
+	else if (inputManager->KeyReleased(sf::Keyboard::W))
+	{
+		player1->MoveUp(false);
+	}
+
+	if (inputManager->KeyPressed(sf::Keyboard::S))
+	{
+		player1->MoveDown(true);
+	}
+	else if (inputManager->KeyReleased(sf::Keyboard::S))
+	{
+		player1->MoveDown(false);
+	}
+
+	if (inputManager->KeyPressed(sf::Keyboard::Space))
+	{
+		player1->Shoot(bulletTexture);
+	}
 }
