@@ -3,6 +3,7 @@
 Game::Game(InputManager* im)
 {
 	inputManager = im;
+	terrain = new Terrain();
 	init();
 }
 
@@ -27,6 +28,7 @@ void Game::update()
 void Game::draw(sf::RenderWindow &window)
 {
 	window.draw(text);
+	terrain->draw(window);
 }
 
 void Game::input(sf::Event Event)
