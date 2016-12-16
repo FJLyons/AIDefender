@@ -5,12 +5,17 @@
 
 #include <iostream>
 
-#include "OptionsLoader.h"
+#include "GlobalVariables.h"
+#include "InputManager.h"
 
-#define MAX_INDEX 6
+#define MENU_INDEX 2
 
 class OptionsMenu
 {
+private:
+	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
+	InputManager* inputManager = InputManager::getInstance();
+
 public:
 	OptionsMenu();
 	~OptionsMenu();
@@ -18,28 +23,33 @@ public:
 	void init();
 	void update();
 	void draw(sf::RenderWindow &window);
+	void input(sf::Event Event);
 
-	void swapScreen(OptionsLoader *options);
-	void backScreen(OptionsLoader *options, int screen);
+private:
+	sf::Vector2f screenSize = sf::Vector2f(1920, 1080);
+
+	void goToScene(int screen);
 
 	void moveUp();
 	void moveDown();
 
 	int getPressedItem();
 
-private:
-	sf::Vector2f screenSize = sf::Vector2f(1920, 1080);
-
 	// Art
 	sf::Texture logoTexture;
 	sf::Sprite logoSprite;
 	sf::Vector2f scaleFactor; // Resolution vs Screen
 
-	// Index
+							  // Index
 	int selectedItemIndex;
 
 	// Font
 	sf::Font font;
-	sf::Text text[MAX_INDEX];
+	sf::Text text[MENU_INDEX];
+
+	enum MenuOptions {
+		OPTION1,
+		OPTION2
+	};
 };
 

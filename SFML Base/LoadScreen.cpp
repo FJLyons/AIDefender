@@ -31,7 +31,16 @@ void LoadScreen::draw(sf::RenderWindow &window)
 	window.draw(text);
 }
 
-void LoadScreen::backScreen(OptionsLoader *options, int screen)
+void LoadScreen::input(sf::Event Event)
 {
-	options->setCurrentScreen(screen);
+	if (inputManager->KeyPressed(sf::Keyboard::BackSpace))
+	{
+		std::cout << "Back Space" << std::endl;
+		goToScene(myGlobalOptions->MAINMENU);
+	}
+}
+
+void LoadScreen::goToScene(int scene)
+{
+	myGlobalOptions->setCurrentScene(scene);
 }

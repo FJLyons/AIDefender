@@ -8,6 +8,11 @@
 class InputManager
 {
 public:
+	static InputManager * getInstance();
+private:
+	static InputManager * inputManagerInstance;
+
+public:
 	InputManager();
 	~InputManager();
 
@@ -25,5 +30,7 @@ public:
 private:
 
 	sf::Event Event;
-};
 
+	sf::Keyboard::Key previousKey;
+	std::vector<sf::Keyboard::Key> previousKeys;
+};

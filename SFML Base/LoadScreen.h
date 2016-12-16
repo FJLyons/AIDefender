@@ -5,14 +5,16 @@
 #include "SFML/Audio.hpp"
 
 #include <iostream>
-#include <conio.h>
-#include <windows.h>
-#include <stdlib.h> 
 
-#include "OptionsLoader.h"
+#include "GlobalVariables.h"
+#include "InputManager.h"
 
 class LoadScreen
 {
+private:
+	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
+	InputManager* inputManager = InputManager::getInstance();
+
 public:
 	LoadScreen();
 	~LoadScreen();
@@ -20,12 +22,13 @@ public:
 	void init();
 	void update();
 	void draw(sf::RenderWindow &window);
+	void input(sf::Event Event);
 
-
-	void backScreen(OptionsLoader *options, int screen);
 
 private:
-	sf::Vector2f screenSize = sf::Vector2f(1920, 1080);
+	sf::Vector2f screenSize = myGlobalOptions->screenSize;
+
+	void goToScene(int screen);
 
 	sf::Font font;
 	sf::Text text;

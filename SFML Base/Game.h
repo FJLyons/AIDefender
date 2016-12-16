@@ -9,41 +9,44 @@
 #include <windows.h>
 #include <stdlib.h> 
 
-#include "OptionsLoader.h"
+#include "GlobalVariables.h"
 #include "InputManager.h"
+
 #include "Player.h"
-#include "Terrain.h"
 #include "Human.h"
+#include "Terrain.h"
 
 class Game
 {
+private:
+	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
+	InputManager* inputManager = InputManager::getInstance();
+
 public:
-	Game(InputManager* im);
+	Game();
 	~Game();
 
 	void init();
 	void update();
 	void draw(sf::RenderWindow &window);
-
 	void input(sf::Event Event);
 
-	void backScreen(OptionsLoader *options, int screen);
-
 private:
-	sf::Vector2f screenSize = sf::Vector2f(1920, 1080);
+	sf::Vector2f screenSize = myGlobalOptions->screenSize;
 
-	Player *player1;
-	Human *human1;
-	sf::Texture playershipTexture, backgroundTexture, bulletTexture,humanTexture;
-	sf::Sprite backgroundSprite;
+	void goToScene(int screen);
+
+	void controller(sf::Event Event);
 
 	sf::Font font;
 	sf::Text text;
-	sf::Event *eve;
-	InputManager* inputManager;
-	void controller(sf::Event Event);
+
+	sf::Texture playershipTexture, backgroundTexture, bulletTexture,humanTexture;
+	sf::Sprite backgroundSprite;
 
 protected:
+	Player *player1;
+	Human *human1;
 	Terrain* terrain;
 };
 

@@ -34,8 +34,11 @@ using namespace std;
 
 // Custom Classes
 #include "SceneManager.h"
+#include "GlobalVariables.h"
+#include "InputManager.h"
 
 SceneManager *sceneManager;
+GlobalVariables* myGlobalOptions;
 
 ///Entrypoint of application 
 int main()
@@ -43,11 +46,17 @@ int main()
 	// Random Seed
 	srand(time(0));
 
+	// Get Global Variables
+	myGlobalOptions = GlobalVariables::getInstance();
+
 	// Create the main window 
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 4;
-	sf::Vector2f screenSize = sf::Vector2f(1920, 1080);
+
+	sf::Vector2f screenSize = myGlobalOptions->screenSize;
 	sf::RenderWindow window(sf::VideoMode(screenSize.x, screenSize.y), "GAME", sf::Style::Default, settings);
+
+	myGlobalOptions->windowReference = &window;
 
 	// Set Frame Rate
 	window.setVerticalSyncEnabled(true);
@@ -63,14 +72,21 @@ int main()
 		sf::Event Event;
 		while (window.pollEvent(Event))
 		{
+			InputManager::getInstance()->update(Event);
+
 			// Close Window
 			if (Event.type == Event.Closed) { window.close(); }
 			if (Event.type == sf::Event::KeyPressed && Event.key.code == sf::Keyboard::Escape) { window.close(); }
 
 			// Update input
-			if (sceneManager->optionsLoader->getCurrentScreen() == sceneManager->optionsLoader->GAME) { sceneManager->game->input(Event); }
+			if (myGlobalOptions->getCurrentScene() == myGlobalOptions->SPLASH) { sceneManager->splashScreen->input(Event); }
+			else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->MAINMENU) { sceneManager->mainMenu->input(Event); }
+			else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->GAME) { sceneManager->game->input(Event); }
+			else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->LOAD) { sceneManager->load->input(Event); }
+			else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->OPTIONS) { sceneManager->optionsMenu->input(Event); }
+			else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->INSTRUCTIONS) { sceneManager->instructions->input(Event); }
 			else
-				sceneManager->input(window, Event);
+				sceneManager->input(Event);
 		}
 
 		//prepare frame

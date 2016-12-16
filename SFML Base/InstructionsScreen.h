@@ -5,27 +5,30 @@
 #include "SFML/Audio.hpp"
 
 #include <iostream>
-#include <conio.h>
-#include <windows.h>
-#include <stdlib.h> 
 
-#include "OptionsLoader.h"
+#include "GlobalVariables.h"
+#include "InputManager.h"
+
 
 class InstructionsScreen
 {
+private:
+	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
+	InputManager* inputManager = InputManager::getInstance();
+
 public:
 	InstructionsScreen();
-	~InstructionsScreen(); 
-	
+	~InstructionsScreen();
+
 	void init();
 	void update();
 	void draw(sf::RenderWindow &window);
-
-
-	void backScreen(OptionsLoader *options, int screen);
+	void input(sf::Event Event);
 
 private:
 	sf::Vector2f screenSize = sf::Vector2f(1920, 1080);
+
+	void goToScene(int screen);
 
 	sf::Font font;
 	sf::Text text;

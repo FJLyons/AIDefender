@@ -14,7 +14,7 @@ void OptionsMenu::init()
 	//Art
 	scaleFactor = sf::Vector2f((1280.0f / 1920.0f), (720.0f / 1080.0f));
 
-	if (!logoTexture.loadFromFile("content\\art\\other\\logo.png")){ std::cout << "Logo Art Error" << std::endl; }
+	if (!logoTexture.loadFromFile("content\\art\\other\\logo.png")) { std::cout << "Logo Art Error" << std::endl; }
 	logoTexture.setSmooth(true);
 	logoSprite.setTexture(logoTexture);
 	logoSprite.setScale(scaleFactor);
@@ -29,7 +29,7 @@ void OptionsMenu::init()
 
 	text[0].setString("test");
 
-	for (int i = 0; i < MAX_INDEX; i++)
+	for (int i = 0; i < MENU_INDEX; i++)
 	{
 		text[i].setString("test");
 		text[i].setFont(font);
@@ -46,24 +46,45 @@ void OptionsMenu::update()
 
 }
 
+void OptionsMenu::input(sf::Event Event)
+{
+	if (inputManager->KeyPressed(sf::Keyboard::BackSpace))
+	{
+		std::cout << "Back Space" << std::endl;
+		goToScene(myGlobalOptions->MAINMENU);
+	}
+
+	if (inputManager->KeyPressed(sf::Keyboard::Return))
+	{
+		// swapScreen(); // Toggle option
+	}
+
+	if (inputManager->KeyPressed(sf::Keyboard::Up))
+	{
+		std::cout << "Up" << std::endl;
+		moveUp();
+	}
+
+	if (inputManager->KeyPressed(sf::Keyboard::Down))
+	{
+		std::cout << "Down" << std::endl;
+		moveDown();
+	}
+}
+
 void OptionsMenu::draw(sf::RenderWindow &window)
 {
 	window.draw(logoSprite);
 
-	for (int i = 0; i < MAX_INDEX; i++)
+	for (int i = 0; i < MENU_INDEX; i++)
 	{
 		window.draw(text[i]);
 	}
 }
 
-void OptionsMenu::swapScreen(OptionsLoader *options)
+void OptionsMenu::goToScene(int scene)
 {
-	options->setCurrentScreen(options->MAINMENU);
-}
-
-void OptionsMenu::backScreen(OptionsLoader *options, int screen)
-{
-	options->setCurrentScreen(screen);
+	myGlobalOptions->setCurrentScene(scene);
 }
 
 void OptionsMenu::moveUp()
@@ -74,14 +95,28 @@ void OptionsMenu::moveUp()
 		selectedItemIndex--;
 		text[selectedItemIndex].setColor(sf::Color::Red);
 	}
+	// Jump to bottom
+	else
+	{
+		text[selectedItemIndex].setColor(sf::Color::White);
+		selectedItemIndex = MENU_INDEX - 1;
+		text[selectedItemIndex].setColor(sf::Color::Red);
+	}
 }
 
 void OptionsMenu::moveDown()
 {
-	if (selectedItemIndex + 1 < MAX_INDEX)
+	if (selectedItemIndex + 1 < MENU_INDEX)
 	{
 		text[selectedItemIndex].setColor(sf::Color::White);
 		selectedItemIndex++;
+		text[selectedItemIndex].setColor(sf::Color::Red);
+	}
+	// Jump to top
+	else
+	{
+		text[selectedItemIndex].setColor(sf::Color::White);
+		selectedItemIndex = 0;
 		text[selectedItemIndex].setColor(sf::Color::Red);
 	}
 }

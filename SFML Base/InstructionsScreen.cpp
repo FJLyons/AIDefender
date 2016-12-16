@@ -31,7 +31,16 @@ void InstructionsScreen::draw(sf::RenderWindow &window)
 	window.draw(text);
 }
 
-void InstructionsScreen::backScreen(OptionsLoader *options, int screen)
+void InstructionsScreen::input(sf::Event Event)
 {
-	options->setCurrentScreen(screen);
+	if (inputManager->KeyPressed(sf::Keyboard::BackSpace))
+	{
+		std::cout << "Back Space" << std::endl;
+		goToScene(myGlobalOptions->MAINMENU);
+	}
+}
+
+void InstructionsScreen::goToScene(int scene)
+{
+	myGlobalOptions->setCurrentScene(scene);
 }

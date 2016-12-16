@@ -16,59 +16,72 @@ void SplashScreen::init()
 	// Art
 	scaleFactor = sf::Vector2f(1, 1);
 
-	if (!logoTexture.loadFromFile("content\\art\\other\\logo.png")){ std::cout << "Logo Art Error" << std::endl; }
+	if (!logoTexture.loadFromFile("content\\art\\other\\logo.png")) { std::cout << "Logo Art Error" << std::endl; }
 	logoTexture.setSmooth(true);
 	logoSprite.setTexture(logoTexture);
-	//logoSprite.setScale(scaleFactor);
+	// logoSprite.setScale(scaleFactor);
 	logoSprite.setOrigin(sf::Vector2f(screenSize.x / 2, screenSize.y / 2));
 	logoSprite.setPosition(sf::Vector2f(screenSize.x / 2, screenSize.y / 2));
 	logoSprite.setColor(sf::Color(255, 255, 255, 0));
 
-	alphaFade = 0;
-	fadeMultiply = 1.0f;
+	logoAlphaFade = 0;
+	logoFadeMultiply = 1.0f;
 
 	// Writing
-	pressAny = "Press Any Button to Continue!";
+	pressAnyString = "Press Any Button to Continue!";
 	currentLetter = 0;
 
 	font.loadFromFile("content\\fonts\\kenvector_future.TTF");
-	text.setFont(font);
-	text.setString("");
-	text.setPosition(screenSize.x / 2, screenSize.y / 2);
-	text.setCharacterSize(18);
+	pressAnyText.setFont(font);
+	pressAnyText.setString("");
+	// pressAnyText.setScale(scaleFactor);
+	// pressAnyText.setOrigin(0.5f, 0.5f); // Did not noticably move text, still needed to be divided by 2 later
+	pressAnyText.setPosition(screenSize.x / 2, screenSize.y / 2);
+	pressAnyText.setCharacterSize(18);
 
 	printed = false;
-	textFade = 255;
+	textAlphaFade = 255;
 	fading = false;
 }
 
 void SplashScreen::update()
 {
-	// Fade in image
-	fade();
+	fade(); // Fade in image
 }
 
 void SplashScreen::draw(sf::RenderWindow &window)
 {
 	window.draw(logoSprite);
-	window.draw(text);
+	window.draw(pressAnyText);
 }
 
-void SplashScreen::swapScreen(OptionsLoader *options)
+void SplashScreen::input(sf::Event Event)
 {
-	options->setCurrentScreen(options->MAINMENU);
+	if (Event.type == sf::Event::KeyPressed)
+	{
+		std::cout << Event.key.code << std::endl;
+		goToScene(myGlobalOptions->MAINMENU);
+	}
 }
 
-void SplashScreen::print(const std::string& str, int delay) 
+void SplashScreen::goToScene(int scene)
 {
+	GlobalVariables::getInstance()->setCurrentScene(scene);
+}
+
+void SplashScreen::print(const std::string& str, int delay)
+{
+	// Start printing
 	if (clock.getElapsedTime().asMilliseconds() > delay && currentLetter < str.size())
 	{
 		clock.restart();
 		currentLetter++;
-		text.setString(sf::String(str.substr(0, currentLetter)));
-		text.setPosition((screenSize.x / 2) - text.getLocalBounds().width / 2.0f, (screenSize.y / 2) - text.getLocalBounds().height / 2.0f);
+		pressAnyText.setString(sf::String(str.substr(0, currentLetter)));
+		pressAnyText.setPosition((screenSize.x / 2) - pressAnyText.getLocalBounds().width / 2.0f,
+			(screenSize.y / 2) - pressAnyText.getLocalBounds().height / 2.0f);
 	}
 
+	// Finished
 	if (currentLetter >= str.size())
 	{
 		printed = true;
@@ -78,24 +91,42 @@ void SplashScreen::print(const std::string& str, int delay)
 
 void SplashScreen::fade()
 {
-	if (alphaFade < 255)
+	if (logoAlphaFade < FULL_COLOUR)
 	{
-		logoSprite.setColor(sf::Color(255, 255, 255, alphaFade));
-		alphaFade += fadeMultiply;
-		fadeMultiply *= 1.007f; // 1.98333 seconds // License to kill
+		logoSprite.setColor(sf::Color(FULL_COLOUR, FULL_COLOUR, FULL_COLOUR, logoAlphaFade));
+		logoAlphaFade += logoFadeMultiply;
+		logoFadeMultiply *= 1.007f; // 1.98333 seconds - License to kill
 	}
 
 	// Check if string has finished printing
-	if (printed == false) { print(pressAny, 100); }
+	if (printed == false)
+	{
+		print(pressAnyString, 100);
+	}
 
 	// If string has printed, change its alpha
 	if (printed == true)
 	{
-		text.setColor(sf::Color(255, 255, 255, textFade));
-		if (fading == true && textFade >= 50) { textFade -= 3; }
-		else { fading = false; }
+		pressAnyText.setColor(sf::Color(FULL_COLOUR, FULL_COLOUR, FULL_COLOUR, textAlphaFade)); // Set Alpha for string
 
-		if (fading == false && textFade <= 250) { textFade += 5; }
-		else { fading = true; }
+																								// Decrease alpha - fade out
+		if (fading == true && textAlphaFade >= 50)
+		{
+			textAlphaFade -= 3;
+		}
+		else
+		{
+			fading = false;
+		}
+
+		// Increase alpha - fade in
+		if (fading == false && textAlphaFade <= FULL_COLOUR - 5)
+		{
+			textAlphaFade += 5;
+		}
+		else
+		{
+			fading = true;
+		}
 	}
 }

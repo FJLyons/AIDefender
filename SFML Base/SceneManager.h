@@ -11,7 +11,7 @@
 using namespace std;
 
 // Custom Classes
-#include "OptionsLoader.h"
+#include "GlobalVariables.h"
 #include "InputManager.h"
 
 #include "SplashScreen.h"
@@ -31,9 +31,9 @@ public:
 	void init();
 	void update();
 	void draw(sf::RenderWindow &window);
-	void input(sf::RenderWindow &window, sf::Event &Event);
+	void input(sf::Event &Event);
 
-	OptionsLoader* optionsLoader;
+	GlobalVariables* myGlobalOptions;
 	InputManager* inputManager;
 
 	SplashScreen* splashScreen;
@@ -45,7 +45,5 @@ public:
 
 private:
 	sf::Vector2f screenSize = sf::Vector2f(1920, 1080);
-	void swapScenes(sf::RenderWindow &window, sf::Event &Event);
-
 };
 

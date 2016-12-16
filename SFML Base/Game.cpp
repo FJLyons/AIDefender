@@ -1,9 +1,7 @@
 #include "Game.h"
 
-Game::Game(InputManager* im)
+Game::Game()
 {
-	inputManager = im;
-	terrain = new Terrain();
 	init();
 }
 
@@ -21,6 +19,7 @@ void Game::init()
 	bulletTexture.loadFromFile("assets/player/bullet.png");
 	font.loadFromFile("content\\fonts\\kenvector_future.TTF");
 
+	terrain = new Terrain();
 	player1 = new Player(playershipTexture, sf::Vector2f(200, 200), sf::Vector2f(20, 20));//set up player
 	human1 = new Human(humanTexture,terrain->getPoints());
 }
@@ -41,13 +40,23 @@ void Game::draw(sf::RenderWindow &window)
 
 void Game::input(sf::Event Event)
 {
-	inputManager->update(Event);
+	if (Event.type == sf::Event::KeyPressed)
+	{
+		std::cout << Event.key.code << std::endl;
+	}
+
+	if (inputManager->KeyPressed(sf::Keyboard::BackSpace))
+	{
+		std::cout << "Back Space" << std::endl;
+		goToScene(myGlobalOptions->MAINMENU);
+	}
+
 	controller(Event);
 }
 
-void Game::backScreen(OptionsLoader *options, int screen)
+void Game::goToScene(int scene)
 {
-	options->setCurrentScreen(screen);
+	myGlobalOptions->setCurrentScene(scene);
 }
 
 void Game::controller(sf::Event Event)

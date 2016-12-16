@@ -165,7 +165,7 @@
     <ClCompile Include="LoadScreen.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainMenu.cpp" />
-    <ClCompile Include="OptionsLoader.cpp" />
+    <ClCompile Include="GlobalVariables.cpp" />
     <ClCompile Include="OptionsMenu.cpp" />
     <ClCompile Include="SplashScreen.cpp" />
     <ClCompile Include="Terrain.cpp" />
@@ -181,7 +181,7 @@
     <ClInclude Include="LoadScreen.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="MainMenu.h" />
-    <ClInclude Include="OptionsLoader.h" />
+    <ClInclude Include="GlobalVariables.h" />
     <ClInclude Include="OptionsMenu.h" />
     <ClInclude Include="SplashScreen.h" />
     <ClInclude Include="Terrain.h" />
