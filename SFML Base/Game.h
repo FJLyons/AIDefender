@@ -13,6 +13,7 @@
 #include "InputManager.h"
 #include "Player.h"
 #include "Terrain.h"
+#include "Human.h"
 
 class Game
 {
@@ -32,7 +33,8 @@ private:
 	sf::Vector2f screenSize = sf::Vector2f(1920, 1080);
 
 	Player *player1;
-	sf::Texture playershipTexture, backgroundTexture, bulletTexture;
+	Human *human1;
+	sf::Texture playershipTexture, backgroundTexture, bulletTexture,humanTexture;
 	sf::Sprite backgroundSprite;
 
 	sf::Font font;

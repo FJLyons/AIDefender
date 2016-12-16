@@ -10,7 +10,6 @@ Player::Player(sf::Texture& tex, sf::Vector2f pos, sf::Vector2f maxVel)
 	mTexture = tex;
 	mPositon = pos;
 	maxVelocity = maxVel;
-	mPositon = pos;
 
 	mSprite.setTexture(mTexture);
 	mSprite.setPosition(mPositon);

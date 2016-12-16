@@ -4,6 +4,7 @@
 
 Terrain::Terrain()
 {
+	
 	init();
 }
 
@@ -14,6 +15,8 @@ Terrain::~Terrain()
 
 void Terrain::init()
 {
+
+	pointsOnMap = new sf::Vertex[MAP_WIDTH];
 	int previousY = 0;
 	for (int i = 0; i < MAP_WIDTH; i++)
 	{
@@ -31,3 +34,10 @@ void Terrain::draw(sf::RenderWindow &window)
 {
 	window.draw(pointsOnMap, MAP_WIDTH, sf::LinesStrip);
 }
+
+sf::Vertex* Terrain::getPoints()
+{
+
+	return  pointsOnMap;
+}
+

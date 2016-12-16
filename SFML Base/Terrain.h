@@ -9,7 +9,7 @@
 #include <windows.h>
 #include <stdlib.h> 
 
-#define MAP_WIDTH 128
+#define MAP_WIDTH  128
 
 class Terrain
 {
@@ -20,9 +20,14 @@ public:
 	void init();
 	void update();
 	void draw(sf::RenderWindow &window);
-
+	sf::Vertex* getPoints();
 	//sf::Vector2f pointsOnMap[100]
 
-	sf::Vertex pointsOnMap[MAP_WIDTH];
+	
+
+private:
+	sf::Vertex* pointsOnMap;
+	
+
 };
 
