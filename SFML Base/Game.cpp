@@ -61,6 +61,7 @@ void Game::goToScene(int scene)
 
 void Game::controller(sf::Event Event)
 {
+	// Left
 	if (inputManager->KeyPressed(sf::Keyboard::A))
 	{
 		player1->MoveLeft(true);
@@ -70,6 +71,7 @@ void Game::controller(sf::Event Event)
 		player1->MoveLeft(false);
 	}
 
+	// Right
 	if (inputManager->KeyPressed(sf::Keyboard::D))
 	{
 		player1->MoveRight(true);
@@ -79,6 +81,7 @@ void Game::controller(sf::Event Event)
 		player1->MoveRight(false);
 	}
 
+	// Up
 	if (inputManager->KeyPressed(sf::Keyboard::W))
 	{
 		player1->MoveUp(true);
@@ -88,6 +91,7 @@ void Game::controller(sf::Event Event)
 		player1->MoveUp(false);
 	}
 
+	// Down
 	if (inputManager->KeyPressed(sf::Keyboard::S))
 	{
 		player1->MoveDown(true);
@@ -97,6 +101,7 @@ void Game::controller(sf::Event Event)
 		player1->MoveDown(false);
 	}
 
+	// Shoot
 	if (inputManager->KeyPressed(sf::Keyboard::Space))
 	{
 		player1->Shoot(bulletTexture);
