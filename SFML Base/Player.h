@@ -41,7 +41,7 @@ public:
 	void Draw(sf::RenderWindow &window);
 	void Flip();
 
-
+	sf::Vector2f getPosition();
 
 
 };

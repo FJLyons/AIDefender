@@ -12,11 +12,12 @@ SceneManager::~SceneManager()
 void SceneManager::init()
 {
 	myGlobalOptions = GlobalVariables::getInstance();
-	inputManager = new InputManager();
+	inputManager = InputManager::getInstance();
 
+	camera = new Camera();
 	splashScreen = new SplashScreen();
 	mainMenu = new MainMenu();
-	game = new Game();
+	game = new Game(camera);
 	load = new LoadScreen();
 	optionsMenu = new OptionsMenu();
 	instructions = new InstructionsScreen();
@@ -25,7 +26,7 @@ void SceneManager::init()
 void SceneManager::update()
 {
 	if (myGlobalOptions->getCurrentScene() == myGlobalOptions->SPLASH) { splashScreen->update(); }
-	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->MAINMENU) { mainMenu->update(); }
+	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->MAINMENU) { mainMenu->update(); camera->resetView(); }
 	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->GAME) { game->update(); }
 	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->LOAD) { load->update(); }
 	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->OPTIONS) { optionsMenu->update(); }
@@ -35,7 +36,7 @@ void SceneManager::update()
 void SceneManager::draw(sf::RenderWindow &window)
 {
 	if (myGlobalOptions->getCurrentScene() == myGlobalOptions->SPLASH) { splashScreen->draw(window); }
-	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->MAINMENU) { mainMenu->draw(window); }
+	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->MAINMENU) { mainMenu->draw(window); camera->draw(window); }
 	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->GAME) { game->draw(window); }
 	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->LOAD) { load->draw(window); }
 	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->OPTIONS) { optionsMenu->draw(window); }

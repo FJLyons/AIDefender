@@ -1,7 +1,8 @@
 #include "Game.h"
 
-Game::Game()
+Game::Game(Camera* cam)
 {
+	camera = cam;
 	init();
 }
 
@@ -28,14 +29,21 @@ void Game::update()
 {
 	player1->Update();
 	human1->Update();
+	camera->update(player1);
 }
 
 void Game::draw(sf::RenderWindow &window)
 {
 	//window.draw(text);
+	camera->draw(window);
 	player1->Draw(window);
 	human1->Draw(window);
 	terrain->draw(window);
+}
+
+void Game::goToScene(int scene)
+{
+	myGlobalOptions->setCurrentScene(scene);
 }
 
 void Game::input(sf::Event Event)
@@ -47,16 +55,12 @@ void Game::input(sf::Event Event)
 
 	if (inputManager->KeyPressed(sf::Keyboard::BackSpace))
 	{
+		camera->resetView();
 		std::cout << "Back Space" << std::endl;
 		goToScene(myGlobalOptions->MAINMENU);
 	}
 
 	controller(Event);
-}
-
-void Game::goToScene(int scene)
-{
-	myGlobalOptions->setCurrentScene(scene);
 }
 
 void Game::controller(sf::Event Event)

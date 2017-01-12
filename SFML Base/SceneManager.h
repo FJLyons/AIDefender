@@ -35,6 +35,7 @@ public:
 
 	GlobalVariables* myGlobalOptions;
 	InputManager* inputManager;
+	Camera* camera;
 
 	SplashScreen* splashScreen;
 	MainMenu* mainMenu;

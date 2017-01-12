@@ -12,6 +12,7 @@
 #include "GlobalVariables.h"
 #include "InputManager.h"
 
+#include "Camera.h"
 #include "Player.h"
 #include "Human.h"
 #include "Terrain.h"
@@ -23,7 +24,7 @@ private:
 	InputManager* inputManager = InputManager::getInstance();
 
 public:
-	Game();
+	Game(Camera* camera);
 	~Game();
 
 	void init();
@@ -45,6 +46,7 @@ private:
 	sf::Sprite backgroundSprite;
 
 protected:
+	Camera *camera;
 	Player *player1;
 	Human *human1;
 	Terrain* terrain;
