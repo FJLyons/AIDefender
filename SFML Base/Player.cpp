@@ -44,7 +44,7 @@ void Player::Update()
 	mSprite.setScale(mScale);
 	mPositon += velocity;
 	mSprite.setPosition(mPositon);
-
+	velocity *= 0.99f;
 
 	for (int i = 0; i< bulletList.size(); i++)
 	{
@@ -52,6 +52,18 @@ void Player::Update()
 		{
 			bulletList.erase(bulletList.begin() + i);
 		}
+	}
+
+	if (mPositon.y <= 0)
+	{
+		velocity.y = 0;
+		mPositon.y = 0;
+	}
+
+	if (mPositon.y >= 1080)
+	{
+		velocity.y = 0;
+		mPositon.y = 1080;
 	}
 }
 
@@ -73,7 +85,7 @@ void Player::MoveUp(bool pressed)
 	{
 		if (velocity.y > -maxVelocity.y)
 		{
-			velocity.y = -20.5;
+			velocity.y = -20.5f;
 			playerFacingUp = true;
 		}
 	}
@@ -93,7 +105,7 @@ void Player::MoveDown(bool pressed)
 		if (velocity.y < maxVelocity.y)
 		{
 			playerFacingUp = false;
-			velocity.y = 20.5;
+			velocity.y = 20.5f;
 		}
 	}
 	else
@@ -111,7 +123,7 @@ void Player::MoveLeft(bool pressed)
 	{
 		if (velocity.x > -maxVelocity.x)
 		{
-			velocity.x -= 1.5;
+			velocity.x -= 1.5f;
 			playerFacingRight = false;
 		}
 	}
@@ -119,7 +131,7 @@ void Player::MoveLeft(bool pressed)
 	{
 		if (velocity.x < 0)
 		{
-			velocity.x += 1.5;
+			velocity.x += 1.5f;
 		}
 	}
 }
@@ -130,16 +142,15 @@ void Player::MoveRight(bool pressed)
 	{
 		if (velocity.x < maxVelocity.x)
 		{
-			velocity.x += 1.5;
+			velocity.x += 1.5f;
 			playerFacingRight = true;
-
 		}
 	}
 	else
 	{
 		if (velocity.x > 0)
 		{
-			velocity.x -= 1.5;
+			velocity.x -= 1.5f;
 		}
 	}
 }

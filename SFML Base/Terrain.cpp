@@ -28,7 +28,7 @@ void Terrain::init()
 			previousY = pointsOnMap[i].position.y;
 			maxCount--;
 
-			if (pointsOnMap[i].position.y <= 600)
+			if (pointsOnMap[i].position.y <= 600) // Start - 120
 			{
 				maxCount = 0;
 			}
@@ -40,7 +40,7 @@ void Terrain::init()
 			previousY = pointsOnMap[i].position.y;
 			maxCount--;
 
-			if (pointsOnMap[i].position.y >= 840)
+			if (pointsOnMap[i].position.y >= 840) // Start + 120
 			{
 				maxCount = 0;
 			}
@@ -50,6 +50,11 @@ void Terrain::init()
 		{
 			maxCount = rand() % 32;
 			goingUp = !goingUp;
+		}
+
+		if (i == MAP_WIDTH)
+		{
+			pointsOnMap[i].position.y = pointsOnMap[0].position.y;
 		}
 	}
 }

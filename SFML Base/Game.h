@@ -47,7 +47,7 @@ private:
 
 protected:
 	Camera *camera;
-	Player *player1;
+	Player *player;
 	Human *human1;
 	Terrain* terrain;
 };

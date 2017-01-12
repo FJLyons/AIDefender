@@ -26,7 +26,7 @@ void SceneManager::init()
 void SceneManager::update()
 {
 	if (myGlobalOptions->getCurrentScene() == myGlobalOptions->SPLASH) { splashScreen->update(); }
-	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->MAINMENU) { mainMenu->update(); camera->resetView(); }
+	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->MAINMENU) { mainMenu->update(); }
 	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->GAME) { game->update(); }
 	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->LOAD) { load->update(); }
 	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->OPTIONS) { optionsMenu->update(); }

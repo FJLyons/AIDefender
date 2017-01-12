@@ -9,7 +9,7 @@
 #include <windows.h>
 #include <stdlib.h> 
 
-#define MAP_WIDTH  128 * 7
+#define MAP_WIDTH  192 * 9
 
 class Terrain
 {
