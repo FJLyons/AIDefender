@@ -14,6 +14,8 @@ void Game::init()
 {
 	playershipTexture.loadFromFile("assets/player/PlayerShip.png");
 	playershipTexture.setSmooth(true);
+	nestTexture.loadFromFile("assets/enemies/nest.png");
+	nestTexture.setSmooth(true);
 	humanTexture.loadFromFile("assets/ai/human.png");
 	humanTexture.setSmooth(true);
 	backgroundTexture.loadFromFile("assets/background/background.png");
@@ -23,13 +25,16 @@ void Game::init()
 	terrain = new Terrain();
 	player = new Player(playershipTexture, screenSize * 0.5f, sf::Vector2f(30, 30));//set up player
 	human1 = new Human(humanTexture,terrain->getPoints());
+	nest1 = new Nest(nestTexture, sf::Vector2f(500, 500));
 }
 
 void Game::update()
 {
 	player->Update();
 	human1->Update();
+	nest1->Update();
 	camera->update(player);
+
 }
 
 void Game::draw(sf::RenderWindow &window)
@@ -38,6 +43,7 @@ void Game::draw(sf::RenderWindow &window)
 	camera->draw(window);
 	player->Draw(window);
 	human1->Draw(window);
+	nest1->Draw(window);
 	terrain->draw(window);
 }
 

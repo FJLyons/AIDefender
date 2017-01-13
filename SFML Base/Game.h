@@ -16,6 +16,7 @@
 #include "Player.h"
 #include "Human.h"
 #include "Terrain.h"
+#include "Nest.h"
 
 class Game
 {
@@ -42,13 +43,14 @@ private:
 	sf::Font font;
 	sf::Text text;
 
-	sf::Texture playershipTexture, backgroundTexture, bulletTexture,humanTexture;
+	sf::Texture playershipTexture, backgroundTexture, bulletTexture,humanTexture,nestTexture;
 	sf::Sprite backgroundSprite;
 
 protected:
 	Camera *camera;
 	Player *player;
 	Human *human1;
+	Nest *nest1;
 	Terrain* terrain;
 };
 
