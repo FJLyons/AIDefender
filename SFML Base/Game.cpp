@@ -21,7 +21,7 @@ void Game::init()
 	font.loadFromFile("content\\fonts\\kenvector_future.TTF");
 
 	terrain = new Terrain();
-	player = new Player(playershipTexture, sf::Vector2f(200, 200), sf::Vector2f(20, 20));//set up player
+	player = new Player(playershipTexture, screenSize * 0.5f, sf::Vector2f(30, 30));//set up player
 	human1 = new Human(humanTexture,terrain->getPoints());
 }
 
@@ -68,21 +68,29 @@ void Game::controller(sf::Event Event)
 	// Left
 	if (inputManager->KeyPressed(sf::Keyboard::A))
 	{
-		player->MoveLeft(true);
+		player->FaceLeft();
+	}
+	else if (inputManager->KeyHeld(sf::Keyboard::A))
+	{
+		player->MoveLeft();
 	}
 	else if (inputManager->KeyReleased(sf::Keyboard::A))
 	{
-		player->MoveLeft(false);
+		//player->MoveLeft();
 	}
 
 	// Right
 	if (inputManager->KeyPressed(sf::Keyboard::D))
 	{
-		player->MoveRight(true);
+		player->FaceRight();
+	}
+	else if (inputManager->KeyHeld(sf::Keyboard::D))
+	{
+		player->MoveRight();
 	}
 	else if (inputManager->KeyReleased(sf::Keyboard::D))
 	{
-		player->MoveRight(false);
+		//player->MoveRight();
 	}
 
 	// Up

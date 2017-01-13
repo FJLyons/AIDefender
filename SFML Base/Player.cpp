@@ -44,7 +44,9 @@ void Player::Update()
 	mSprite.setScale(mScale);
 	mPositon += velocity;
 	mSprite.setPosition(mPositon);
-	velocity.x *= 0.99f;
+
+	if (velocity.x != 0) { velocity.x *= 0.9f; }
+	if (abs(velocity.x) <= 1) { velocity.x = 0; }
 
 	for (int i = 0; i< bulletList.size(); i++)
 	{
@@ -80,6 +82,23 @@ void Player::Draw(sf::RenderWindow &window)
 	}
 }
 
+void Player::FaceLeft()
+{
+	if (playerFacingRight != false)
+	{
+		velocity.x = 0;
+		playerFacingRight = false;
+	}
+}
+
+void Player::FaceRight()
+{
+	if (playerFacingRight != true)
+	{
+		velocity.x = 0;
+		playerFacingRight = true;
+	}
+}
 
 void Player::MoveUp(bool pressed)
 {
@@ -88,16 +107,11 @@ void Player::MoveUp(bool pressed)
 		if (velocity.y > -maxVelocity.y)
 		{
 			velocity.y = -20.5f;
-			playerFacingUp = true;
 		}
 	}
 	else
 	{
 		velocity.y = 0;
-		/*if (velocity.y < 0)
-		{
-			velocity.y += 2.5;
-		}*/
 	}
 }
 void Player::MoveDown(bool pressed)
@@ -106,81 +120,62 @@ void Player::MoveDown(bool pressed)
 	{
 		if (velocity.y < maxVelocity.y)
 		{
-			playerFacingUp = false;
 			velocity.y = 20.5f;
 		}
 	}
 	else
 	{
 		velocity.y = 0;
-	/*	if (velocity.y > 0)
-		{
-			velocity.y -= 2.5;
-		}*/
 	}
 }
-void Player::MoveLeft(bool pressed)
+void Player::MoveLeft()
 {
-	if (pressed == true)
+	if (velocity.x > -maxVelocity.x)
 	{
-		if (velocity.x > -maxVelocity.x)
-		{
-			velocity.x -= 1.5f;
-			playerFacingRight = false;
-		}
+		velocity.x -= 1.5f - (velocity.x / 10);
 	}
 	else
 	{
-		if (velocity.x < 0)
-		{
-			velocity.x += 1.5f;
-		}
+		velocity.x = -maxVelocity.x;
 	}
 }
-void Player::MoveRight(bool pressed)
+void Player::MoveRight()
+{
+	if (velocity.x < maxVelocity.x)
+	{
+		velocity.x += 1.5f + (velocity.x / 10);
+	}
+	else
+	{
+		velocity.x = maxVelocity.x;
+	}
+}
 
-{
-	if (pressed == true)
-	{
-		if (velocity.x < maxVelocity.x)
-		{
-			velocity.x += 1.5f;
-			playerFacingRight = true;
-		}
-	}
-	else
-	{
-		if (velocity.x > 0)
-		{
-			velocity.x -= 1.5f;
-		}
-	}
-}
 void Player::Shoot(sf::Texture& tex)
 {	
 	if (canShoot == true)
 	{
 		bulletList.push_back(new Bullet(mPositon, tex, playerFacingRight, velocity));
 		shotTimer = 0;
-	}
-	
+	}	
 }
 
 void Player::Flip()
 {
-
 	if (playerFacingRight == false)
 	{
 		if (mScale.x > -1)
+		{
 			mScale.x -= flipSpeed;
+		}
 	}
 	else if (playerFacingRight == true)
 	{
 		if (mScale.x < 1)
+		{
 			mScale.x += flipSpeed;
+		}
 	}
-
-
 
 	/*if (playerFacingUp == true)
 	{
@@ -192,7 +187,6 @@ void Player::Flip()
 		if (mScale.y < 1)
 			mScale.y += flipSpeed;
 	}*/
-
 }
 
 sf::Vector2f Player::getPosition()
@@ -200,16 +194,23 @@ sf::Vector2f Player::getPosition()
 	return mPositon;
 }
 
-void Player::teleport()
+bool Player::teleport()
 {
 	// Wrap around teleport
 	if (mPositon.x < 0)
 	{
 		mPositon.x = 1920 * 9;
+		return true;
 	}
 
-	if (mPositon.x > 1920 * 9)
+	else if (mPositon.x > 1920 * 9)
 	{
 		mPositon.x = 0;
+		return true;
+	}
+
+	else
+	{
+		return false;
 	}
 }

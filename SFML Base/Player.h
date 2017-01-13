@@ -20,7 +20,6 @@ private:
 
 	std::vector<Bullet*> bulletList;
 	bool playerFacingRight;
-	bool playerFacingUp;
 	bool canShoot;
 
 	float flipSpeed;
@@ -32,18 +31,24 @@ private:
 public:
 	Player();
 	Player(sf::Texture& tex,sf::Vector2f pos,sf::Vector2f maxVel);
+
+	void FaceLeft();
+	void FaceRight();
+
 	void MoveUp(bool pressed);
 	void MoveDown(bool pressed);
-	void MoveLeft(bool pressed);
-	void MoveRight(bool pressed);
+	void MoveLeft();
+	void MoveRight();
+
 	void Shoot(sf::Texture& tex);
+
 	void Update();
 	void Draw(sf::RenderWindow &window);
 	void Flip();
 
 	sf::Vector2f getPosition();
 
-	void teleport();
+	bool teleport();
 
 
 };

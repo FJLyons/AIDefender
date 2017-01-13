@@ -85,8 +85,7 @@ int main()
 			else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->LOAD) { sceneManager->load->input(Event); }
 			else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->OPTIONS) { sceneManager->optionsMenu->input(Event); }
 			else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->INSTRUCTIONS) { sceneManager->instructions->input(Event); }
-			else
-				sceneManager->input(Event);
+			else { sceneManager->input(Event); }
 		}
 
 		//prepare frame
@@ -95,6 +94,9 @@ int main()
 		// Update and Draw
 		sceneManager->update();
 		sceneManager->draw(window);
+
+		// Needed to ignore poll event stopping, while also using functions needing event
+		if (myGlobalOptions->getCurrentScene() == myGlobalOptions->GAME) { sceneManager->game->input(Event); }
 
 		// Finally, display rendered frame on screen 
 		window.display();
