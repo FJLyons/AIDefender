@@ -5,6 +5,8 @@
 
 #include "SFML\Graphics.hpp"
 
+#define MAP_WIDTH  192 * 10
+#define HALF_SCREEN_WIDTH 192 / 2
 
 class Human
 {
@@ -25,6 +27,7 @@ public:
 	void Update();
 	void Draw(sf::RenderWindow &window);
 
+	void setPoint(int index);
 };
 
 #endif
