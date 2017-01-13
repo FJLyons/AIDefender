@@ -10,6 +10,7 @@
 #include <stdlib.h> 
 
 #define MAP_WIDTH  192 * 9
+#define HALF_SCREEN_WIDTH 192 / 2
 
 class Terrain
 {
@@ -25,5 +26,10 @@ public:
 
 private:
 	sf::Vertex* pointsOnMap;
+	sf::Vertex* leftBorderPoints;
+	sf::Vertex* rightBorderPoints;
+
+	void generateTerrain();
+	void generateTerrainSides();
 };
 

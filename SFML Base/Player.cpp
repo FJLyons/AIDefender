@@ -44,7 +44,7 @@ void Player::Update()
 	mSprite.setScale(mScale);
 	mPositon += velocity;
 	mSprite.setPosition(mPositon);
-	velocity *= 0.99f;
+	velocity.x *= 0.99f;
 
 	for (int i = 0; i< bulletList.size(); i++)
 	{
@@ -54,6 +54,7 @@ void Player::Update()
 		}
 	}
 
+	// Top and Bottom wall collision
 	if (mPositon.y <= 0)
 	{
 		velocity.y = 0;
@@ -65,6 +66,8 @@ void Player::Update()
 		velocity.y = 0;
 		mPositon.y = 1080;
 	}
+
+	teleport();
 }
 
 void Player::Draw(sf::RenderWindow &window)
@@ -75,7 +78,6 @@ void Player::Draw(sf::RenderWindow &window)
 	{
 		bulletList[i]->Draw(window);
 	}
-
 }
 
 
@@ -196,4 +198,18 @@ void Player::Flip()
 sf::Vector2f Player::getPosition()
 {
 	return mPositon;
+}
+
+void Player::teleport()
+{
+	// Wrap around teleport
+	if (mPositon.x < 0)
+	{
+		mPositon.x = 1920 * 9;
+	}
+
+	if (mPositon.x > 1920 * 9)
+	{
+		mPositon.x = 0;
+	}
 }

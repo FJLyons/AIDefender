@@ -43,6 +43,8 @@ public:
 
 	sf::Vector2f getPosition();
 
+	void teleport();
+
 
 };
 

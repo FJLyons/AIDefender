@@ -16,6 +16,32 @@ Terrain::~Terrain()
 void Terrain::init()
 {
 	pointsOnMap = new sf::Vertex[MAP_WIDTH];
+	leftBorderPoints = new sf::Vertex[HALF_SCREEN_WIDTH];
+	rightBorderPoints = new sf::Vertex[HALF_SCREEN_WIDTH];
+
+	generateTerrain();
+	generateTerrainSides();
+}
+
+void Terrain::update()
+{
+
+}
+
+void Terrain::draw(sf::RenderWindow &window)
+{
+	window.draw(pointsOnMap, MAP_WIDTH, sf::LinesStrip);
+	window.draw(leftBorderPoints, HALF_SCREEN_WIDTH, sf::LinesStrip);
+	window.draw(rightBorderPoints, HALF_SCREEN_WIDTH, sf::LinesStrip);
+}
+
+sf::Vertex* Terrain::getPoints()
+{
+	return  pointsOnMap;
+}
+
+void Terrain::generateTerrain()
+{
 	int previousY = 720;
 	bool goingUp = true;
 	int maxCount = rand() % 32;
@@ -32,6 +58,14 @@ void Terrain::init()
 			{
 				maxCount = 0;
 			}
+
+			if (i >= MAP_WIDTH - 192)
+			{
+				if (pointsOnMap[i].position.y <= 660) // Start - 120
+				{
+					maxCount = 0;
+				}
+			}
 		}
 
 		if (goingUp == false)
@@ -43,6 +77,14 @@ void Terrain::init()
 			if (pointsOnMap[i].position.y >= 840) // Start + 120
 			{
 				maxCount = 0;
+			}
+
+			if (i >= MAP_WIDTH - 192)
+			{
+				if (pointsOnMap[i].position.y >= 780) // Start - 120
+				{
+					maxCount = 0;
+				}
 			}
 		}
 
@@ -57,20 +99,17 @@ void Terrain::init()
 			pointsOnMap[i].position.y = pointsOnMap[0].position.y;
 		}
 	}
+
+	pointsOnMap[MAP_WIDTH - 1].position.y = pointsOnMap[0].position.y;
 }
 
-void Terrain::update()
+void Terrain::generateTerrainSides()
 {
+	for (int i = 0; i < HALF_SCREEN_WIDTH; i++)
+	{
+		leftBorderPoints[i] = sf::Vertex(sf::Vector2f(-960 + (i * 10) + 10, pointsOnMap[MAP_WIDTH - HALF_SCREEN_WIDTH + i].position.y));
 
-}
-
-void Terrain::draw(sf::RenderWindow &window)
-{
-	window.draw(pointsOnMap, MAP_WIDTH, sf::LinesStrip);
-}
-
-sf::Vertex* Terrain::getPoints()
-{
-	return  pointsOnMap;
+		rightBorderPoints[i] = sf::Vertex(sf::Vector2f((MAP_WIDTH * 10) + (i * 10) - 10, pointsOnMap[i].position.y));
+	}
 }
 
