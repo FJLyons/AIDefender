@@ -9,9 +9,12 @@ Human::Human(sf::Texture& tex, sf::Vertex* points)
 {
 	targetPoints = points;
 	currentPoint = HALF_SCREEN_WIDTH + 1;
+
 	mTexture = tex;
 	mPositon = points[HALF_SCREEN_WIDTH].position;
 	velocity = sf::Vector2f(1, 1);	
+
+	mTexture.setSmooth(true);
 
 	mSprite.setTexture(mTexture);
 	mSprite.setPosition(mPositon);
@@ -48,9 +51,19 @@ void Human::Update()
 	}
 }
 
-void Human::Draw(sf::RenderWindow &window)
+void Human::Draw(sf::RenderWindow &window, bool mini)
 {
-	window.draw(mSprite);
+	if (mini == false)
+	{
+		mSprite.setScale(sf::Vector2f(1, 1));
+		window.draw(mSprite);
+	}
+
+	if (mini == true)
+	{
+		mSprite.setScale(sf::Vector2f(4, 4));
+		window.draw(mSprite);
+	}
 }
 
 void Human::setPoint(int index)

@@ -15,7 +15,8 @@ public:
 
 	void init();
 	void update(Player *player);
-	void draw(sf::RenderWindow &window);
+	void drawGame(sf::RenderWindow &window);
+	void drawRadar(sf::RenderWindow &window);
 
 	sf::View getView();
 	void setViewCenter(sf::Vector2f *position);
@@ -23,7 +24,8 @@ public:
 	void resetView();
 
 	// View
-	sf::View	view;
+	sf::View	gameView;
+	sf::View	radarView;
 
 private:
 	sf::Vector2f screenSize = sf::Vector2f(1920, 1080);

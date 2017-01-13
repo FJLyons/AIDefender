@@ -25,7 +25,7 @@ public:
 	Human(sf::Texture& tex, sf::Vertex* points);
 	
 	void Update();
-	void Draw(sf::RenderWindow &window);
+	void Draw(sf::RenderWindow &window, bool mini);
 
 	void setPoint(int index);
 };

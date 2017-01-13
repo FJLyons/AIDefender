@@ -22,23 +22,29 @@ void Game::init()
 
 	terrain = new Terrain();
 	player = new Player(playershipTexture, screenSize * 0.5f, sf::Vector2f(30, 30));//set up player
-	human1 = new Human(humanTexture,terrain->getPoints());
+	human = new Human(humanTexture,terrain->getPoints());
 }
 
 void Game::update()
 {
 	player->Update();
-	human1->Update();
+	human->Update();
 	camera->update(player);
 }
 
 void Game::draw(sf::RenderWindow &window)
 {
-	//window.draw(text);
-	camera->draw(window);
-	player->Draw(window);
-	human1->Draw(window);
+	//Game
+	camera->drawGame(window);
 	terrain->draw(window);
+	player->Draw(window);
+	human->Draw(window, false);
+
+	// Mini Map
+	camera->drawRadar(window);
+	terrain->draw(window);
+	player->Draw(window);
+	human->Draw(window, true);
 }
 
 void Game::goToScene(int scene)

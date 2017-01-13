@@ -12,6 +12,8 @@ Player::Player(sf::Texture& tex, sf::Vector2f pos, sf::Vector2f maxVel)
 	mPositon = pos;
 	maxVelocity = maxVel;
 
+	mTexture.setSmooth(true);
+
 	mSprite.setTexture(mTexture);
 	mSprite.setPosition(mPositon);
 	mSprite.setOrigin(sf::Vector2f(mSprite.getLocalBounds().width / 2, mSprite.getLocalBounds().height / 2));
