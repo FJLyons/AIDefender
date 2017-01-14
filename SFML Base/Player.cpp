@@ -70,8 +70,6 @@ void Player::Update()
 		velocity.y = 0;
 		mPositon.y = 1080;
 	}
-
-	teleport();
 }
 
 void Player::Draw(sf::RenderWindow &window)
@@ -202,12 +200,14 @@ bool Player::teleport()
 	if (mPositon.x < 0)
 	{
 		mPositon.x = 1920 * 9;
+		teleportLeft = true;
 		return true;
 	}
 
 	else if (mPositon.x > 1920 * 9)
 	{
 		mPositon.x = 0;
+		teleportLeft = false;
 		return true;
 	}
 

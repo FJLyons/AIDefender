@@ -49,6 +49,7 @@ public:
 	sf::Vector2f getPosition();
 
 	bool teleport();
+	bool teleportLeft = true;
 
 
 };

@@ -28,8 +28,10 @@ void Game::init()
 void Game::update()
 {
 	player->Update();
+	teleport();
 	human->Update();
 	camera->update(player);
+
 }
 
 void Game::draw(sf::RenderWindow &window)
@@ -123,5 +125,21 @@ void Game::controller(sf::Event Event)
 	if (inputManager->KeyPressed(sf::Keyboard::Space))
 	{
 		player->Shoot(bulletTexture);
+	}
+}
+
+void Game::teleport()
+{
+	if (player->teleport())
+	{
+		if (human->getPoint() < HALF_SCREEN_WIDTH * 2 && player->teleportLeft == true)
+		{
+			human->setPoint(human->getPoint() + MAP_WIDTH);
+		}
+
+		else if (human->getPoint() > FULL_WIDTH - (HALF_SCREEN_WIDTH * 2) && player->teleportLeft == false)
+		{
+			human->setPoint(human->getPoint() - MAP_WIDTH);
+		}
 	}
 }

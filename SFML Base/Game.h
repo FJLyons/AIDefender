@@ -45,6 +45,8 @@ private:
 	sf::Texture playershipTexture, backgroundTexture, bulletTexture,humanTexture;
 	sf::Sprite backgroundSprite;
 
+	void teleport();
+
 protected:
 	Camera *camera;
 	Player *player;

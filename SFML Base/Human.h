@@ -27,6 +27,7 @@ public:
 	void Update();
 	void Draw(sf::RenderWindow &window, bool mini);
 
+	int getPoint();
 	void setPoint(int index);
 };
 

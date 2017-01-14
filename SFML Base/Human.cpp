@@ -66,7 +66,13 @@ void Human::Draw(sf::RenderWindow &window, bool mini)
 	}
 }
 
+int Human::getPoint()
+{
+	return currentPoint - 1;
+}
+
 void Human::setPoint(int index)
 {
 	mPositon = targetPoints[index].position;
+	currentPoint = index + 1;
 }
