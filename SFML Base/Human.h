@@ -1,16 +1,13 @@
 #pragma once
-#pragma once
 #ifndef HUMAN_H
 #define HUMAN_H
 
 #include "SFML\Graphics.hpp"
 
-#define MAP_WIDTH  192 * 10
-#define HALF_SCREEN_WIDTH 192 / 2
+#include "GlobalVariables.h"
 
 class Human
 {
-
 
 private:
 	sf::Texture mTexture;
@@ -21,6 +18,8 @@ private:
 	int currentPoint;
 
 public:
+	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
+
 	Human();
 	Human(sf::Texture& tex, sf::Vertex* points);
 	

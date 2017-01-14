@@ -16,6 +16,7 @@
 #include "Player.h"
 #include "Human.h"
 #include "Terrain.h"
+#include "Obstacles.h"
 
 class Game
 {
@@ -42,7 +43,7 @@ private:
 	sf::Font font;
 	sf::Text text;
 
-	sf::Texture playershipTexture, backgroundTexture, bulletTexture,humanTexture;
+	sf::Texture playershipTexture, backgroundTexture, bulletTexture, humanTexture, obstacleTexture;
 	sf::Sprite backgroundSprite;
 
 	void teleport();
@@ -52,5 +53,6 @@ protected:
 	Player *player;
 	Human *human;
 	Terrain* terrain;
+	Obstacles* meteor;
 };
 

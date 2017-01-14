@@ -50,8 +50,6 @@ public:
 
 	bool teleport();
 	bool teleportLeft = true;
-
-
 };
 
 #endif

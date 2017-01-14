@@ -8,10 +8,10 @@ Human::Human()
 Human::Human(sf::Texture& tex, sf::Vertex* points)
 {
 	targetPoints = points;
-	currentPoint = HALF_SCREEN_WIDTH + 1;
+	currentPoint = HALF_SCREEN_WIDTH_POINTS + 1;
 
 	mTexture = tex;
-	mPositon = points[HALF_SCREEN_WIDTH].position;
+	mPositon = points[HALF_SCREEN_WIDTH_POINTS].position;
 	velocity = sf::Vector2f(1, 1);	
 
 	mTexture.setSmooth(true);
@@ -37,17 +37,17 @@ void Human::Update()
 	}
 
 	// Teleport right
-	if (currentPoint > MAP_WIDTH)
+	if (currentPoint > FULL_WIDTH_POINTS)
 	{
-		mPositon = targetPoints[HALF_SCREEN_WIDTH].position;
-		currentPoint = HALF_SCREEN_WIDTH + 1;
+		mPositon = targetPoints[HALF_SCREEN_WIDTH_POINTS].position;
+		currentPoint = HALF_SCREEN_WIDTH_POINTS + 1;
 	}
 
 	// teleport left
 	if (currentPoint < 0)
 	{
-		mPositon = targetPoints[MAP_WIDTH - HALF_SCREEN_WIDTH].position;
-		currentPoint = MAP_WIDTH - HALF_SCREEN_WIDTH - 1;
+		mPositon = targetPoints[FULL_WIDTH_POINTS - HALF_SCREEN_WIDTH_POINTS].position;
+		currentPoint = FULL_WIDTH_POINTS - HALF_SCREEN_WIDTH_POINTS - 1;
 	}
 }
 

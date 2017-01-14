@@ -9,13 +9,13 @@
 #include <windows.h>
 #include <stdlib.h> 
 
-#define MAP_WIDTH  192 * 9
-#define HALF_SCREEN_WIDTH 192 / 2
-#define FULL_WIDTH 192 * 10
+#include "GlobalVariables.h"
 
 class Terrain
 {
 public:
+	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
+
 	Terrain();
 	~Terrain();
 
