@@ -48,11 +48,19 @@ private:
 
 	void teleport();
 
+	int currentLevel = 1;
+
+	void MeteorSpawn();
+	sf::Clock meteorSpawnClock;
+	float meteorSpwanTimer;
+	float meteorSpawnDelay;
+
 protected:
-	Camera *camera;
-	Player *player;
-	Human *human;
+	Camera* camera;
+	Player* player;
 	Terrain* terrain;
-	Obstacles* meteor;
+
+	std::vector<Human*> humans;
+	std::vector<Obstacles*> meteors;
 };
 

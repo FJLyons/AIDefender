@@ -47,7 +47,6 @@ void Player::Update()
 	mPositon += velocity;
 	mSprite.setPosition(mPositon);
 
-	if (velocity.x != 0) { velocity.x *= 0.9f; }
 	if (abs(velocity.x) <= 1) { velocity.x = 0; }
 
 	// Flip
@@ -219,4 +218,10 @@ bool Player::teleport()
 	{
 		return false;
 	}
+}
+
+
+void Player::Decelerate()
+{
+	if (velocity.x != 0) { velocity.x *= 0.9f; }
 }

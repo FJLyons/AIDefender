@@ -40,6 +40,8 @@ public:
 	void MoveLeft();
 	void MoveRight();
 
+	void Decelerate();
+
 	void Shoot(sf::Texture& tex);
 
 	void Update();

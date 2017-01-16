@@ -3,7 +3,7 @@
 Obstacles::Obstacles(sf::Texture& tex)
 {
 	mTexture = tex;
-	mPositon = sf::Vector2f(rand() % MAP_WIDTH_PIXEL, 540);
+	mPositon = sf::Vector2f(rand() % MAP_WIDTH_PIXEL, -540);
 
 	maxVelocity = sf::Vector2f(10, 20);
 
@@ -26,13 +26,6 @@ void Obstacles::Update()
 {
 	mPositon += direction;
 	mSprite.setPosition(mPositon);
-
-	// Bottom wall collision
-	if (mPositon.y >= 1080)
-	{
-		direction = sf::Vector2f((rand() % 11 - 5), 5);
-		mPositon.y = 0;
-	}
 
 	// Teleport right
 	if (mPositon.x > FULL_WIDTH_PIXEL)
