@@ -16,7 +16,9 @@
 #include "Player.h"
 #include "Human.h"
 #include "Terrain.h"
+#include "Obstacles.h"
 #include "Nest.h"
+#include "Abductor.h"
 
 class Game
 {
@@ -43,14 +45,27 @@ private:
 	sf::Font font;
 	sf::Text text;
 
-	sf::Texture playershipTexture, backgroundTexture, bulletTexture,humanTexture,nestTexture;
+	
 	sf::Sprite backgroundSprite;
 
+	void teleport();
+
+	int currentLevel = 1;
+
+	void MeteorSpawn();
+	sf::Clock meteorSpawnClock;
+	float meteorSpwanTimer;
+	float meteorSpawnDelay;
+	std::vector<Abductor*> abductors;
+	std::vector<Nest*> nests;
+
 protected:
-	Camera *camera;
-	Player *player;
-	Human *human1;
-	Nest *nest1;
+	Camera* camera;
+	Player* player;
 	Terrain* terrain;
+
+
+	std::vector<Human*> humans;
+	std::vector<Obstacles*> meteors;
 };
 

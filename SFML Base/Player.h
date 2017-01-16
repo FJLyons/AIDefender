@@ -5,6 +5,8 @@
 #include "SFML\Graphics.hpp"
 #include "InputManager.h"
 #include "Bullet.h"
+#include "ResourceLoader.h"
+
 
 class Player
 {
@@ -17,7 +19,7 @@ private:
 	sf::Vector2f maxVelocity;
 	sf::Vector2f velocity;
 	sf::Vector2f mScale;
-
+	sf::RectangleShape collisionRect;
 	std::vector<Bullet*> bulletList;
 	bool playerFacingRight;
 	bool canShoot;
@@ -25,12 +27,11 @@ private:
 	float flipSpeed;
 	float shotdelay;
 	float shotTimer;
-
 	sf::Clock shotClock;
 
 public:
 	Player();
-	Player(sf::Texture& tex,sf::Vector2f pos,sf::Vector2f maxVel);
+	Player(sf::Vector2f pos,sf::Vector2f maxVel);
 
 	void FaceLeft();
 	void FaceRight();
@@ -40,17 +41,18 @@ public:
 	void MoveLeft();
 	void MoveRight();
 
-	void Shoot(sf::Texture& tex);
+	void Decelerate();
+
+	void Shoot();
 
 	void Update();
 	void Draw(sf::RenderWindow &window);
 	void Flip();
 
 	sf::Vector2f getPosition();
-
+	sf::RectangleShape getRect();
 	bool teleport();
-
-
+	bool teleportLeft = true;
 };
 
 #endif

@@ -9,12 +9,13 @@
 #include <windows.h>
 #include <stdlib.h> 
 
-#define MAP_WIDTH  192 * 9
-#define HALF_SCREEN_WIDTH 192 / 2
+#include "GlobalVariables.h"
 
 class Terrain
 {
 public:
+	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
+
 	Terrain();
 	~Terrain();
 
@@ -25,11 +26,14 @@ public:
 	//sf::Vector2f pointsOnMap[100]
 
 private:
-	sf::Vertex* pointsOnMap;
+	sf::Vertex* centerPoints;
 	sf::Vertex* leftBorderPoints;
 	sf::Vertex* rightBorderPoints;
 
-	void generateTerrain();
+	sf::Vertex* pointsOnMap;
+
+	void generateTerrainCenter();
 	void generateTerrainSides();
+	void combineTerrain();
 };
 

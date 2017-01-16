@@ -15,12 +15,15 @@ Terrain::~Terrain()
 
 void Terrain::init()
 {
-	pointsOnMap = new sf::Vertex[MAP_WIDTH];
-	leftBorderPoints = new sf::Vertex[HALF_SCREEN_WIDTH];
-	rightBorderPoints = new sf::Vertex[HALF_SCREEN_WIDTH];
+	centerPoints = new sf::Vertex[MAP_WIDTH_POINTS];
+	leftBorderPoints = new sf::Vertex[HALF_SCREEN_WIDTH_POINTS];
+	rightBorderPoints = new sf::Vertex[HALF_SCREEN_WIDTH_POINTS];
 
-	generateTerrain();
+	pointsOnMap = new sf::Vertex[FULL_WIDTH_POINTS];
+
+	generateTerrainCenter();
 	generateTerrainSides();
+	combineTerrain();
 }
 
 void Terrain::update()
@@ -30,9 +33,7 @@ void Terrain::update()
 
 void Terrain::draw(sf::RenderWindow &window)
 {
-	window.draw(pointsOnMap, MAP_WIDTH, sf::LinesStrip);
-	window.draw(leftBorderPoints, HALF_SCREEN_WIDTH, sf::LinesStrip);
-	window.draw(rightBorderPoints, HALF_SCREEN_WIDTH, sf::LinesStrip);
+	window.draw(pointsOnMap, FULL_WIDTH_POINTS, sf::LinesStrip);
 }
 
 sf::Vertex* Terrain::getPoints()
@@ -40,28 +41,29 @@ sf::Vertex* Terrain::getPoints()
 	return  pointsOnMap;
 }
 
-void Terrain::generateTerrain()
+void Terrain::generateTerrainCenter()
 {
 	int previousY = 720;
 	bool goingUp = true;
 	int maxCount = rand() % 32;
+	int buffer = 64;
 
-	for (int i = 0; i < MAP_WIDTH; i++)
+	for (int i = 0; i < MAP_WIDTH_POINTS; i++)
 	{
 		if (goingUp == true)
 		{
-			pointsOnMap[i] = sf::Vertex(sf::Vector2f(i * 10, previousY - rand() % 10));
-			previousY = pointsOnMap[i].position.y;
+			centerPoints[i] = sf::Vertex(sf::Vector2f(i * 10, previousY - rand() % 10));
+			previousY = centerPoints[i].position.y;
 			maxCount--;
 
-			if (pointsOnMap[i].position.y <= 600) // Start - 120
+			if (centerPoints[i].position.y <= 600) // Start - 120
 			{
 				maxCount = 0;
 			}
 
-			if (i >= MAP_WIDTH - 192)
+			if (i >= MAP_WIDTH_POINTS - buffer)
 			{
-				if (pointsOnMap[i].position.y <= 660) // Start - 120
+				if (centerPoints[i].position.y <= 720 - buffer) // Limit to start point
 				{
 					maxCount = 0;
 				}
@@ -70,18 +72,18 @@ void Terrain::generateTerrain()
 
 		if (goingUp == false)
 		{
-			pointsOnMap[i] = sf::Vertex(sf::Vector2f(i * 10, previousY + rand() % 10));
-			previousY = pointsOnMap[i].position.y;
+			centerPoints[i] = sf::Vertex(sf::Vector2f(i * 10, previousY + rand() % 10));
+			previousY = centerPoints[i].position.y;
 			maxCount--;
 
-			if (pointsOnMap[i].position.y >= 840) // Start + 120
+			if (centerPoints[i].position.y >= 840) // Start + 120
 			{
 				maxCount = 0;
 			}
 
-			if (i >= MAP_WIDTH - 192)
+			if (i >= MAP_WIDTH_POINTS - buffer)
 			{
-				if (pointsOnMap[i].position.y >= 780) // Start - 120
+				if (centerPoints[i].position.y >= 720 + buffer) // Limit to start point
 				{
 					maxCount = 0;
 				}
@@ -94,22 +96,63 @@ void Terrain::generateTerrain()
 			goingUp = !goingUp;
 		}
 
-		if (i == MAP_WIDTH)
+		if (i == MAP_WIDTH_POINTS)
 		{
-			pointsOnMap[i].position.y = pointsOnMap[0].position.y;
+			centerPoints[i].position.y = centerPoints[0].position.y;
 		}
 	}
 
-	pointsOnMap[MAP_WIDTH - 1].position.y = pointsOnMap[0].position.y;
+	centerPoints[MAP_WIDTH_POINTS - 1].position.y = centerPoints[0].position.y;
 }
 
 void Terrain::generateTerrainSides()
 {
-	for (int i = 0; i < HALF_SCREEN_WIDTH; i++)
+	for (int i = 0; i < HALF_SCREEN_WIDTH_POINTS; i++)
 	{
-		leftBorderPoints[i] = sf::Vertex(sf::Vector2f(-960 + (i * 10) + 10, pointsOnMap[MAP_WIDTH - HALF_SCREEN_WIDTH + i].position.y));
+		leftBorderPoints[i] = sf::Vertex(sf::Vector2f(
+			-960 + (i * 10) + 10, 
+			centerPoints[MAP_WIDTH_POINTS - HALF_SCREEN_WIDTH_POINTS + i].position.y)
+		);
 
-		rightBorderPoints[i] = sf::Vertex(sf::Vector2f((MAP_WIDTH * 10) + (i * 10) - 10, pointsOnMap[i].position.y));
+		rightBorderPoints[i] = sf::Vertex(sf::Vector2f(
+			(MAP_WIDTH_PIXEL) + (i * 10) - 10,
+			centerPoints[i].position.y)
+		);
 	}
+}
+
+void Terrain::combineTerrain()
+{
+	for (int i = 0; i < FULL_WIDTH_POINTS; i++)
+	{
+		if (i < HALF_SCREEN_WIDTH_POINTS)
+		{
+			pointsOnMap[i] = sf::Vertex(sf::Vector2f(
+				leftBorderPoints[i].position.x,
+				leftBorderPoints[i].position.y)
+			);
+		}
+
+		else if (i >= HALF_SCREEN_WIDTH_POINTS && i < FULL_WIDTH_POINTS - HALF_SCREEN_WIDTH_POINTS)
+		{
+			pointsOnMap[i] = sf::Vertex(sf::Vector2f(
+				centerPoints[i - HALF_SCREEN_WIDTH_POINTS].position.x,
+				centerPoints[i - HALF_SCREEN_WIDTH_POINTS].position.y)
+			);
+		}
+
+		else if (i >= FULL_WIDTH_POINTS - HALF_SCREEN_WIDTH_POINTS)
+		{
+			pointsOnMap[i] = sf::Vertex(sf::Vector2f(
+				rightBorderPoints[i - MAP_WIDTH_POINTS - HALF_SCREEN_WIDTH_POINTS].position.x,
+				rightBorderPoints[i - MAP_WIDTH_POINTS - HALF_SCREEN_WIDTH_POINTS].position.y)
+			);
+		}
+	}
+
+	// Clear spaces
+	delete centerPoints;
+	delete leftBorderPoints;
+	delete rightBorderPoints;
 }
 

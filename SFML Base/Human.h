@@ -1,14 +1,13 @@
 #pragma once
-#pragma once
 #ifndef HUMAN_H
 #define HUMAN_H
 
 #include "SFML\Graphics.hpp"
-
+#include "ResourceLoader.h"
+#include "GlobalVariables.h"
 
 class Human
 {
-
 
 private:
 	sf::Texture mTexture;
@@ -19,12 +18,16 @@ private:
 	int currentPoint;
 
 public:
+	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
+
 	Human();
-	Human(sf::Texture& tex, sf::Vertex* points);
+	Human( sf::Vertex* points);
 	
 	void Update();
-	void Draw(sf::RenderWindow &window);
+	void Draw(sf::RenderWindow &window, bool mini);
 
+	int getPoint();
+	void setPoint(int index);
 };
 
 #endif
