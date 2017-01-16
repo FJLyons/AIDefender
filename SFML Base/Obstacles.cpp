@@ -1,8 +1,8 @@
 #include "Obstacles.h"
 
-Obstacles::Obstacles(sf::Texture& tex)
+Obstacles::Obstacles()
 {
-	mTexture = tex;
+	mTexture = ResourceLoader::instance()->getobstacleTexture();
 	mPositon = sf::Vector2f(rand() % MAP_WIDTH_PIXEL, -540);
 
 	maxVelocity = sf::Vector2f(10, 20);

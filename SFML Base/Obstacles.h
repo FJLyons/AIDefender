@@ -3,7 +3,7 @@
 #define OBSTACLES_H
 
 #include "SFML\Graphics.hpp"
-
+#include "ResourceLoader.h"
 #include "GlobalVariables.h"
 
 class Obstacles
@@ -11,7 +11,7 @@ class Obstacles
 public:
 	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
 
-	Obstacles(sf::Texture& tex);
+	Obstacles();
 	~Obstacles();
 
 private:

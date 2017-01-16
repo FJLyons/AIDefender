@@ -5,12 +5,12 @@ Human::Human()
 
 }
 
-Human::Human(sf::Texture& tex, sf::Vertex* points)
+Human::Human( sf::Vertex* points)
 {
 	targetPoints = points;
 	currentPoint = HALF_SCREEN_WIDTH_POINTS + 1;
 
-	mTexture = tex;
+	mTexture = ResourceLoader::instance()->gethumanTexture();
 	mPositon = points[HALF_SCREEN_WIDTH_POINTS].position;
 	velocity = sf::Vector2f(1, 1);	
 

@@ -12,32 +12,47 @@ Game::~Game()
 
 void Game::init()
 {
-	playershipTexture.loadFromFile("assets/player/PlayerShip.png");
-	playershipTexture.setSmooth(true);
+	
 
-	humanTexture.loadFromFile("assets/ai/human.png");
-	humanTexture.setSmooth(true);
 
-	backgroundTexture.loadFromFile("assets/background/background.png");
-	bulletTexture.loadFromFile("assets/player/bullet.png");
-
-	obstacleTexture.loadFromFile("assets/obstacles/meteor.png");
-	obstacleTexture.setSmooth(true);
 
 	font.loadFromFile("content\\fonts\\kenvector_future.TTF");
 
 	terrain = new Terrain();
-	player = new Player(playershipTexture, screenSize * 0.5f, sf::Vector2f(30, 30));//set up player
+	player = new Player(screenSize * 0.5f, sf::Vector2f(30, 30));//set up player
 
 	for (int i = 0; i < currentLevel; i++)
 	{
-		humans.push_back(new Human(humanTexture, terrain->getPoints()));
-		meteors.push_back(new Obstacles(obstacleTexture));
-		meteors.push_back(new Obstacles(obstacleTexture));
+		humans.push_back(new Human( terrain->getPoints()));
+		meteors.push_back(new Obstacles());
+		meteors.push_back(new Obstacles());
 	}
 
 	meteorSpwanTimer = 0;
 	meteorSpawnDelay = rand() % 5;
+
+
+
+
+	//abductors.push_back(new Abductor(sf::Vector2f(350, 50), false));
+	//abductors.push_back(new Abductor(sf::Vector2f(350, 100), false));//uncimment to test abductors;
+	//abductors.push_back(new Abductor(sf::Vector2f(350, 150), false));
+	//abductors.push_back(new Abductor(sf::Vector2f(350, 200), false));
+	//abductors.push_back(new Abductor(sf::Vector2f(350, 250), false));
+	//abductors.push_back(new Abductor(sf::Vector2f(350, 300), true));
+	//abductors.push_back(new Abductor(sf::Vector2f(350, 350), false));
+	//abductors.push_back(new Abductor(sf::Vector2f(350, 400), false));
+	//abductors.push_back(new Abductor(sf::Vector2f(350, 450), false));
+	//abductors.push_back(new Abductor(sf::Vector2f(350, 500), false));
+	//abductors.push_back(new Abductor(sf::Vector2f(350, 550), false));
+	//abductors.push_back(new Abductor(sf::Vector2f(350, 600), false));
+
+
+
+	for (int i = 0; i < 1; i++)
+	{
+		nests.push_back(new Nest(sf::Vector2f(rand() % (1920 * 9) + 1, rand() % (500) + 1)));
+	}
 }
 
 void Game::update()
@@ -59,7 +74,15 @@ void Game::update()
 			meteors.shrink_to_fit();
 		}
 	}
-
+	for (int i = 0; i < nests.size(); i++)
+	{
+		nests[i]->Update(player->getRect(), abductors);
+	}
+	
+	for (int i = 0; i < abductors.size(); i++)
+	{
+		abductors[i]->Update(abductors, i);
+	}
 	teleport();
 	MeteorSpawn();
 }
@@ -78,6 +101,14 @@ void Game::draw(sf::RenderWindow &window)
 	{
 		humans[i]->Draw(window, false);
 	}
+	for (int i = 0; i < nests.size(); i++)
+	{
+		nests[i]->Draw(window);
+	}
+	for (int i = 0; i < abductors.size(); i++)
+	{
+		abductors[i]->Draw(window);
+	}
 
 	// Mini Map
 	camera->drawRadar(window);
@@ -91,6 +122,15 @@ void Game::draw(sf::RenderWindow &window)
 	{
 		humans[i]->Draw(window, true);
 	}
+	for (int i = 0; i < nests.size(); i++)
+	{
+		nests[i]->Draw(window);
+	}
+	for (int i = 0; i < abductors.size(); i++)
+	{
+		abductors[i]->Draw(window);
+	}
+
 }
 
 void Game::goToScene(int scene)
@@ -168,7 +208,7 @@ void Game::controller(sf::Event Event)
 	// Shoot
 	if (inputManager->KeyHeld(sf::Keyboard::Space))
 	{
-		player->Shoot(bulletTexture);
+		player->Shoot();
 	}
 }
 
@@ -212,7 +252,7 @@ void Game::MeteorSpawn()
 
 	if (meteorSpwanTimer >= meteorSpawnDelay / 10)
 	{
-		meteors.push_back(new Obstacles(obstacleTexture));
+		meteors.push_back(new Obstacles());
 		meteorSpawnDelay = rand() % 5;
 		meteorSpwanTimer = 0;
 	}

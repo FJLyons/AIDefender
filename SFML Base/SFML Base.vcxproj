@@ -108,12 +108,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SFML_SDK)\include;$(THOR_SDK)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SFML_SDK)\include;$(THOR_SDK)\include;C:\SFML-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SFML_SDK)\lib;$(THOR_SDK)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SFML_SDK)\lib;$(THOR_SDK)\lib;C:\SFML-2.4.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -144,23 +144,28 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SFML_SDK)\include;$(THOR_SDK)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SFML_SDK)\include;$(THOR_SDK)\include;C:\SFML-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SFML_SDK)\lib;$(THOR_SDK)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SFML_SDK)\lib;$(THOR_SDK)\lib;C:\SFML-2.4.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Abductor.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Human.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="InterceptorMissile.cpp" />
+    <ClCompile Include="Nest.cpp" />
     <ClCompile Include="Obstacles.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="ResourceLoader.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InstructionsScreen.cpp" />
@@ -173,12 +178,17 @@
     <ClCompile Include="Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Abductor.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Human.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="InterceptorMissile.h" />
+    <ClInclude Include="Nest.h" />
     <ClInclude Include="Obstacles.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="ResourceLoader.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InstructionsScreen.h" />
