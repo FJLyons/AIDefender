@@ -50,6 +50,10 @@ void Player::Update()
 	if (velocity.x != 0) { velocity.x *= 0.9f; }
 	if (abs(velocity.x) <= 1) { velocity.x = 0; }
 
+	// Flip
+	if (velocity.x > 0) { FaceRight(); }
+	if (velocity.x < 0) { FaceLeft(); }
+
 	for (int i = 0; i< bulletList.size(); i++)
 	{
 		if (bulletList[i]->Update() == false)

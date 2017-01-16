@@ -46,6 +46,7 @@ void Obstacles::Update()
 		mPositon.x = FULL_WIDTH_PIXEL - SCREEN_WIDTH_PIXEL;
 	}
 
+
 	mSprite.rotate(direction.x);
 }
 

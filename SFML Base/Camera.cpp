@@ -17,13 +17,12 @@ void Camera::init()
 	gameView.setCenter(screenCenter);
 
 	gameView.setViewport(sf::FloatRect(0, 0, 1, 1)); //percentages
-	radarView.setViewport(sf::FloatRect(0.20f, 0.025f, 0.60f, 0.10f)); //percentages
+	radarView.setViewport(sf::FloatRect(0.20f, 0.9f, 0.60f, 0.10f)); //percentages
 }
 
 void Camera::update(Player *player)
 {
 	gameView.setCenter(sf::Vector2f(player->getPosition().x, screenSize.y / 2));
-	//radarView.setCenter(sf::Vector2f(player->getPosition().x, screenSize.y / 2));
 }
 
 void Camera::drawGame(sf::RenderWindow &window)

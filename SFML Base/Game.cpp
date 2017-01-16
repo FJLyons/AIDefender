@@ -90,7 +90,7 @@ void Game::controller(sf::Event Event)
 	{
 		player->FaceLeft();
 	}
-	else if (inputManager->KeyHeld(sf::Keyboard::A))
+	else if (inputManager->KeyHeld(sf::Keyboard::A) && !inputManager->KeyHeld(sf::Keyboard::D))
 	{
 		player->MoveLeft();
 	}
@@ -104,7 +104,7 @@ void Game::controller(sf::Event Event)
 	{
 		player->FaceRight();
 	}
-	else if (inputManager->KeyHeld(sf::Keyboard::D))
+	else if (inputManager->KeyHeld(sf::Keyboard::D) && !inputManager->KeyHeld(sf::Keyboard::A))
 	{
 		player->MoveRight();
 	}
@@ -134,7 +134,7 @@ void Game::controller(sf::Event Event)
 	}
 
 	// Shoot
-	if (inputManager->KeyPressed(sf::Keyboard::Space))
+	if (inputManager->KeyHeld(sf::Keyboard::Space))
 	{
 		player->Shoot(bulletTexture);
 	}
