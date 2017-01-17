@@ -12,10 +12,6 @@ Game::~Game()
 
 void Game::init()
 {
-	
-
-
-
 	font.loadFromFile("content\\fonts\\kenvector_future.TTF");
 
 	terrain = new Terrain();
@@ -52,6 +48,7 @@ void Game::update()
 		// Death
 		if (meteors[i]->getPosition().y >= 1080)
 		{
+			meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
 			meteors.erase(meteors.begin() + i);
 			meteors.shrink_to_fit();
 		}
@@ -60,8 +57,10 @@ void Game::update()
 		// Player
 		if (collisionManager->RectangleCollision(player->getRect(), meteors[i]->getRect()))
 		{
+			meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
 			meteors.erase(meteors.begin() + i);
 			meteors.shrink_to_fit();
+			
 			i--;
 			continue;
 		}
@@ -73,8 +72,11 @@ void Game::update()
 			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), meteors[i]->getRect()))
 			{
 				player->deleteBullet(j);
+
+				meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
 				meteors.erase(meteors.begin() + i);
 				meteors.shrink_to_fit();
+
 				j--;
 				i--;
 				checkNext = false;
@@ -95,8 +97,10 @@ void Game::update()
 		// Player
 		if (collisionManager->RectangleCollision(player->getRect(), abductors[i]->getRect()))
 		{
+			abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
 			abductors.erase(abductors.begin() + i);
 			abductors.shrink_to_fit();
+
 			i--;
 			continue;
 		}
@@ -108,8 +112,11 @@ void Game::update()
 			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), abductors[i]->getRect()))
 			{
 				player->deleteBullet(j);
+
+				abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
 				abductors.erase(abductors.begin() + i);
 				abductors.shrink_to_fit();
+
 				j--;
 				i--;
 				checkNext = false;
@@ -122,16 +129,25 @@ void Game::update()
 		{
 			if (collisionManager->RectangleCollision(meteors[j]->getRect(), abductors[i]->getRect()))
 			{
+				meteorsToDelete.push_back(meteors[j]); // For Memory Clean up
 				meteors.erase(meteors.begin() + j);
 				meteors.shrink_to_fit();
+
+				abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
 				abductors.erase(abductors.begin() + i);
 				abductors.shrink_to_fit();
+
 				j--;
 				i--;
 				checkNext = false;
 				continue;
 			}
 		}
+	}
+
+	if (humans.empty() && abductors.empty() && nests.empty())
+	{
+		clearVectors();
 	}
 
 	teleport();
@@ -300,10 +316,34 @@ void Game::MeteorSpawn()
 {
 	meteorSpwanTimer += 1.0f / 60.0f;
 
-	if (meteorSpwanTimer >= meteorSpawnDelay / 5)
+	if (meteorSpwanTimer >= meteorSpawnDelay / currentLevel)
 	{
 		meteors.push_back(new Obstacles());
 		meteorSpawnDelay = rand() % 5;
 		meteorSpwanTimer = 0;
 	}
+}
+
+void Game::clearVectors()
+{
+	for (std::vector<Obstacles*>::iterator it = meteorsToDelete.begin(); it != meteorsToDelete.end(); ++it)
+	{
+		delete *it;
+	}
+	meteorsToDelete.clear();
+	meteorsToDelete.shrink_to_fit();
+
+	for (std::vector<Abductor*>::iterator it = abductorsToDelete.begin(); it != abductorsToDelete.end(); ++it)
+	{
+		delete *it;
+	}
+	abductorsToDelete.clear();
+	abductorsToDelete.shrink_to_fit();
+
+	for (std::vector<Nest*>::iterator it = nestsToDelete.begin(); it != nestsToDelete.end(); ++it)
+	{
+		delete *it;
+	}
+	nestsToDelete.clear();
+	nestsToDelete.shrink_to_fit();
 }

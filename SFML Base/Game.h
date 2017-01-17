@@ -58,16 +58,23 @@ private:
 	sf::Clock meteorSpawnClock;
 	float meteorSpwanTimer;
 	float meteorSpawnDelay;
-	std::vector<Abductor*> abductors;
-	std::vector<Nest*> nests;
+
+	void clearVectors();
+	void nextLevel();
+	void gameOver();
 
 protected:
 	Camera* camera;
 	Player* player;
 	Terrain* terrain;
 
-
 	std::vector<Human*> humans;
 	std::vector<Obstacles*> meteors;
+	std::vector<Abductor*> abductors;
+	std::vector<Nest*> nests;
+
+	std::vector<Obstacles*> meteorsToDelete;
+	std::vector<Abductor*> abductorsToDelete;
+	std::vector<Nest*> nestsToDelete;
 };
 
