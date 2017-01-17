@@ -53,7 +53,10 @@ void Obstacles::Update()
 void Obstacles::Draw(sf::RenderWindow &window)
 {
 	window.draw(mSprite);
-	window.draw(collisionRect);
+	if (myGlobalOptions->drawCollisionBox)
+	{
+		window.draw(collisionRect);
+	}
 }
 
 sf::Vector2f Obstacles::getPosition()

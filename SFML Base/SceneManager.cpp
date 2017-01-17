@@ -45,4 +45,5 @@ void SceneManager::draw(sf::RenderWindow &window)
 
 void SceneManager::input(sf::Event &Event)
 {
+
 }

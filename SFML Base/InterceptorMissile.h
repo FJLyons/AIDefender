@@ -2,12 +2,15 @@
 #define INTERCEPTORMISSILE_H
 
 #include "Bullet.h"
+#include "GlobalVariables.h"
 #include "CollisionManager.h"
 #include "ResourceLoader.h"
 
 class InterceptorMissile : Bullet
 {
 
+private:
+	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
 
 private:
 

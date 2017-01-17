@@ -54,5 +54,8 @@ bool InterceptorMissile::Update(sf::RectangleShape  player)
 void InterceptorMissile::Draw(sf::RenderWindow &window)
 {
 	window.draw(mSprite);
-	window.draw(collisionRect);
+	if (myGlobalOptions->drawCollisionBox)
+	{
+		window.draw(collisionRect);
+	}
 }

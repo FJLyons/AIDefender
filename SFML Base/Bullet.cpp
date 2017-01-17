@@ -58,7 +58,10 @@ sf::Sprite Bullet::getSprite()
 void Bullet::Draw(sf::RenderWindow &window)
 {
 	window.draw(mSprite);
-	window.draw(collisionRect);
+	if (myGlobalOptions->drawCollisionBox)
+	{
+		window.draw(collisionRect);
+	}
 }
 
 

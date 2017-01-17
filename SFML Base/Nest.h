@@ -3,6 +3,7 @@
 #define NEST_H
 
 #include "SFML\Graphics.hpp"
+#include "GlobalVariables.h"
 #include "CollisionManager.h"
 #include <time.h>
 #include "InterceptorMissile.h"
@@ -13,6 +14,8 @@
 class Nest
 {
 
+private:
+	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
 
 private:
 	sf::Texture mTexture;

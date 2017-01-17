@@ -3,13 +3,18 @@
 #define ABDUCTOR_H
 
 #include "SFML\Graphics.hpp"
+#include "GlobalVariables.h"
 #include "CollisionManager.h"
+
 #include <time.h>
+
 #include "Bullet.h"
 #include "ResourceLoader.h"
+
 class Abductor
 {
-
+private:
+	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
 
 private:
 	sf::Texture mTexture;

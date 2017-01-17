@@ -48,6 +48,8 @@ public:
 	sf::Vector2f screenSize = sf::Vector2f(1920, 1080);
 	sf::RenderWindow* windowReference;
 
+	bool drawCollisionBox = true;
+
 private:
 
 	int currentScene;

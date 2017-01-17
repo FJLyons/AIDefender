@@ -48,6 +48,42 @@ Abductor::Abductor(sf::Vector2f pos,bool lead)
 	cohesion = sf::Vector2f(0, 0);
 	seperation = sf::Vector2f(0, 0);
 }
+
+void Abductor::Update(std::vector<Abductor*>& abductors, int indexofCurrentAbductor)
+{
+	myIndex = indexofCurrentAbductor;
+
+	if (currentBehaviour == Behaviour::Wander)
+	{
+		Wandering(abductors);
+	}
+	else if (currentBehaviour == Behaviour::Abduct)
+	{
+		Abducting();
+	}
+	else if (currentBehaviour == Behaviour::Flock)
+	{
+		Flocking();
+	}
+	float  angle = atan2(velocity.y, velocity.x);
+	angle = angle * (180 / 3.14);
+	mSprite.setRotation(angle);
+	FeildofView.setRotation(angle);
+	collisionRect.setPosition(mPositon);
+	FeildofView.setPosition(mPositon);
+
+}
+void Abductor::Draw(sf::RenderWindow & window)
+{
+	window.draw(mSprite);
+	if (myGlobalOptions->drawCollisionBox)
+	{
+		window.draw(collisionRect);
+	}
+	window.draw(FeildofView);
+	sf::CircleShape tempcirc(10);
+}
+
 sf::Vector2f Abductor::FindNewPoint()
 {
 	sf::Vector2f newPoint = sf::Vector2f(rand() % (1920 * 9) + 1, 500);//rand() % (500) + 1);
@@ -191,40 +227,7 @@ void Abductor::Flocking()
 void Abductor::Abducting()
 {
 }
-void Abductor::Update(std::vector<Abductor*>& abductors,int indexofCurrentAbductor)
-{
-	myIndex = indexofCurrentAbductor;
 
-	if (currentBehaviour == Behaviour::Wander)
-	{
-		Wandering(abductors);
-	}
-	else if (currentBehaviour == Behaviour::Abduct)
-	{
-		Abducting();
-	}
-	else if (currentBehaviour == Behaviour::Flock)
-	{
-		Flocking();
-	}
-	float  angle = atan2(velocity.y,velocity.x);
-	angle = angle * (180 / 3.14);
-	mSprite.setRotation(angle);
-	FeildofView.setRotation(angle);
-	collisionRect.setPosition(mPositon);
-	FeildofView.setPosition(mPositon);
-	
-}
-void Abductor::Draw(sf::RenderWindow & window)
-{
-	window.draw(mSprite);
-	window.draw(collisionRect);
-	window.draw(FeildofView);
-	sf::CircleShape tempcirc(10);
-
-
-
-}
 
 sf::Vector2f Abductor::getVelocity()
 {

@@ -3,10 +3,13 @@
 
 #include "SFML\Graphics.hpp"
 
+#include "GlobalVariables.h"
 
 class Bullet
 {
 
+private:
+	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
 
 private:
 

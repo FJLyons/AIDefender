@@ -3,7 +3,10 @@
 #define PLAYER_H
 
 #include "SFML\Graphics.hpp"
+
+#include "GlobalVariables.h"
 #include "InputManager.h"
+
 #include "Bullet.h"
 #include "ResourceLoader.h"
 
@@ -11,6 +14,8 @@
 class Player
 {
 
+private:
+	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
 
 private:
 	sf::Texture mTexture;

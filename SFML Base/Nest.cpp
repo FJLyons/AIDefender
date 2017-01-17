@@ -132,7 +132,10 @@ void Nest::Draw(sf::RenderWindow & window)
 {
 	window.draw(mSprite);
 
-	window.draw(collisionRect);
+	if (myGlobalOptions->drawCollisionBox)
+	{
+		window.draw(collisionRect);
+	}
 
 	for (int i = 0; i < missileList.size(); i++)
 	{

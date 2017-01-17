@@ -8,9 +8,10 @@
 
 class Obstacles
 {
-public:
+private:
 	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
 
+public:
 	Obstacles();
 	~Obstacles();
 

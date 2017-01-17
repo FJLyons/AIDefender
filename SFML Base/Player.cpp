@@ -86,7 +86,10 @@ void Player::Update()
 void Player::Draw(sf::RenderWindow &window)
 {
 	window.draw(mSprite);
-	window.draw(collisionRect);
+	if (myGlobalOptions->drawCollisionBox)
+	{
+		window.draw(collisionRect);
+	}
 	for (int i = 0; i < bulletList.size(); i++)
 	{
 		bulletList[i]->Draw(window);
