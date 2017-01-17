@@ -44,8 +44,8 @@ private:
 	bool leader;
 
 public:
-	Abductor();
-	Abductor( sf::Vector2f pos,bool lead);
+	Abductor(sf::Vector2f pos, bool lead);
+	~Abductor();
 
 	sf::Vector2f FindNewPoint();
 	void Wandering(std::vector<Abductor*>& abductors);
@@ -58,11 +58,15 @@ public:
 	void Draw(sf::RenderWindow &window);
 	sf::Vector2f getVelocity();
 	sf::Vector2f getPosition();
+	void setPosition(sf::Vector2f);
 	sf::RectangleShape getRect();
 	sf::RectangleShape getFOVRect();
 	sf::Vector2f getseekPoint();
 	void  setseekPoint(sf::Vector2f point);
 	bool getLeader();
+
+
+	int health = 1;
 };
 
 #endif

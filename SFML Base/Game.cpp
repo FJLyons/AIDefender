@@ -17,15 +17,7 @@ void Game::init()
 	terrain = new Terrain();
 	player = new Player(screenSize * 0.5f, sf::Vector2f(30, 30));//set up player
 
-	for (int i = 0; i < currentLevel; i++)
-	{
-		humans.push_back(new Human( terrain->getPoints()));
-		meteors.push_back(new Obstacles());
-		meteors.push_back(new Obstacles());
-		nests.push_back(new Nest(sf::Vector2f(rand() % (1920 * 9) + 1, rand() % (500) + 1))); 
-		abductors.push_back(new Abductor(sf::Vector2f(rand() % MAP_WIDTH_PIXEL, 50), false));
-		abductors.push_back(new Abductor(sf::Vector2f(rand() % MAP_WIDTH_PIXEL, 50), false));
-	}
+	spawn();
 
 	meteorSpwanTimer = 0;
 	meteorSpawnDelay = rand() % 5;
@@ -39,6 +31,19 @@ void Game::update()
 	for (int i = 0; i < humans.size(); i++)
 	{
 		humans[i]->Update();
+
+		// Collisions
+		// Player
+		if (collisionManager->RectangleCollision(player->getRect(), humans[i]->getRect()))
+		{
+			humansToDelete.push_back(humans[i]); // For Memory Clean up
+			humans.erase(humans.begin() + i);
+
+			i--;
+			continue;
+		}
+
+		// Abductor
 	}
 
 	for (int i = 0; i < meteors.size(); i++)
@@ -50,7 +55,6 @@ void Game::update()
 		{
 			meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
 			meteors.erase(meteors.begin() + i);
-			meteors.shrink_to_fit();
 		}
 
 		// Collisions
@@ -59,7 +63,6 @@ void Game::update()
 		{
 			meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
 			meteors.erase(meteors.begin() + i);
-			meteors.shrink_to_fit();
 			
 			i--;
 			continue;
@@ -75,7 +78,6 @@ void Game::update()
 
 				meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
 				meteors.erase(meteors.begin() + i);
-				meteors.shrink_to_fit();
 
 				j--;
 				i--;
@@ -84,9 +86,58 @@ void Game::update()
 			}
 		}
 	}
+
+	// Enemies with Health 
 	for (int i = 0; i < nests.size(); i++)
 	{
 		nests[i]->Update(player->getRect(), abductors);
+
+		// Collisions
+		// Player
+		if (collisionManager->RectangleCollision(player->getRect(), nests[i]->getRect()))
+		{
+			nestsToDelete.push_back(nests[i]); // For Memory Clean up
+			nests.erase(nests.begin() + i);
+
+			i--;
+			continue;
+		}
+
+		// Bullets
+		bool checkNext = true;
+		for (int j = 0; checkNext && j < player->getBullets().size(); j++)
+		{
+			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), nests[i]->getRect()))
+			{
+				player->deleteBullet(j);
+
+				nestsToDelete.push_back(nests[i]); // For Memory Clean up
+				nests.erase(nests.begin() + i);
+
+				j--;
+				i--;
+				checkNext = false;
+				continue;
+			}
+		}
+
+		// Meteor
+		for (int j = 0; checkNext && j < meteors.size(); j++)
+		{
+			if (collisionManager->RectangleCollision(meteors[j]->getRect(), nests[i]->getRect()))
+			{
+				meteorsToDelete.push_back(meteors[j]); // For Memory Clean up
+				meteors.erase(meteors.begin() + j);
+
+				nestsToDelete.push_back(nests[i]); // For Memory Clean up
+				nests.erase(nests.begin() + i);
+
+				j--;
+				i--;
+				checkNext = false;
+				continue;
+			}
+		}
 	}
 	
 	for (int i = 0; i < abductors.size(); i++)
@@ -99,7 +150,6 @@ void Game::update()
 		{
 			abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
 			abductors.erase(abductors.begin() + i);
-			abductors.shrink_to_fit();
 
 			i--;
 			continue;
@@ -115,7 +165,6 @@ void Game::update()
 
 				abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
 				abductors.erase(abductors.begin() + i);
-				abductors.shrink_to_fit();
 
 				j--;
 				i--;
@@ -131,11 +180,9 @@ void Game::update()
 			{
 				meteorsToDelete.push_back(meteors[j]); // For Memory Clean up
 				meteors.erase(meteors.begin() + j);
-				meteors.shrink_to_fit();
 
 				abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
 				abductors.erase(abductors.begin() + i);
-				abductors.shrink_to_fit();
 
 				j--;
 				i--;
@@ -147,7 +194,7 @@ void Game::update()
 
 	if (humans.empty() && abductors.empty() && nests.empty())
 	{
-		clearVectors();
+		nextLevel();
 	}
 
 	teleport();
@@ -329,26 +376,60 @@ void Game::MeteorSpawn()
 	}
 }
 
+void Game::spawn()
+{
+	for (int i = 0; i < currentLevel; i++)
+	{
+		humans.push_back(new Human(terrain->getPoints()));
+		nests.push_back(new Nest(sf::Vector2f(rand() % (1920 * 9) + 1, rand() % (500) + 1)));
+		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50), false));
+		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50), false));
+	}
+}
+
 void Game::clearVectors()
 {
+	for (std::vector<Human*>::iterator it = humansToDelete.begin(); it != humansToDelete.end(); ++it)
+	{
+		delete *it;
+	}
+	humansToDelete.clear();
+
 	for (std::vector<Obstacles*>::iterator it = meteorsToDelete.begin(); it != meteorsToDelete.end(); ++it)
 	{
 		delete *it;
 	}
 	meteorsToDelete.clear();
-	meteorsToDelete.shrink_to_fit();
 
 	for (std::vector<Abductor*>::iterator it = abductorsToDelete.begin(); it != abductorsToDelete.end(); ++it)
 	{
 		delete *it;
 	}
 	abductorsToDelete.clear();
-	abductorsToDelete.shrink_to_fit();
 
 	for (std::vector<Nest*>::iterator it = nestsToDelete.begin(); it != nestsToDelete.end(); ++it)
 	{
 		delete *it;
 	}
 	nestsToDelete.clear();
-	nestsToDelete.shrink_to_fit();
+}
+
+void Game::nextLevel()
+{
+	clearVectors();
+
+	player->health++;
+	currentLevel++;
+
+	spawn();
+
+	for (int i = 0; i < abductors.size(); i++)
+	{
+		abductors[i]->health = currentLevel;
+	}
+
+	for (int i = 0; i < nests.size(); i++)
+	{
+		nests[i]->health = currentLevel + (currentLevel / 2);
+	}
 }

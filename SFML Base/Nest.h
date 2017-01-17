@@ -44,10 +44,8 @@ private:
 	
 
 public:
-	Nest();
-	Nest( sf::Vector2f pos );
-
-
+	Nest( sf::Vector2f pos);
+	~Nest();
 
 	sf::Vector2f FindNewPoint();
 	void Wandering();
@@ -56,6 +54,9 @@ public:
 	void Draw(sf::RenderWindow &window);
 	void SpawnAbductors( std::vector<Abductor*> &abductors);
 	//void calculateDrift();
+
+	sf::RectangleShape getRect();
+	int health = 2;
 };
 
 #endif

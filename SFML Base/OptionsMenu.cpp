@@ -29,7 +29,7 @@ void OptionsMenu::init()
 
 	text[0].setString("test");
 
-	for (int i = 0; i < MENU_INDEX; i++)
+	for (int i = 0; i < OPTIONS_MENU_INDEX; i++)
 	{
 		text[i].setString("test");
 		text[i].setFont(font);
@@ -76,7 +76,7 @@ void OptionsMenu::draw(sf::RenderWindow &window)
 {
 	window.draw(logoSprite);
 
-	for (int i = 0; i < MENU_INDEX; i++)
+	for (int i = 0; i < OPTIONS_MENU_INDEX; i++)
 	{
 		window.draw(text[i]);
 	}
@@ -99,14 +99,14 @@ void OptionsMenu::moveUp()
 	else
 	{
 		text[selectedItemIndex].setColor(sf::Color::White);
-		selectedItemIndex = MENU_INDEX - 1;
+		selectedItemIndex = OPTIONS_MENU_INDEX - 1;
 		text[selectedItemIndex].setColor(sf::Color::Red);
 	}
 }
 
 void OptionsMenu::moveDown()
 {
-	if (selectedItemIndex + 1 < MENU_INDEX)
+	if (selectedItemIndex + 1 < OPTIONS_MENU_INDEX)
 	{
 		text[selectedItemIndex].setColor(sf::Color::White);
 		selectedItemIndex++;

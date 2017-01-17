@@ -37,6 +37,7 @@ public:
 	void setPosition(sf::Vector2f position);
 
 	sf::RectangleShape getRect();
+
 };
 
 #endif

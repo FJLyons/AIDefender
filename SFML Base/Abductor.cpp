@@ -1,15 +1,15 @@
 #include "Abductor.h"
+#include <iostream>
+using namespace std;
 
-Abductor::Abductor()
-{
-}
 Abductor::Abductor(sf::Vector2f pos,bool lead)
 {
 	leader = lead;
-	srand(time(NULL));
 	mTexture = ResourceLoader::instance()->getabductorTexture();
 	bulletTexture = ResourceLoader::instance()->getbulletTexture();
+
 	mPositon = pos;
+
 	velocity = sf::Vector2f(10,0.5);
 	mSprite.setTexture(mTexture);
 	mSprite.setPosition(mPositon);
@@ -17,7 +17,6 @@ Abductor::Abductor(sf::Vector2f pos,bool lead)
 	currentBehaviour = Behaviour::Wander;
 	
 	range = 700;
-	srand(time(NULL));
 	//seekPoint = FindNewPoint();
 	//if (leader == true)
 	//{
@@ -40,13 +39,15 @@ Abductor::Abductor(sf::Vector2f pos,bool lead)
 	FeildofView.setOutlineColor(sf::Color::Yellow);
 	FeildofView.setFillColor(sf::Color::Transparent);
 	FeildofView.setOutlineThickness(2);
-	FeildofView.setPosition(mPositon);
-
-	
+	FeildofView.setPosition(mPositon);	
 
 	alignment = sf::Vector2f(0, 0);
 	cohesion = sf::Vector2f(0, 0);
 	seperation = sf::Vector2f(0, 0);
+}
+
+Abductor::~Abductor()
+{
 }
 
 void Abductor::Update(std::vector<Abductor*>& abductors, int indexofCurrentAbductor)
@@ -91,9 +92,9 @@ sf::Vector2f Abductor::FindNewPoint()
 }
 void Abductor::Wandering(std::vector<Abductor*>& abductors)
 {
-
 		alignment = ComputeAlignment(abductors);
 		cohesion = ComputeCohesion(abductors);
+
 		seperation = ComputeSeperation(abductors);
 	
 		sf::Vector2f Direction = seekPoint - mPositon;
@@ -191,7 +192,7 @@ sf::Vector2f Abductor::ComputeCohesion(std::vector<Abductor*>& abductors)
 }
 sf::Vector2f Abductor::ComputeSeperation(std::vector<Abductor*>& abductors)
 {
-	sf::Vector2f m_Seperation;
+	sf::Vector2f m_Seperation(0, 0);
 	neighbourcount = 0;
 
 	for (int i = 0; i < abductors.size(); i++)
@@ -210,6 +211,7 @@ sf::Vector2f Abductor::ComputeSeperation(std::vector<Abductor*>& abductors)
 	{
 		return sf::Vector2f(0, 0);
 	}
+
 	else
 	{
 		m_Seperation.x = m_Seperation.x / neighbourcount;
@@ -237,6 +239,12 @@ sf::Vector2f Abductor::getVelocity()
 sf::Vector2f Abductor::getPosition()
 {
 	return mPositon;
+}
+
+
+void Abductor::setPosition(sf::Vector2f vec)
+{
+	mPositon = vec;
 }
 
 sf::RectangleShape Abductor::getRect()

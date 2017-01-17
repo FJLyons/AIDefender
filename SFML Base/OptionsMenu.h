@@ -8,7 +8,7 @@
 #include "GlobalVariables.h"
 #include "InputManager.h"
 
-#define MENU_INDEX 2
+#define OPTIONS_MENU_INDEX 2
 
 class OptionsMenu
 {
@@ -45,7 +45,7 @@ private:
 
 	// Font
 	sf::Font font;
-	sf::Text text[MENU_INDEX];
+	sf::Text text[OPTIONS_MENU_INDEX];
 
 	enum MenuOptions {
 		OPTION1,

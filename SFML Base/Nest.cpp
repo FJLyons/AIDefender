@@ -1,14 +1,18 @@
 #include "Nest.h"
 
-Nest::Nest()
-{
-}
-
 Nest::Nest( sf::Vector2f pos)
 {
 	mTexture = ResourceLoader::instance()->getnestTexture();
 	
-	mPositon = pos;
+	if (pos.y > 0)
+	{
+		mPositon = pos;
+	}
+	else
+	{
+		mPositon = sf::Vector2f(rand() % MAP_WIDTH_PIXEL, 50);
+	}
+
 	velocity = sf::Vector2f(10, 10);
 
 	mSprite.setTexture(mTexture);
@@ -17,7 +21,6 @@ Nest::Nest( sf::Vector2f pos)
 
 	currentBehaviour = Behaviour::Wander;
 	range = 700;
-	srand(time(NULL));
 	seekPoint = FindNewPoint();
 
 
@@ -35,6 +38,10 @@ Nest::Nest( sf::Vector2f pos)
 	collisionRect.setOutlineThickness(2);
 	collisionRect.setPosition(mPositon);
 	spawnDelay = (rand() % (10) + 5);
+}
+
+Nest::~Nest()
+{
 }
 
 sf::Vector2f Nest::FindNewPoint()
@@ -177,4 +184,9 @@ void Nest::SpawnAbductors(std::vector<Abductor*> &abductors)
 //		}
 //	}
 //}
+
+sf::RectangleShape Nest::getRect()
+{
+	return collisionRect;
+}
 

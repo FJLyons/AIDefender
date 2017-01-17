@@ -60,6 +60,7 @@ private:
 	float meteorSpawnDelay;
 
 	void clearVectors();
+	void spawn();
 	void nextLevel();
 	void gameOver();
 
@@ -73,8 +74,9 @@ protected:
 	std::vector<Abductor*> abductors;
 	std::vector<Nest*> nests;
 
-	std::vector<Obstacles*> meteorsToDelete;
-	std::vector<Abductor*> abductorsToDelete;
-	std::vector<Nest*> nestsToDelete;
+	std::vector<Human*> humansToDelete = std::vector<Human*>();
+	std::vector<Obstacles*> meteorsToDelete = std::vector<Obstacles*>();
+	std::vector<Abductor*> abductorsToDelete = std::vector<Abductor*>();
+	std::vector<Nest*> nestsToDelete = std::vector<Nest*>();
 };
 

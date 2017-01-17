@@ -80,16 +80,19 @@ void Player::Update()
 		velocity.y = 0;
 		mPositon.y = 1080;
 	}
+
 	collisionRect.setPosition(mPositon);
 }
 
 void Player::Draw(sf::RenderWindow &window)
 {
 	window.draw(mSprite);
+
 	if (myGlobalOptions->drawCollisionBox)
 	{
 		window.draw(collisionRect);
 	}
+
 	for (int i = 0; i < bulletList.size(); i++)
 	{
 		bulletList[i]->Draw(window);

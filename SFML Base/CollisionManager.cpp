@@ -58,10 +58,15 @@ float CollisionManager::dotProduct(sf::Vector2f v1, sf::Vector2f v2) {
 	float answer((v1.x * v2.x) + (v1.y * v2.y));
 	return answer;
 }
-sf::Vector2f CollisionManager::NormaliseVector(sf::Vector2f v1) {
 
+sf::Vector2f CollisionManager::NormaliseVector(sf::Vector2f v1) 
+{
 	float TempLength(sqrt((v1.x * v1.x) + (v1.y * v1.y)));
-	sf::Vector2f normalised((v1.x / TempLength), (v1.y / TempLength));
-	return normalised;
+	if (TempLength != 0)
+	{
+		sf::Vector2f normalised((v1.x / TempLength), (v1.y / TempLength));
+		return normalised;
+	}
 
+	return sf::Vector2f(0, 0);
 }

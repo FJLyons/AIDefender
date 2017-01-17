@@ -15,6 +15,7 @@ private:
 	sf::Vector2f mPositon;
 	sf::Vector2f velocity;
 	sf::Vertex* targetPoints;
+	sf::RectangleShape collisionRect;
 	int currentPoint;
 
 public:
@@ -28,6 +29,8 @@ public:
 
 	int getPoint();
 	void setPoint(int index);
+
+	sf::RectangleShape getRect();
 };
 
 #endif

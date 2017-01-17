@@ -62,6 +62,8 @@ public:
 	std::vector<Bullet*> getBullets();
 
 	void deleteBullet(int index);
+
+	int health = 1;
 };
 
 #endif
