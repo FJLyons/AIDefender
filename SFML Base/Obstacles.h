@@ -24,6 +24,7 @@ private:
 	sf::Vector2f velocity;
 	sf::Vector2f direction;
 
+	sf::RectangleShape collisionRect;
 
 	sf::Vector2f mScale;
 
@@ -33,6 +34,8 @@ public:
 
 	sf::Vector2f getPosition();
 	void setPosition(sf::Vector2f position);
+
+	sf::RectangleShape getRect();
 };
 
 #endif

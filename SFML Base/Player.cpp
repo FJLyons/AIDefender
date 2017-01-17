@@ -237,3 +237,14 @@ void Player::Decelerate()
 {
 	if (velocity.x != 0) { velocity.x *= 0.9f; }
 }
+
+std::vector<Bullet*> Player::getBullets()
+{
+	return bulletList;
+}
+
+void Player::deleteBullet(int index)
+{
+	bulletList.erase(bulletList.begin() + index);
+	bulletList.shrink_to_fit();
+}

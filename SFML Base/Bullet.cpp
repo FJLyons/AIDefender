@@ -60,3 +60,9 @@ void Bullet::Draw(sf::RenderWindow &window)
 	window.draw(mSprite);
 	window.draw(collisionRect);
 }
+
+
+sf::RectangleShape Bullet::getRect()
+{
+	return collisionRect;
+}

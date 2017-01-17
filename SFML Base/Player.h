@@ -53,6 +53,10 @@ public:
 	sf::RectangleShape getRect();
 	bool teleport();
 	bool teleportLeft = true;
+
+	std::vector<Bullet*> getBullets();
+
+	void deleteBullet(int index);
 };
 
 #endif

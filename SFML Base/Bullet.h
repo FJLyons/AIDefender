@@ -37,9 +37,9 @@ public:
 	Bullet(sf::Vector2f pos, sf::Texture& tex, bool facingRight, sf::Vector2f playerVelocity);
 	bool Update();
 	void Draw(sf::RenderWindow &window);
+
 	sf::Sprite getSprite();
-
-
+	sf::RectangleShape getRect();
 };
 
 #endif

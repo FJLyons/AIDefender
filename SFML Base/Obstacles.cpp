@@ -15,6 +15,13 @@ Obstacles::Obstacles()
 	mScale = sf::Vector2f(1.f, 1.f);
 
 	direction = sf::Vector2f((rand() % 11 - 5), 5);
+
+	collisionRect.setOrigin(mSprite.getGlobalBounds().width / 2, mSprite.getGlobalBounds().height / 2);
+	collisionRect.setSize(sf::Vector2f(mSprite.getGlobalBounds().width, mSprite.getGlobalBounds().height));
+	collisionRect.setOutlineColor(sf::Color::Red);
+	collisionRect.setFillColor(sf::Color::Transparent);
+	collisionRect.setOutlineThickness(2);
+	collisionRect.setPosition(mPositon);
 }
 
 
@@ -39,13 +46,14 @@ void Obstacles::Update()
 		mPositon.x = FULL_WIDTH_PIXEL - SCREEN_WIDTH_PIXEL;
 	}
 
-
 	mSprite.rotate(direction.x);
+	collisionRect.setPosition(mPositon);
 }
 
 void Obstacles::Draw(sf::RenderWindow &window)
 {
 	window.draw(mSprite);
+	window.draw(collisionRect);
 }
 
 sf::Vector2f Obstacles::getPosition()
@@ -56,4 +64,9 @@ sf::Vector2f Obstacles::getPosition()
 void Obstacles::setPosition(sf::Vector2f position)
 {
 	mPositon = position;
+}
+
+sf::RectangleShape Obstacles::getRect()
+{
+	return collisionRect;
 }

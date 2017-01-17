@@ -26,33 +26,13 @@ void Game::init()
 		humans.push_back(new Human( terrain->getPoints()));
 		meteors.push_back(new Obstacles());
 		meteors.push_back(new Obstacles());
+		nests.push_back(new Nest(sf::Vector2f(rand() % (1920 * 9) + 1, rand() % (500) + 1))); 
+		abductors.push_back(new Abductor(sf::Vector2f(rand() % MAP_WIDTH_PIXEL, 50), false));
+		abductors.push_back(new Abductor(sf::Vector2f(rand() % MAP_WIDTH_PIXEL, 50), false));
 	}
 
 	meteorSpwanTimer = 0;
 	meteorSpawnDelay = rand() % 5;
-
-
-
-
-	//abductors.push_back(new Abductor(sf::Vector2f(350, 50), false));
-	//abductors.push_back(new Abductor(sf::Vector2f(350, 100), false));//uncimment to test abductors;
-	//abductors.push_back(new Abductor(sf::Vector2f(350, 150), false));
-	//abductors.push_back(new Abductor(sf::Vector2f(350, 200), false));
-	//abductors.push_back(new Abductor(sf::Vector2f(350, 250), false));
-	//abductors.push_back(new Abductor(sf::Vector2f(350, 300), true));
-	//abductors.push_back(new Abductor(sf::Vector2f(350, 350), false));
-	//abductors.push_back(new Abductor(sf::Vector2f(350, 400), false));
-	//abductors.push_back(new Abductor(sf::Vector2f(350, 450), false));
-	//abductors.push_back(new Abductor(sf::Vector2f(350, 500), false));
-	//abductors.push_back(new Abductor(sf::Vector2f(350, 550), false));
-	//abductors.push_back(new Abductor(sf::Vector2f(350, 600), false));
-
-
-
-	for (int i = 0; i < 1; i++)
-	{
-		nests.push_back(new Nest(sf::Vector2f(rand() % (1920 * 9) + 1, rand() % (500) + 1)));
-	}
 }
 
 void Game::update()
@@ -68,10 +48,38 @@ void Game::update()
 	for (int i = 0; i < meteors.size(); i++)
 	{
 		meteors[i]->Update();
+
+		// Death
 		if (meteors[i]->getPosition().y >= 1080)
 		{
 			meteors.erase(meteors.begin() + i);
 			meteors.shrink_to_fit();
+		}
+
+		// Collisions
+		// Player
+		if (collisionManager->RectangleCollision(player->getRect(), meteors[i]->getRect()))
+		{
+			meteors.erase(meteors.begin() + i);
+			meteors.shrink_to_fit();
+			i--;
+			continue;
+		}
+
+		// Bullets
+		bool checkNext = true;
+		for (int j = 0; checkNext && j < player->getBullets().size(); j++)
+		{
+			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), meteors[i]->getRect()))
+			{
+				player->deleteBullet(j);
+				meteors.erase(meteors.begin() + i);
+				meteors.shrink_to_fit();
+				j--;
+				i--;
+				checkNext = false;
+				continue;
+			}
 		}
 	}
 	for (int i = 0; i < nests.size(); i++)
@@ -82,7 +90,50 @@ void Game::update()
 	for (int i = 0; i < abductors.size(); i++)
 	{
 		abductors[i]->Update(abductors, i);
+
+		// Collisions
+		// Player
+		if (collisionManager->RectangleCollision(player->getRect(), abductors[i]->getRect()))
+		{
+			abductors.erase(abductors.begin() + i);
+			abductors.shrink_to_fit();
+			i--;
+			continue;
+		}
+
+		// Bullets
+		bool checkNext = true;
+		for (int j = 0; checkNext && j < player->getBullets().size(); j++)
+		{
+			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), abductors[i]->getRect()))
+			{
+				player->deleteBullet(j);
+				abductors.erase(abductors.begin() + i);
+				abductors.shrink_to_fit();
+				j--;
+				i--;
+				checkNext = false;
+				continue;
+			}
+		}
+
+		// Meteor
+		for (int j = 0; checkNext && j < meteors.size(); j++)
+		{
+			if (collisionManager->RectangleCollision(meteors[j]->getRect(), abductors[i]->getRect()))
+			{
+				meteors.erase(meteors.begin() + j);
+				meteors.shrink_to_fit();
+				abductors.erase(abductors.begin() + i);
+				abductors.shrink_to_fit();
+				j--;
+				i--;
+				checkNext = false;
+				continue;
+			}
+		}
 	}
+
 	teleport();
 	MeteorSpawn();
 }
@@ -130,7 +181,6 @@ void Game::draw(sf::RenderWindow &window)
 	{
 		abductors[i]->Draw(window);
 	}
-
 }
 
 void Game::goToScene(int scene)
@@ -166,7 +216,7 @@ void Game::controller(sf::Event Event)
 	{
 		player->MoveLeft();
 	}
-	else if (inputManager->KeyReleased(sf::Keyboard::A) && !inputManager->KeyHeld(sf::Keyboard::D))
+	else if (inputManager->KeyReleased(sf::Keyboard::A) || !inputManager->KeyHeld(sf::Keyboard::D))
 	{
 		player->Decelerate();
 	}
@@ -180,7 +230,7 @@ void Game::controller(sf::Event Event)
 	{
 		player->MoveRight();
 	}
-	else if (inputManager->KeyReleased(sf::Keyboard::D) && !inputManager->KeyHeld(sf::Keyboard::A))
+	else if (inputManager->KeyReleased(sf::Keyboard::D) || !inputManager->KeyHeld(sf::Keyboard::A))
 	{
 		player->Decelerate();
 	}
@@ -250,7 +300,7 @@ void Game::MeteorSpawn()
 {
 	meteorSpwanTimer += 1.0f / 60.0f;
 
-	if (meteorSpwanTimer >= meteorSpawnDelay / 10)
+	if (meteorSpwanTimer >= meteorSpawnDelay / 5)
 	{
 		meteors.push_back(new Obstacles());
 		meteorSpawnDelay = rand() % 5;

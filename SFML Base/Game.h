@@ -11,6 +11,7 @@
 
 #include "GlobalVariables.h"
 #include "InputManager.h"
+#include "CollisionManager.h"
 
 #include "Camera.h"
 #include "Player.h"
@@ -25,6 +26,7 @@ class Game
 private:
 	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
 	InputManager* inputManager = InputManager::getInstance();
+	CollisionManager* collisionManager = new CollisionManager();
 
 public:
 	Game(Camera* camera);
