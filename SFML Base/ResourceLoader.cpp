@@ -18,6 +18,29 @@ ResourceLoader::ResourceLoader()
 		abductorTexture.loadFromFile("assets/enemies/abductor.png");
 		obstacleTexture.loadFromFile("assets/obstacles/meteor.png");
 		obstacleTexture.setSmooth(true);
+
+		// Sounds
+		if (!bufferMenuMove.loadFromFile("assets/audio/Blip_Move.ogg")) {}
+		menuMove.setBuffer(bufferMenuMove);
+
+		if (!bufferMenuSelect.loadFromFile("assets/audio/Blip_Select.ogg")) {}
+		menuSelect.setBuffer(bufferMenuSelect);
+
+		if (!bufferExplosion.loadFromFile("assets/audio/Explosion.ogg")) {}
+		explosion.setBuffer(bufferExplosion);
+
+		if (!bufferHit.loadFromFile("assets/audio/Hit_Hurt.ogg")) {}
+		hit.setBuffer(bufferHit);
+
+		if (!bufferShoot.loadFromFile("assets/audio/Laser_Shoot.ogg")) {}
+		shoot.setBuffer(bufferShoot);
+
+		if (!bufferLevelUp.loadFromFile("assets/audio/Levelup.ogg")) {}
+		levelUp.setBuffer(bufferLevelUp);
+
+		if (!musicMenu.openFromFile("assets/audio/THEME OF TATA.ogg")) {}
+		if (!musicGame.openFromFile("assets/audio/RED ALERT.ogg")) {}
+		
 }
 
 ResourceLoader::~ResourceLoader()

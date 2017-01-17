@@ -7,6 +7,8 @@
 #endif
 
 #include "SFML\Graphics.hpp"
+#include <SFML/Audio.hpp>
+
 class ResourceLoader
 {
 public:
@@ -26,4 +28,11 @@ public:
 private:
 	static ResourceLoader* _instance;
 	sf::Texture playershipTexture, backgroundTexture, bulletTexture, humanTexture, nestTexture, interceptorTexture, abductorTexture, obstacleTexture;
+
+	// Sounds
+	sf::SoundBuffer bufferMenuMove, bufferMenuSelect, bufferExplosion, bufferShoot, bufferHit, bufferLevelUp;
+
+	sf::Sound menuMove, menuSelect, explosion, hit, shoot, levelUp;
+
+	sf::Music musicMenu, musicGame;
 };
