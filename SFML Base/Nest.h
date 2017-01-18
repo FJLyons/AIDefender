@@ -27,6 +27,7 @@ private:
 	int NoOfMinions;
 	int currentBehaviour;
 	float range;
+	sf::Vector2f seperation;
 	sf::RectangleShape collisionRect;
 	sf::Vector2f seekPoint;
 	std::vector<InterceptorMissile*> missileList;
@@ -34,7 +35,7 @@ private:
 	float shotdelay;
 	float shotTimer;
 	sf::Clock shotClock;
-
+	sf::RectangleShape FeildofView;
 	float spawnDelay;
 	float spawnTimer;
 	sf::Clock spawnClock;
@@ -48,9 +49,10 @@ public:
 	~Nest();
 
 	sf::Vector2f FindNewPoint();
-	void Wandering();
+	void Wandering(std::vector<Obstacles*>& obstacles);
 	void Evading();
-	void Update(sf::RectangleShape  player, std::vector<Abductor*> &abductors);
+	sf::Vector2f ComputeObsticleSeperation(std::vector<Obstacles*>& obstacles);
+	void Update(sf::RectangleShape  player, std::vector<Abductor*> &abductors, std::vector<Obstacles*>& obstacles);
 	void Draw(sf::RenderWindow &window);
 	void SpawnAbductors( std::vector<Abductor*> &abductors);
 	//void calculateDrift();

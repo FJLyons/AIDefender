@@ -30,7 +30,7 @@ void Game::update()
 
 	for (int i = 0; i < humans.size(); i++)
 	{
-		humans[i]->Update();
+		humans[i]->Update(player->getPosition());
 
 		// Collisions
 		// Player
@@ -90,7 +90,7 @@ void Game::update()
 	// Enemies with Health 
 	for (int i = 0; i < nests.size(); i++)
 	{
-		nests[i]->Update(player->getRect(), abductors);
+		nests[i]->Update(player->getRect(), abductors,meteors);
 
 		// Collisions
 		// Player
@@ -142,18 +142,36 @@ void Game::update()
 	
 	for (int i = 0; i < abductors.size(); i++)
 	{
-		abductors[i]->Update(abductors, i);
-
-		// Collisions
-		// Player
-		if (collisionManager->RectangleCollision(player->getRect(), abductors[i]->getRect()))
+		abductors[i]->Update(abductors, i,meteors,humans);
+		if (abductors[i]->getAlive() == false)//if an abductor has successfully abducted a human
 		{
+			mutants.push_back(new Mutant(abductors[i]->getPosition()));
+			mutants.push_back(new Mutant(abductors[i]->getPosition()));
+			mutants.push_back(new Mutant(abductors[i]->getPosition()));
+			mutants.push_back(new Mutant(abductors[i]->getPosition()));
+			mutants.push_back(new Mutant(abductors[i]->getPosition()));
+			mutants.push_back(new Mutant(abductors[i]->getPosition()));
+			mutants.push_back(new Mutant(abductors[i]->getPosition()));
 			abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
 			abductors.erase(abductors.begin() + i);
+
 
 			i--;
 			continue;
 		}
+		// Collisions
+		// Player
+		if (collisionManager->RectangleCollision(player->getRect(), abductors[i]->getRect()))
+		{
+			abductors[i]->DropHuman(humans);
+			abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
+			abductors.erase(abductors.begin() + i);
+			
+
+			i--;
+			continue;
+		}
+	
 
 		// Bullets
 		bool checkNext = true;
@@ -162,7 +180,7 @@ void Game::update()
 			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), abductors[i]->getRect()))
 			{
 				player->deleteBullet(j);
-
+				abductors[i]->DropHuman(humans);
 				abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
 				abductors.erase(abductors.begin() + i);
 
@@ -180,7 +198,7 @@ void Game::update()
 			{
 				meteorsToDelete.push_back(meteors[j]); // For Memory Clean up
 				meteors.erase(meteors.begin() + j);
-
+				abductors[i]->DropHuman(humans);
 				abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
 				abductors.erase(abductors.begin() + i);
 
@@ -192,6 +210,11 @@ void Game::update()
 		}
 	}
 
+	//Mutants
+	for (int i = 0; i < mutants.size(); i++)
+	{
+		mutants[i]->Update(mutants,i, meteors, player->getPosition());
+	}
 	if (humans.empty() && abductors.empty() && nests.empty())
 	{
 		nextLevel();
@@ -222,6 +245,10 @@ void Game::draw(sf::RenderWindow &window)
 	for (int i = 0; i < abductors.size(); i++)
 	{
 		abductors[i]->Draw(window);
+	}
+	for (int i = 0; i < mutants.size(); i++)
+	{
+		mutants[i]->Draw(window);
 	}
 
 	// Mini Map
@@ -378,13 +405,27 @@ void Game::MeteorSpawn()
 
 void Game::spawn()
 {
+
+
 	for (int i = 0; i < currentLevel; i++)
 	{
 		humans.push_back(new Human(terrain->getPoints()));
 		nests.push_back(new Nest(sf::Vector2f(rand() % (1920 * 9) + 1, rand() % (500) + 1)));
-		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50), false));
-		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50), false));
+	//	abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
+	//	abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
 	}
+	abductors.push_back(new Abductor(sf::Vector2f(350, 50)));
+	abductors.push_back(new Abductor(sf::Vector2f(350, 100)));//uncomment to test abductors;
+	abductors.push_back(new Abductor(sf::Vector2f(350, 150)));
+	abductors.push_back(new Abductor(sf::Vector2f(350, 200)));
+	abductors.push_back(new Abductor(sf::Vector2f(350, 250)));
+	abductors.push_back(new Abductor(sf::Vector2f(350, 300)));
+	abductors.push_back(new Abductor(sf::Vector2f(350, 350)));
+	abductors.push_back(new Abductor(sf::Vector2f(350, 400)));
+	abductors.push_back(new Abductor(sf::Vector2f(350, 450)));
+	abductors.push_back(new Abductor(sf::Vector2f(350, 500)));
+	abductors.push_back(new Abductor(sf::Vector2f(350, 550)));
+	abductors.push_back(new Abductor(sf::Vector2f(350, 600)));
 }
 
 void Game::clearVectors()

@@ -1,34 +1,38 @@
 #include "Abductor.h"
-#include <iostream>
-using namespace std;
 
-Abductor::Abductor(sf::Vector2f pos,bool lead)
+Abductor::Abductor()
 {
-	leader = lead;
+}
+Abductor::~Abductor()
+{
+
+}
+Abductor::Abductor(sf::Vector2f pos)
+{
+
 	mTexture = ResourceLoader::instance()->getabductorTexture();
 	bulletTexture = ResourceLoader::instance()->getbulletTexture();
-
 	mPositon = pos;
-
-	velocity = sf::Vector2f(10,0.5);
+	velocity = sf::Vector2f(10, 0.5);
 	mSprite.setTexture(mTexture);
 	mSprite.setPosition(mPositon);
 	mSprite.setOrigin(sf::Vector2f(mSprite.getLocalBounds().width / 2, mSprite.getLocalBounds().height / 2));
 	currentBehaviour = Behaviour::Wander;
-	
+	abducting = false;
 	range = 700;
+	alive = true;
 	//seekPoint = FindNewPoint();
-	//if (leader == true)
-	//{
-			seekPoint = sf::Vector2f(2000, 500);
-	//}
+	seekPoint = sf::Vector2f(300, 550);
 
 	canShoot = true;
 	shotTimer = 0;
 	shotdelay = 0.5;
 
+	mSprite.setScale(0.5, 0.5);
+
+
 	collisionRect.setOrigin(mSprite.getGlobalBounds().width / 2, mSprite.getGlobalBounds().height / 2);
-	collisionRect.setSize(sf::Vector2f(mSprite.getGlobalBounds().width , mSprite.getGlobalBounds().height));
+	collisionRect.setSize(sf::Vector2f(mSprite.getGlobalBounds().width, mSprite.getGlobalBounds().height));
 	collisionRect.setOutlineColor(sf::Color::Red);
 	collisionRect.setFillColor(sf::Color::Transparent);
 	collisionRect.setOutlineThickness(2);
@@ -39,50 +43,13 @@ Abductor::Abductor(sf::Vector2f pos,bool lead)
 	FeildofView.setOutlineColor(sf::Color::Yellow);
 	FeildofView.setFillColor(sf::Color::Transparent);
 	FeildofView.setOutlineThickness(2);
-	FeildofView.setPosition(mPositon);	
+	FeildofView.setPosition(mPositon);
+
+
 
 	alignment = sf::Vector2f(0, 0);
 	cohesion = sf::Vector2f(0, 0);
 	seperation = sf::Vector2f(0, 0);
-}
-
-Abductor::~Abductor()
-{
-}
-
-void Abductor::Update(std::vector<Abductor*>& abductors, int indexofCurrentAbductor)
-{
-	myIndex = indexofCurrentAbductor;
-
-	if (currentBehaviour == Behaviour::Wander)
-	{
-		Wandering(abductors);
-	}
-	else if (currentBehaviour == Behaviour::Abduct)
-	{
-		Abducting();
-	}
-	else if (currentBehaviour == Behaviour::Flock)
-	{
-		Flocking();
-	}
-	float  angle = atan2(velocity.y, velocity.x);
-	angle = angle * (180 / 3.14);
-	mSprite.setRotation(angle);
-	FeildofView.setRotation(angle);
-	collisionRect.setPosition(mPositon);
-	FeildofView.setPosition(mPositon);
-
-}
-void Abductor::Draw(sf::RenderWindow & window)
-{
-	window.draw(mSprite);
-	if (myGlobalOptions->drawCollisionBox)
-	{
-		window.draw(collisionRect);
-	}
-	window.draw(FeildofView);
-	sf::CircleShape tempcirc(10);
 }
 
 sf::Vector2f Abductor::FindNewPoint()
@@ -90,85 +57,99 @@ sf::Vector2f Abductor::FindNewPoint()
 	sf::Vector2f newPoint = sf::Vector2f(rand() % (1920 * 9) + 1, 500);//rand() % (500) + 1);
 	return  newPoint;
 }
-void Abductor::Wandering(std::vector<Abductor*>& abductors)
+void Abductor::Wandering(std::vector<Abductor*>& abductors, std::vector<Obstacles*>& obstacles, std::vector<Human*>& humans)
 {
-		alignment = ComputeAlignment(abductors);
-		cohesion = ComputeCohesion(abductors);
+	CheckForHuman(humans);
+	alignment = ComputeAlignment(abductors);
+	cohesion = ComputeCohesion(abductors);
+	seperation = ComputeSeperation(abductors);
+	obsticleseperation = ComputeObsticleSeperation(obstacles);
 
-		seperation = ComputeSeperation(abductors);
+	Direction = seekPoint - mPositon;
+	Direction = CollisionManager::instance()->NormaliseVector(Direction);
+
+	if (mPositon.y < 100)//stop form going to high
+	{
+		obsticleseperation.y += +1;
+	}
+	if (mPositon.y > 700)//stop from going to low
+	{
+		obsticleseperation.y += -1;
+	}
+
 	
-		sf::Vector2f Direction = seekPoint - mPositon;
-		float length = sqrt((Direction.x * Direction.x) + (Direction.y * Direction.y));
-		Direction = Direction / length;
 
-		velocity.x += alignment.x + cohesion.x + seperation.x*3 + Direction.x;
-		velocity.y += alignment.y + cohesion.y + seperation.y *3+ Direction.y;
+	velocity.x += alignment.x + cohesion.x + seperation.x*2 + obsticleseperation.x * 2 + Direction.x;
+	velocity.y += alignment.y + cohesion.y + seperation.y*2 + obsticleseperation.y * 2 + Direction.y;
 
-		
-		velocity = CollisionManager::NormaliseVector(velocity);
-		velocity.x = velocity.x * 10;
-		velocity.y = velocity.y * 10;
+	velocity = CollisionManager::instance()->NormaliseVector(velocity);
+	velocity.x = velocity.x * 10;
+	velocity.y = velocity.y * 10;
 
-		mPositon += velocity;
-		mSprite.setPosition(mPositon);
-	
-		if (CollisionManager::CheckRange(mSprite.getGlobalBounds().width, seekPoint, mPositon) == true)
+	mPositon += velocity;
+	mSprite.setPosition(mPositon);
+
+	if (CollisionManager::instance()->CheckRange(mSprite.getGlobalBounds().width, seekPoint, mPositon) == true)
+	{
+		seekPoint = FindNewPoint();
+		for (int i = 0; i < abductors.size(); i++)
 		{
-			seekPoint = FindNewPoint();
+			if (abductors[i]->getseekPoint() != seekPoint)
+			{
+				//abductors[i]->setseekPoint(seekPoint);
+			}
 		}
+	}
 
 }
 sf::Vector2f Abductor::ComputeAlignment(std::vector<Abductor*>& abductors)
 {
 	sf::Vector2f m_alignment;
-	neighbourcount = 0;
+	int neighbourcount = 0;
 	for (int i = 0; i < abductors.size(); i++)
 	{
 		if (i != myIndex)
 		{
-			if (CollisionManager::RectangleCollision(FeildofView, abductors[i]->getFOVRect()) == true && CollisionManager::RectangleCollision(collisionRect, abductors[i]->getRect()) == false)//CollisionManager::CheckRange(neighbourRange, abductors[i]->getPosition(), mPositon) == true)
+			if (CollisionManager::instance()->RectangleCollision(FeildofView, abductors[i]->getFOVRect()) == true && CollisionManager::instance()->RectangleCollision(collisionRect, abductors[i]->getRect()) == false)//CollisionManager::CheckRange(neighbourRange, abductors[i]->getPosition(), mPositon) == true)
 			{
-			/*	if (abductors[i]->getLeader() == false)
-				{
-					leader == true;
-				}*/
-				m_alignment += abductors[i]->getVelocity();
-				/*if (leader == true)
+				if (abductors[i]->getseekPoint() != seekPoint)
 				{
 					abductors[i]->setseekPoint(seekPoint);
-				}*/
+				}
+
+				m_alignment += abductors[i]->getVelocity();
 				neighbourcount++;
 			}
 
 		}
-	
+
 	}
 	if (neighbourcount == 0)
 	{
-		
+
 		return  sf::Vector2f(0, 0);
 	}
 	else
 	{
 		m_alignment.x = m_alignment.x / neighbourcount;
 		m_alignment.y = m_alignment.y / neighbourcount;
-		m_alignment = CollisionManager::NormaliseVector(m_alignment);
+		m_alignment = CollisionManager::instance()->NormaliseVector(m_alignment);
 		return m_alignment;
 	}
 
-	
+
 
 }
 sf::Vector2f Abductor::ComputeCohesion(std::vector<Abductor*>& abductors)
 {
 	sf::Vector2f m_Cohesion;
-	neighbourcount = 0;
+	int neighbourcount = 0;
 
 	for (int i = 0; i < abductors.size(); i++)
 	{
 		if (i != myIndex)
 		{
-			if (CollisionManager::RectangleCollision(FeildofView,abductors[i]->getRect())==true && CollisionManager::RectangleCollision(collisionRect, abductors[i]->getRect()) == false)//CollisionManager::CheckRange(neighbourRange, abductors[i]->getPosition(), mPositon) == true && CollisionManager::RectangleCollision(collisionRect, abductors[i]->getRect()) == false)
+			if (CollisionManager::instance()->RectangleCollision(FeildofView, abductors[i]->getRect()) == true && CollisionManager::instance()->RectangleCollision(collisionRect, abductors[i]->getRect()) == false)//CollisionManager::CheckRange(neighbourRange, abductors[i]->getPosition(), mPositon) == true && CollisionManager::RectangleCollision(collisionRect, abductors[i]->getRect()) == false)
 			{
 				m_Cohesion += abductors[i]->getPosition();
 				neighbourcount++;
@@ -185,21 +166,22 @@ sf::Vector2f Abductor::ComputeCohesion(std::vector<Abductor*>& abductors)
 		m_Cohesion.x = m_Cohesion.x / neighbourcount;
 		m_Cohesion.y = m_Cohesion.y / neighbourcount;
 		m_Cohesion = m_Cohesion - mPositon;
-		m_Cohesion = CollisionManager::NormaliseVector(m_Cohesion);
+		m_Cohesion = CollisionManager::instance()->NormaliseVector(m_Cohesion);
 		return m_Cohesion;
+
 	}
 
 }
 sf::Vector2f Abductor::ComputeSeperation(std::vector<Abductor*>& abductors)
 {
-	sf::Vector2f m_Seperation(0, 0);
-	neighbourcount = 0;
+	sf::Vector2f m_Seperation;
+	int neighbourcount = 0;
 
 	for (int i = 0; i < abductors.size(); i++)
 	{
 		if (i != myIndex)
 		{
-			if (CollisionManager::RectangleCollision(collisionRect,abductors[i]->getRect()) == true)//CollisionManager::CheckRange(mSprite.getGlobalBounds().width, abductors[i]->getPosition(), mPositon) == true)
+			if (CollisionManager::instance()->RectangleCollision(collisionRect, abductors[i]->getRect()) == true)//CollisionManager::CheckRange(mSprite.getGlobalBounds().width, abductors[i]->getPosition(), mPositon) == true)
 			{
 				m_Seperation += abductors[i]->getPosition() - mPositon;
 				neighbourcount++;
@@ -211,40 +193,148 @@ sf::Vector2f Abductor::ComputeSeperation(std::vector<Abductor*>& abductors)
 	{
 		return sf::Vector2f(0, 0);
 	}
-
 	else
 	{
 		m_Seperation.x = m_Seperation.x / neighbourcount;
 		m_Seperation.y = m_Seperation.y / neighbourcount;
 		m_Seperation.x *= -1;
 		m_Seperation.y *= -1;
-		
-		m_Seperation = CollisionManager::NormaliseVector(m_Seperation);
+
+		m_Seperation = CollisionManager::instance()->NormaliseVector(m_Seperation);
 		return m_Seperation;
 	}
 }
-void Abductor::Flocking()
+sf::Vector2f Abductor::ComputeObsticleSeperation(std::vector<Obstacles*>& obstacles)
 {
-}
-void Abductor::Abducting()
-{
-}
+	sf::Vector2f m_Seperation;
+	int neighbourcount = 0;
+
+	for (int i = 0; i < obstacles.size(); i++)
+	{
+
+		if (CollisionManager::instance()->RectangleCollision(FeildofView, obstacles[i]->getRect()) == true)//CollisionManager::CheckRange(mSprite.getGlobalBounds().width, abductors[i]->getPosition(), mPositon) == true)
+		{
+			m_Seperation += obstacles[i]->getPosition() - mPositon;
+			neighbourcount++;
+		}
 
 
+	}
+	if (neighbourcount == 0)
+	{
+		return sf::Vector2f(0, 0);
+	}
+	else
+	{
+		m_Seperation.x = m_Seperation.x / neighbourcount;
+		m_Seperation.y = m_Seperation.y / neighbourcount;
+		m_Seperation.x *= -1;
+		m_Seperation.y *= -1;
+
+		m_Seperation = CollisionManager::instance()->NormaliseVector(m_Seperation);
+		return m_Seperation;
+	}
+}
+void Abductor::CheckForHuman(std::vector<Human*>& humans)
+{
+	for (int i = 0; i < humans.size(); i++)
+	{
+		if (CollisionManager::instance()->CheckRange(300, humans[i]->getPosition(), mPositon) == true)
+		{
+			if (humans[i]->getTargeted() == false && humans[i]->getFalling() == false)
+			{
+				currentBehaviour = Behaviour::Abduct;
+				humans[i]->setTargeted(true);
+				humanindex = i;
+			}
+		}
+	}
+}
+
+void Abductor::Abducting(std::vector<Human*>& humans)
+{
+	if (mPositon.y < -30)
+	{
+	   alive = false;
+
+	}
+	if (abducting == false)
+	{
+		Direction = humans[humanindex]->getPosition() - mPositon;
+		Direction = CollisionManager::instance()->NormaliseVector(Direction);
+		velocity.x += Direction.x;
+		velocity.y += Direction.y;
+
+		velocity = CollisionManager::instance()->NormaliseVector(velocity);
+		velocity.x = velocity.x * 2;
+		velocity.y = velocity.y * 2;
+
+		mPositon += velocity;
+
+		if (CollisionManager::instance()->CheckRange(2, humans[humanindex]->getPosition(), mPositon) == true)//RectangleCollision(humans[humanindex]->getRext(),collisionRect) == true)
+		{
+			abducting = true;
+			humans[humanindex]->setAbducted(true);
+
+		}
+	}
+	else
+	{
+		velocity = sf::Vector2f(0, -2);
+		mPositon += velocity;
+	}
+	mSprite.setPosition(mPositon);
+}
+void Abductor::Update(std::vector<Abductor*>& abductors, int indexofCurrentAbductor, std::vector<Obstacles*>& obstacles, std::vector<Human*>& humans)
+{
+	myIndex = indexofCurrentAbductor;
+
+	if (currentBehaviour == Behaviour::Wander)
+	{
+		Wandering(abductors, obstacles, humans);
+	}
+	else if (currentBehaviour == Behaviour::Abduct)
+	{
+		Abducting(humans);
+	}
+
+	angle = atan2(velocity.y, velocity.x);
+	angle = angle * (180 / 3.14);
+	mSprite.setRotation(angle);
+	FeildofView.setRotation(angle);
+	collisionRect.setPosition(mPositon);
+	FeildofView.setPosition(mPositon);
+
+}
+void Abductor::Draw(sf::RenderWindow & window)
+{
+	window.draw(mSprite);
+	if (myGlobalOptions->drawCollisionBox)
+	{
+		window.draw(collisionRect);
+		window.draw(FeildofView);
+	}
+	
+}
+void Abductor::setPosition(sf::Vector2f vec)
+{
+	mPositon = vec;
+}
+void Abductor::DropHuman(std::vector<Human*>& humans)
+{
+	if (currentBehaviour == Behaviour::Abduct)
+	{
+		humans[humanindex]->setFalling(true);
+		humans[humanindex]->setAbducted(false);
+	}
+}
 sf::Vector2f Abductor::getVelocity()
 {
 	return velocity;
 }
-
 sf::Vector2f Abductor::getPosition()
 {
 	return mPositon;
-}
-
-
-void Abductor::setPosition(sf::Vector2f vec)
-{
-	mPositon = vec;
 }
 
 sf::RectangleShape Abductor::getRect()
@@ -262,14 +352,18 @@ sf::Vector2f Abductor::getseekPoint()
 	return seekPoint;
 }
 
+bool Abductor::getAlive()
+{
+	return alive;
+}
+
+
+
 void Abductor::setseekPoint(sf::Vector2f point)
 {
 	seekPoint = point;
 }
 
-bool Abductor::getLeader()
-{
-	return leader;
-}
+
 
 

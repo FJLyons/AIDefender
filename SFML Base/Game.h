@@ -20,6 +20,7 @@
 #include "Obstacles.h"
 #include "Nest.h"
 #include "Abductor.h"
+#include "Mutant.h"
 
 class Game
 {
@@ -73,6 +74,7 @@ protected:
 	std::vector<Obstacles*> meteors;
 	std::vector<Abductor*> abductors;
 	std::vector<Nest*> nests;
+	std::vector<Mutant*> mutants;
 
 	std::vector<Human*> humansToDelete = std::vector<Human*>();
 	std::vector<Obstacles*> meteorsToDelete = std::vector<Obstacles*>();

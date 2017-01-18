@@ -18,6 +18,10 @@ ResourceLoader::ResourceLoader()
 		abductorTexture.loadFromFile("assets/enemies/abductor.png");
 		obstacleTexture.loadFromFile("assets/obstacles/meteor.png");
 		obstacleTexture.setSmooth(true);
+		indicatorTexture.loadFromFile("assets/other/indicator.png");
+		indicatorTexture.setSmooth(true);
+		mutantTexture.loadFromFile("assets/enemies/mutant.png");
+		indicatorTexture.setSmooth(true);
 
 		// Sounds
 		if (!bufferMenuMove.loadFromFile("assets/audio/Blip_Move.ogg")) {}
@@ -98,6 +102,16 @@ sf::Texture& ResourceLoader::getabductorTexture()
 sf::Texture & ResourceLoader::getobstacleTexture()
 {
 	return obstacleTexture;
+}
+
+sf::Texture & ResourceLoader::getindicatorTexture()
+{
+	return indicatorTexture;
+}
+
+sf::Texture & ResourceLoader::getmutantTexture()
+{
+	return mutantTexture;
 }
 
 

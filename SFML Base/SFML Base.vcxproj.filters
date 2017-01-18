@@ -78,6 +78,9 @@
     <ClCompile Include="InterceptorMissile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mutant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SplashScreen.h">
@@ -141,6 +144,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InterceptorMissile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mutant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

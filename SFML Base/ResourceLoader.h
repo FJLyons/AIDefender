@@ -24,10 +24,12 @@ public:
 	sf::Texture& getinterceptorTexture();
 	sf::Texture& getabductorTexture();
 	sf::Texture& getobstacleTexture();
+	sf::Texture& getindicatorTexture();
+	sf::Texture& getmutantTexture();
 
 private:
 	static ResourceLoader* _instance;
-	sf::Texture playershipTexture, backgroundTexture, bulletTexture, humanTexture, nestTexture, interceptorTexture, abductorTexture, obstacleTexture;
+	sf::Texture playershipTexture, backgroundTexture, bulletTexture, humanTexture, nestTexture, interceptorTexture, abductorTexture, obstacleTexture,indicatorTexture,mutantTexture;
 
 	// Sounds
 	sf::SoundBuffer bufferMenuMove, bufferMenuSelect, bufferExplosion, bufferShoot, bufferHit, bufferLevelUp;

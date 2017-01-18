@@ -44,7 +44,7 @@ bool InterceptorMissile::Update(sf::RectangleShape  player)
 	mSprite.setRotation(angle);
 	collisionRect.setPosition(mPositon);
 
-	if (CollisionManager::RectangleCollision(collisionRect,player) == true)
+	if (CollisionManager::instance()->RectangleCollision(collisionRect,player) == true)
 	{
 		alive = false;
 	}
