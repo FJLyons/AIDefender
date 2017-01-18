@@ -52,7 +52,7 @@ Player::Player(sf::Vector2f pos, sf::Vector2f maxVel)
 void Player::Update()
 {
 	shotTimer += shotClock.getElapsedTime().asSeconds();
-	
+
 
 	if (bombLoaded == false)
 	{
@@ -73,7 +73,7 @@ void Player::Update()
 			warptimer = 0;
 		}
 	}
-	
+
 	if (shotTimer > shotdelay)
 	{
 		canShoot = true;
@@ -115,7 +115,7 @@ void Player::Update()
 		velocity.y = 0;
 		mPositon.y = 1080;
 	}
-	
+
 	if (bombfired == true)
 	{
 		ShootBomb();
@@ -214,32 +214,29 @@ void Player::MoveRight()
 
 void Player::ShootBomb()
 {
-	
+
 	if (bombLoaded == true)
 	{
 		velocity = sf::Vector2f(0, 0);
-		if (bombrectSize.x <= SCREEN_WIDTH_PIXEL +10)
+		if (bombrectSize.x <= SCREEN_WIDTH_PIXEL + 10)
 		{
-			bombrectSize.x +=100;
+			bombrectSize.x += 100;
+			bombrectSize.y += 100;
 		}
-		if (bombrectSize.y <= SCREEN_HEIGHT_PIXEL +10)
-		{
-			bombrectSize.y +=100;
-		}
+
 		bombRectangle.setOrigin(bombrectSize.x / 2, bombrectSize.y / 2);
 		bombRectangle.setSize(sf::Vector2f(bombrectSize.x, bombrectSize.y));
 
-		if (bombrectSize.x >= SCREEN_WIDTH_PIXEL &&bombrectSize.y >= SCREEN_HEIGHT_PIXEL)
+		if (bombrectSize.x >= SCREEN_WIDTH_PIXEL)
 		{
 			bombLoaded = false;
 			bombfired = false;
 			bombrectSize.x = 0;
 			bombrectSize.y = 0;
-		
+
 		}
-
-
 	}
+
 	bombRectangle.setOrigin(bombrectSize.x / 2, bombrectSize.y / 2);
 	bombRectangle.setSize(sf::Vector2f(bombrectSize.x, bombrectSize.y));
 }
@@ -250,12 +247,13 @@ void Player::Shoot()
 	{
 		bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, velocity));
 		shotTimer = 0;
+		resource->shoot.play();
 	}
 }
 
 void Player::Warp()
 {
-	if (mScale.x >= 0 && mScale.y >=0  && invisible == false )
+	if (mScale.x >= 0 && mScale.y >= 0 && invisible == false)
 	{
 		mScale.x -= 0.2;
 		mScale.y -= 0.2;
@@ -271,22 +269,22 @@ void Player::Warp()
 		mPositon.x = rand() % (MAP_WIDTH_PIXEL)+1;
 
 		mScale.y += 0.2;
-	
-		if (  mScale.y >= 1)
+
+		if (mScale.y >= 1)
 		{
 			mScale = sf::Vector2f(1, 1);
-			warping = false; 
+			warping = false;
 			warpReady = false;
 			invisible = false;
 		}
-	
+
 	}
 
-	if ( mScale.y <= 1 && invisible == true)
+	if (mScale.y <= 1 && invisible == true)
 	{
 		mScale.y += 0.2;
 	}
-	
+
 }
 
 void Player::Flip()

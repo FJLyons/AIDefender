@@ -16,6 +16,7 @@ class Player
 
 private:
 	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
+	ResourceLoader* resource = ResourceLoader::instance();
 
 private:
 	sf::Texture mTexture;

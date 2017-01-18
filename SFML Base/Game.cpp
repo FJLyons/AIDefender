@@ -21,6 +21,8 @@ void Game::init()
 
 	meteorSpwanTimer = 0;
 	meteorSpawnDelay = rand() % 5;
+
+	UI();
 }
 
 void Game::update()
@@ -372,6 +374,7 @@ void Game::draw(sf::RenderWindow &window)
 	camera->drawGame(window);
 	terrain->draw(window);
 	player->Draw(window);
+
 	for (int i = 0; i < meteors.size(); i++)
 	{
 		meteors[i]->Draw(window);
@@ -392,6 +395,8 @@ void Game::draw(sf::RenderWindow &window)
 	{
 		mutants[i]->Draw(window);
 	}
+	//UI
+	UIDraw(window);
 
 	// Mini Map
 	camera->drawRadar(window);
@@ -434,10 +439,6 @@ void Game::input(sf::Event Event)
 		goToScene(myGlobalOptions->MAINMENU);
 		resource->musicMenu.play();
 		resource->musicGame.pause();
-	}
-
-	if (inputManager->KeyPressed(sf::Keyboard::Num0))
-	{
 	}
 
 	controller(Event);
@@ -498,15 +499,14 @@ void Game::controller(sf::Event Event)
 	{
 		player->Shoot();
 	}
-	if (inputManager->KeyHeld(sf::Keyboard::Num1)&& player->getbombLoaded() == true&& player->getBombfired() == false)
+	if (inputManager->KeyHeld(sf::Keyboard::Num1) && player->getbombLoaded() == true && player->getBombfired() == false)
 	{
 		player->setBombfired(true);
-		
+
 	}
-	if (inputManager->KeyHeld(sf::Keyboard::Num2) && player->getwarpready() == true )
+	if (inputManager->KeyHeld(sf::Keyboard::Num2) && player->getwarpready() == true)
 	{
 		player->setWarp(true);
-
 	}
 }
 
@@ -561,7 +561,7 @@ void Game::spawn()
 	for (int i = 0; i < currentLevel; i++)
 	{
 		humans.push_back(new Human(terrain->getPoints()));
-		nests.push_back(new Nest(sf::Vector2f(rand() % (SCREEN_WIDTH_PIXEL) + 1, rand() % (500) + 1)));
+		nests.push_back(new Nest(sf::Vector2f(rand() % (1920 * 9) + 1, rand() % (500) + 1)));
 		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
 		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
 		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
@@ -625,4 +625,90 @@ void Game::nextLevel()
 void Game::gameOver(bool win)
 {
 
+}
+
+void Game::UI()
+{
+	// Health
+	healthSprite.setTexture(resource->gethealthTexture());
+	healthSprite.setPosition(sf::Vector2f(player->getPosition().x - 900, 50));
+	healthSprite.setOrigin(sf::Vector2f(healthSprite.getLocalBounds().width / 2, healthSprite.getLocalBounds().height / 2));
+	healthSprite.setScale(sf::Vector2f(1.f, 1.f));
+
+	healthText.setFont(font);
+	healthText.setString(std::to_string(player->health));
+	healthText.setPosition(sf::Vector2f(healthSprite.getPosition().x + 25, 50));
+
+	// Bomb
+	bombSprite.setTexture(resource->getbombTexture());
+	bombSprite.setPosition(sf::Vector2f(player->getPosition().x - 800, 50));
+	bombSprite.setOrigin(sf::Vector2f(bombSprite.getLocalBounds().width / 2, bombSprite.getLocalBounds().height / 2));
+	bombSprite.setScale(sf::Vector2f(1.f, 1.f));
+
+	// Warp
+	warpSprite.setTexture(resource->getwarpTexture());
+	warpSprite.setPosition(sf::Vector2f(player->getPosition().x - 700, 50));
+	warpSprite.setOrigin(sf::Vector2f(warpSprite.getLocalBounds().width / 2, warpSprite.getLocalBounds().height / 2));
+	warpSprite.setScale(sf::Vector2f(1.f, 1.f));
+
+	// human
+	humanSprite.setTexture(resource->gethumanTexture());
+	humanSprite.setPosition(sf::Vector2f(player->getPosition().x - 600, 50));
+	humanSprite.setOrigin(sf::Vector2f(humanSprite.getLocalBounds().width / 2, humanSprite.getLocalBounds().height / 2));
+	humanSprite.setScale(sf::Vector2f(2.f, 2.f));
+
+	humanText.setFont(font);
+	humanText.setString(std::to_string(humans.size()));
+	humanText.setPosition(sf::Vector2f(humanSprite.getPosition().x + 25, 50));
+
+	// enemy
+	enemySprite.setTexture(resource->getenemyTexture());
+	enemySprite.setPosition(sf::Vector2f(player->getPosition().x - 500, 50));
+	enemySprite.setOrigin(sf::Vector2f(enemySprite.getLocalBounds().width / 2, enemySprite.getLocalBounds().height / 2));
+	enemySprite.setScale(sf::Vector2f(2.f, 2.f));
+
+	enemyText.setFont(font);
+	int size = abductors.size() + nests.size() + mutants.size();
+	enemyText.setString(std::to_string(size));
+	enemyText.setPosition(sf::Vector2f(enemySprite.getPosition().x + 25, 50));
+}
+
+void Game::UIDraw(sf::RenderWindow &window)
+{
+		// health
+		window.draw(healthSprite);
+		healthSprite.setPosition(sf::Vector2f(player->getPosition().x - 900, 50));
+
+		window.draw(healthText);
+		healthText.setString(std::to_string(player->health));
+		healthText.setPosition(sf::Vector2f(healthSprite.getPosition().x + 25, 50));
+
+		// Bomb
+		window.draw(bombSprite);
+		bombSprite.setPosition(sf::Vector2f(player->getPosition().x - 800, 50));
+		if (player->getbombLoaded() == false) { bombSprite.setColor(sf::Color(125, 125, 125, 125)); }
+		else{ bombSprite.setColor(sf::Color(255, 255, 255, 255)); }
+
+		// Warp
+		window.draw(warpSprite);
+		warpSprite.setPosition(sf::Vector2f(player->getPosition().x - 700, 50));
+		if (player->getwarpready() == false) { warpSprite.setColor(sf::Color(125, 125, 125, 125)); }
+		else { warpSprite.setColor(sf::Color(255, 255, 255, 255)); }
+
+		// Human
+		window.draw(humanSprite);
+		humanSprite.setPosition(sf::Vector2f(player->getPosition().x - 600, 50));
+
+		window.draw(humanText);
+		humanText.setString(std::to_string(humans.size()));
+		humanText.setPosition(sf::Vector2f(humanSprite.getPosition().x + 25, 50));
+
+		// enemy
+		window.draw(enemySprite);
+		enemySprite.setPosition(sf::Vector2f(player->getPosition().x - 500, 50));
+
+		window.draw(enemyText);
+		int size = abductors.size() + nests.size() + mutants.size();
+		enemyText.setString(std::to_string(size));
+		enemyText.setPosition(sf::Vector2f(enemySprite.getPosition().x + 25, 50));
 }

@@ -50,9 +50,6 @@ private:
 	sf::Font font;
 	sf::Text text;
 
-	
-	sf::Sprite backgroundSprite;
-
 	void teleport();
 
 	int currentLevel = 1;
@@ -66,6 +63,8 @@ private:
 	void spawn();
 	void nextLevel();
 	void gameOver(bool winLose);
+	void UI();
+	void UIDraw(sf::RenderWindow &window);
 
 protected:
 	Camera* camera;
@@ -83,5 +82,19 @@ protected:
 	std::vector<Abductor*> abductorsToDelete = std::vector<Abductor*>();
 	std::vector<Nest*> nestsToDelete = std::vector<Nest*>();
 	std::vector<Mutant*> mutantsToDelete = std::vector<Mutant*>();
+
+private:
+	// UI
+	sf::Text healthText;
+	sf::Sprite healthSprite;
+
+	sf::Sprite bombSprite;
+	sf::Sprite warpSprite;
+
+	sf::Text humanText;
+	sf::Sprite humanSprite;
+
+	sf::Text enemyText;
+	sf::Sprite enemySprite;
 };
 

@@ -7,23 +7,35 @@ ResourceLoader::ResourceLoader()
 {
 	health.loadFromFile("assets/other/health.png");
 	health.setSmooth(true);
+	bomb.loadFromFile("assets/other/bomb.png");
+	bomb.setSmooth(true);
+	warp.loadFromFile("assets/other/warp.png");
+	warp.setSmooth(true);
+
 	playershipTexture.loadFromFile("assets/player/PlayerShip.png");
 	playershipTexture.setSmooth(true);
+
+	humanTexture.loadFromFile("assets/ai/human.png");
+	enemy.loadFromFile("assets/other/enemy.png");
+
+	backgroundTexture.loadFromFile("assets/background/background.png");
+
+	indicatorTexture.loadFromFile("assets/other/indicator.png");
+	indicatorTexture.setSmooth(true);
+
 	nestTexture.loadFromFile("assets/enemies/nest.png");
 	nestTexture.setSmooth(true);
 	interceptorTexture.loadFromFile("assets/enemies/interceptor.png");
 	interceptorTexture.setSmooth(true);
-	humanTexture.loadFromFile("assets/ai/human.png");
-	humanTexture.setSmooth(true);
-	backgroundTexture.loadFromFile("assets/background/background.png");
 	bulletTexture.loadFromFile("assets/player/bullet.png");
 	abductorTexture.loadFromFile("assets/enemies/abductor.png");
+
 	obstacleTexture.loadFromFile("assets/obstacles/meteor.png");
 	obstacleTexture.setSmooth(true);
-	indicatorTexture.loadFromFile("assets/other/indicator.png");
-	indicatorTexture.setSmooth(true);
+
+
 	mutantTexture.loadFromFile("assets/enemies/mutant.png");
-	indicatorTexture.setSmooth(true);
+	mutantTexture.setSmooth(true);
 	enemyBulletTexture.loadFromFile("assets/enemies/enemyBullet.png");
 	enemyBulletTexture.setSmooth(true);
 
@@ -54,6 +66,9 @@ ResourceLoader::ResourceLoader()
 
 	musicMenu.setVolume(50);
 	musicGame.setVolume(50);
+
+	musicMenu.setLoop(true);
+	musicGame.setLoop(true);
 		
 }
 
@@ -72,6 +87,26 @@ ResourceLoader* ResourceLoader::instance()
 	}
 	//return the instance.
 	return _instance;
+}
+
+sf::Texture & ResourceLoader::gethealthTexture()
+{
+	return health;
+}
+
+sf::Texture & ResourceLoader::getbombTexture()
+{
+	return bomb;
+}
+
+sf::Texture & ResourceLoader::getwarpTexture()
+{
+	return warp;
+}
+
+sf::Texture & ResourceLoader::getenemyTexture()
+{
+	return enemy;
 }
 
 sf::Texture&  ResourceLoader::getplayershipTexture()

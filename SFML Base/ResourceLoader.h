@@ -16,6 +16,10 @@ public:
 	~ResourceLoader();
 
 	static ResourceLoader* instance();
+	sf::Texture& gethealthTexture();
+	sf::Texture& getbombTexture();
+	sf::Texture& getwarpTexture();
+	sf::Texture& getenemyTexture();
 	sf::Texture& getplayershipTexture();
 	sf::Texture& getbackgroundTexture();
 	sf::Texture& getbulletTexture();
@@ -33,7 +37,7 @@ public:
 
 private:
 	static ResourceLoader* _instance;
-	sf::Texture health, playershipTexture, backgroundTexture, bulletTexture, humanTexture, nestTexture, interceptorTexture, abductorTexture, obstacleTexture,indicatorTexture,mutantTexture, enemyBulletTexture;
+	sf::Texture health, bomb, warp, enemy, playershipTexture, backgroundTexture, bulletTexture, humanTexture, nestTexture, interceptorTexture, abductorTexture, obstacleTexture,indicatorTexture,mutantTexture, enemyBulletTexture;
 
 	// Sounds
 	sf::SoundBuffer bufferMenuMove, bufferMenuSelect, bufferExplosion, bufferShoot, bufferHit, bufferLevelUp, bufferStart, bufferBack;
