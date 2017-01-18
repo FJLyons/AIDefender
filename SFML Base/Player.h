@@ -6,7 +6,6 @@
 
 #include "GlobalVariables.h"
 #include "InputManager.h"
-#include "ResourceLoader.h"
 
 #include "Bullet.h"
 #include "ResourceLoader.h"
@@ -17,7 +16,6 @@ class Player
 
 private:
 	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
-	ResourceLoader* resource = ResourceLoader::instance();
 
 private:
 	sf::Texture mTexture;
@@ -38,7 +36,7 @@ private:
 
 public:
 	Player();
-	Player(sf::Vector2f pos,sf::Vector2f maxVel);
+	Player(sf::Vector2f pos, sf::Vector2f maxVel);
 
 	void FaceLeft();
 	void FaceRight();
@@ -55,7 +53,7 @@ public:
 	void Update();
 	void Draw(sf::RenderWindow &window);
 	void Flip();
-
+	sf::Vector2f getVelocity();
 	sf::Vector2f getPosition();
 	sf::RectangleShape getRect();
 	bool teleport();

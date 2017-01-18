@@ -10,6 +10,7 @@
 #include "Obstacles.h"
 #include "Human.h"
 #include "GlobalVariables.h"
+#include "MutantBullet.h"
 class Mutant
 {
 
@@ -24,8 +25,6 @@ private:
 	sf::Vector2f mPositon;
 	sf::Vector2f velocity;
 	bool canShoot;
-
-
 	sf::Vector2f Direction;
 	float shotdelay;
 	float shotTimer;
@@ -43,28 +42,28 @@ private:
 	int myIndex;
 	int humanindex;
 	bool abducting;
+	std::vector<MutantBullet*> bullets;
 
 public:
 	Mutant();
 	~Mutant();
 	Mutant(sf::Vector2f pos);
 
-	void Wandering(std::vector<Mutant*>& mutants, std::vector<Obstacles*>& obstacles,sf::Vector2f playerPos);
+	void Wandering(std::vector<Mutant*>& mutants, std::vector<Obstacles*>& obstacles, sf::Vector2f playerPos);
 	sf::Vector2f ComputeAlignment(std::vector<Mutant*>& mutants);
 	sf::Vector2f ComputeCohesion(std::vector<Mutant*>& mutants);
 	sf::Vector2f ComputeSeperation(std::vector<Mutant*>& mutants);
 	sf::Vector2f ComputeObsticleSeperation(std::vector<Obstacles*>& obstacles);
 
-
-	void Update(std::vector<Mutant*>& mutants, int indexofCurrentMutant, std::vector<Obstacles*>& obstacles,sf::Vector2f playerPos);
+	void Shoot(sf::Vector2f playerpos, sf::Vector2f playervel);
+	void Update(std::vector<Mutant*>& mutants, int indexofCurrentMutant, std::vector<Obstacles*>& obstacles, sf::Vector2f playerPos, sf::Vector2f playerVel);
 	void Draw(sf::RenderWindow &window);
 	sf::Vector2f getVelocity();
 	sf::Vector2f getPosition();
 	sf::RectangleShape getRect();
 	sf::RectangleShape getFOVRect();
 	void setPosition(sf::Vector2f vec);
-	void DropHuman(std::vector<Human*>& humans);
-	void  setseekPoint(sf::Vector2f point);
+
 
 
 	int health = 1;

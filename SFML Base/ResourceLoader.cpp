@@ -24,6 +24,8 @@ ResourceLoader::ResourceLoader()
 	indicatorTexture.setSmooth(true);
 	mutantTexture.loadFromFile("assets/enemies/mutant.png");
 	indicatorTexture.setSmooth(true);
+	enemyBulletTexture.loadFromFile("assets/enemies/enemyBullet.png");
+	enemyBulletTexture.setSmooth(true);
 
 	// Sounds
 	if (!bufferMenuMove.loadFromFile("assets/audio/Blip_Move.ogg")) {}
@@ -120,6 +122,11 @@ sf::Texture & ResourceLoader::getindicatorTexture()
 sf::Texture & ResourceLoader::getmutantTexture()
 {
 	return mutantTexture;
+}
+
+sf::Texture & ResourceLoader::getenemyBulletTexture()
+{
+	return enemyBulletTexture;
 }
 
 

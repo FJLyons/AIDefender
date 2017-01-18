@@ -1,3 +1,5 @@
+
+
 #include "Abductor.h"
 
 Abductor::Abductor()
@@ -21,12 +23,12 @@ Abductor::Abductor(sf::Vector2f pos)
 	abducting = false;
 	range = 700;
 	alive = true;
-	//seekPoint = FindNewPoint();
-	seekPoint = sf::Vector2f(300, 550);
+	seekPoint = FindNewPoint();
+	///seekPoint = sf::Vector2f(300, 550);
 
 	canShoot = true;
-	shotTimer = 0;
-	shotdelay = 0.5;
+	shotTimer = rand() % (5) + 1;
+	shotdelay = 2.;
 
 	mSprite.setScale(0.5, 0.5);
 
@@ -77,10 +79,10 @@ void Abductor::Wandering(std::vector<Abductor*>& abductors, std::vector<Obstacle
 		obsticleseperation.y += -1;
 	}
 
-	
 
-	velocity.x += alignment.x + cohesion.x + seperation.x*2 + obsticleseperation.x * 2 + Direction.x;
-	velocity.y += alignment.y + cohesion.y + seperation.y*2 + obsticleseperation.y * 2 + Direction.y;
+
+	velocity.x += alignment.x + cohesion.x + seperation.x * 2 + obsticleseperation.x * 2 + Direction.x;
+	velocity.y += alignment.y + cohesion.y + seperation.y * 2 + obsticleseperation.y * 2 + Direction.y;
 
 	velocity = CollisionManager::instance()->NormaliseVector(velocity);
 	velocity.x = velocity.x * 10;
@@ -96,7 +98,7 @@ void Abductor::Wandering(std::vector<Abductor*>& abductors, std::vector<Obstacle
 		{
 			if (abductors[i]->getseekPoint() != seekPoint)
 			{
-				//abductors[i]->setseekPoint(seekPoint);
+				abductors[i]->setseekPoint(seekPoint);
 			}
 		}
 	}
@@ -255,7 +257,7 @@ void Abductor::Abducting(std::vector<Human*>& humans)
 {
 	if (mPositon.y < -30)
 	{
-	   alive = false;
+		alive = false;
 
 	}
 	if (abducting == false)
@@ -285,8 +287,11 @@ void Abductor::Abducting(std::vector<Human*>& humans)
 	}
 	mSprite.setPosition(mPositon);
 }
-void Abductor::Update(std::vector<Abductor*>& abductors, int indexofCurrentAbductor, std::vector<Obstacles*>& obstacles, std::vector<Human*>& humans)
+void Abductor::Update(std::vector<Abductor*>& abductors, int indexofCurrentAbductor, std::vector<Obstacles*>& obstacles, std::vector<Human*>& humans, sf::Vector2f playerpos)
 {
+
+
+
 	myIndex = indexofCurrentAbductor;
 
 	if (currentBehaviour == Behaviour::Wander)
@@ -300,10 +305,46 @@ void Abductor::Update(std::vector<Abductor*>& abductors, int indexofCurrentAbduc
 
 	angle = atan2(velocity.y, velocity.x);
 	angle = angle * (180 / 3.14);
+
+
+	if (CollisionManager::instance()->CheckRange(500, mPositon, playerpos) == true)
+	{
+		angle = atan2(playerpos.y - mPositon.y, playerpos.x - mPositon.x);
+		angle = angle * (180 / 3.14);
+		Shoot(playerpos);
+
+	}
+	else
+	{
+		angle = atan2(velocity.y, velocity.x);
+		angle = angle * (180 / 3.14);
+	}
+
 	mSprite.setRotation(angle);
 	FeildofView.setRotation(angle);
 	collisionRect.setPosition(mPositon);
 	FeildofView.setPosition(mPositon);
+
+	for (int i = 0; i < bullets.size(); i++)
+	{
+		if (bullets[i]->Update() == false)
+		{
+			bullets.erase(bullets.begin() + i);
+		}
+
+	}
+
+}
+void Abductor::Shoot(sf::Vector2f playerpos)
+{
+	shotTimer += shotClock.getElapsedTime().asSeconds();
+	sf::Time dt = shotClock.restart();
+
+	if (shotTimer > shotdelay)
+	{
+		bullets.push_back(new AbductorBullet(mPositon, playerpos));
+		shotTimer = 0;
+	}
 
 }
 void Abductor::Draw(sf::RenderWindow & window)
@@ -314,7 +355,11 @@ void Abductor::Draw(sf::RenderWindow & window)
 		window.draw(collisionRect);
 		window.draw(FeildofView);
 	}
-	
+	for (int i = 0; i < bullets.size(); i++)
+	{
+		bullets[i]->Draw(window);
+	}
+
 }
 void Abductor::setPosition(sf::Vector2f vec)
 {

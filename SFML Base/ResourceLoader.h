@@ -26,14 +26,14 @@ public:
 	sf::Texture& getobstacleTexture();
 	sf::Texture& getindicatorTexture();
 	sf::Texture& getmutantTexture();
-
+	sf::Texture& getenemyBulletTexture();
 	sf::Sound menuMove, menuSelect, explosion, hit, shoot, levelUp, back;
 
 	sf::Music musicMenu, musicGame;
 
 private:
 	static ResourceLoader* _instance;
-	sf::Texture health, playershipTexture, backgroundTexture, bulletTexture, humanTexture, nestTexture, interceptorTexture, abductorTexture, obstacleTexture,indicatorTexture,mutantTexture;
+	sf::Texture health, playershipTexture, backgroundTexture, bulletTexture, humanTexture, nestTexture, interceptorTexture, abductorTexture, obstacleTexture,indicatorTexture,mutantTexture, enemyBulletTexture;
 
 	// Sounds
 	sf::SoundBuffer bufferMenuMove, bufferMenuSelect, bufferExplosion, bufferShoot, bufferHit, bufferLevelUp, bufferStart, bufferBack;

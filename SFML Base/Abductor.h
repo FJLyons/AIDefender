@@ -10,6 +10,7 @@
 #include "Obstacles.h"
 #include "Human.h"
 #include "GlobalVariables.h"
+#include "AbductorBullet.h"
 class Abductor
 {
 
@@ -46,6 +47,7 @@ private:
 	bool alive;
 	int humanindex;
 	bool abducting;
+	std::vector<AbductorBullet*> bullets;
 
 public:
 	Abductor();
@@ -59,9 +61,9 @@ public:
 	sf::Vector2f ComputeSeperation(std::vector<Abductor*>& abductors);
 	sf::Vector2f ComputeObsticleSeperation(std::vector<Obstacles*>& obstacles);
 	void CheckForHuman(std::vector<Human*>& humans);
-	void Flocking(std::vector<Abductor*>& abductors);
 	void Abducting(std::vector<Human*>& humans);
-	void Update(std::vector<Abductor*>& abductors, int indexofCurrentAbductor, std::vector<Obstacles*>& obstacles, std::vector<Human*>& humans);
+	void Update(std::vector<Abductor*>& abductors, int indexofCurrentAbductor, std::vector<Obstacles*>& obstacles, std::vector<Human*>& humans, sf::Vector2f playerpos);
+	void Shoot(sf::Vector2f playerpos);
 	void Draw(sf::RenderWindow &window);
 	sf::Vector2f getVelocity();
 	sf::Vector2f getPosition();
@@ -72,7 +74,7 @@ public:
 	void setPosition(sf::Vector2f vec);
 	void DropHuman(std::vector<Human*>& humans);
 	void  setseekPoint(sf::Vector2f point);
-	
+
 
 	int health = 1;
 };

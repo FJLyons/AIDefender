@@ -19,9 +19,9 @@ Mutant::Mutant(sf::Vector2f pos)
 	mSprite.setOrigin(sf::Vector2f(mSprite.getLocalBounds().width / 2, mSprite.getLocalBounds().height / 2));
 	abducting = false;
 	canShoot = true;
-	shotTimer = 0;
-	shotdelay = 0.5;
 
+	shotdelay = 0.5;
+	shotTimer = rand() % (5) + 1;
 	mSprite.setScale(0.5, 0.5);
 
 
@@ -47,7 +47,7 @@ Mutant::Mutant(sf::Vector2f pos)
 }
 
 
-void Mutant::Wandering(std::vector<Mutant*>& mutants, std::vector<Obstacles*>& obstacles,sf::Vector2f playerPos)
+void Mutant::Wandering(std::vector<Mutant*>& mutants, std::vector<Obstacles*>& obstacles, sf::Vector2f playerPos)
 {
 	seekPoint = playerPos;
 
@@ -70,8 +70,8 @@ void Mutant::Wandering(std::vector<Mutant*>& mutants, std::vector<Obstacles*>& o
 
 
 
-	velocity.x += (alignment.x) + cohesion.x + (seperation.x ) + obsticleseperation.x * 2 + Direction.x;
-	velocity.y += (alignment.y) + cohesion.y + (seperation.y )+ obsticleseperation.y * 2 + Direction.y;
+	velocity.x += (alignment.x) + cohesion.x + (seperation.x) + obsticleseperation.x * 2 + Direction.x;
+	velocity.y += (alignment.y) + cohesion.y + (seperation.y) + obsticleseperation.y * 2 + Direction.y;
 
 	velocity = CollisionManager::instance()->NormaliseVector(velocity);
 	velocity.x = velocity.x * 10;
@@ -80,7 +80,7 @@ void Mutant::Wandering(std::vector<Mutant*>& mutants, std::vector<Obstacles*>& o
 	mPositon += velocity;
 	mSprite.setPosition(mPositon);
 
-	
+
 
 }
 sf::Vector2f Mutant::ComputeAlignment(std::vector<Mutant*>& mutants)
@@ -213,20 +213,45 @@ sf::Vector2f Mutant::ComputeObsticleSeperation(std::vector<Obstacles*>& obstacle
 }
 
 
-void Mutant::Update(std::vector<Mutant*>& mutants, int indexofCurrentAbductor, std::vector<Obstacles*>& obstacles,sf::Vector2f playerPos)
+void Mutant::Shoot(sf::Vector2f playerpos, sf::Vector2f playervel)
 {
-	myIndex = indexofCurrentAbductor;
+	shotTimer += shotClock.getElapsedTime().asSeconds();
+	sf::Time dt = shotClock.restart();
+
+	if (shotTimer > shotdelay)
+	{
+		bullets.push_back(new MutantBullet(mPositon, playerpos, playervel));
+		shotTimer = 0;
+	}
+
+}
+
+void Mutant::Update(std::vector<Mutant*>& mutants, int indexofCurrentMutant, std::vector<Obstacles*>& obstacles, sf::Vector2f playerPos, sf::Vector2f playerVel)
+{
+	myIndex = indexofCurrentMutant;
 
 
-		Wandering(mutants, obstacles,playerPos);
-	
+	Wandering(mutants, obstacles, playerPos);
 
-	/*angle = atan2(velocity.y, velocity.x);
-	angle = angle * (180 / 3.14);
-	mSprite.setRotation(angle);*/
+	if (CollisionManager::instance()->CheckRange(500, mPositon, playerPos) == true)
+	{
+
+		Shoot(playerPos, playerVel);
+
+	}
+
 	FeildofView.setRotation(angle);
 	collisionRect.setPosition(mPositon);
 	FeildofView.setPosition(mPositon);
+
+	for (int i = 0; i < bullets.size(); i++)
+	{
+		if (bullets[i]->Update() == false)
+		{
+			bullets.erase(bullets.begin() + i);
+		}
+
+	}
 
 }
 void Mutant::Draw(sf::RenderWindow & window)
@@ -236,6 +261,13 @@ void Mutant::Draw(sf::RenderWindow & window)
 	{
 		window.draw(collisionRect);
 		window.draw(FeildofView);
+	}
+	for (int i = 0; i < bullets.size(); i++)
+	{
+
+		bullets[i]->Draw(window);
+
+
 	}
 
 }

@@ -42,10 +42,10 @@ private:
 
 	//sf::Vector2f seekPoint;
 	enum Behaviour { Wander, Evade };
-	
+
 
 public:
-	Nest( sf::Vector2f pos);
+	Nest(sf::Vector2f pos);
 	~Nest();
 
 	sf::Vector2f FindNewPoint();
@@ -54,7 +54,7 @@ public:
 	sf::Vector2f ComputeObsticleSeperation(std::vector<Obstacles*>& obstacles);
 	void Update(sf::RectangleShape  player, std::vector<Abductor*> &abductors, std::vector<Obstacles*>& obstacles);
 	void Draw(sf::RenderWindow &window);
-	void SpawnAbductors( std::vector<Abductor*> &abductors);
+	void SpawnAbductors(std::vector<Abductor*> &abductors);
 	//void calculateDrift();
 
 	sf::RectangleShape getRect();

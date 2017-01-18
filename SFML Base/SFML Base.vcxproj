@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Abductor.cpp" />
+    <ClCompile Include="AbductorBullet.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="InterceptorMissile.cpp" />
     <ClCompile Include="Mutant.cpp" />
+    <ClCompile Include="MutantBullet.cpp" />
     <ClCompile Include="Nest.cpp" />
     <ClCompile Include="Obstacles.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -180,6 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Abductor.h" />
+    <ClInclude Include="AbductorBullet.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CollisionManager.h" />
@@ -187,6 +190,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="InterceptorMissile.h" />
     <ClInclude Include="Mutant.h" />
+    <ClInclude Include="MutantBullet.h" />
     <ClInclude Include="Nest.h" />
     <ClInclude Include="Obstacles.h" />
     <ClInclude Include="Player.h" />

@@ -6,7 +6,7 @@ Player::Player()
 
 }
 
-Player::Player( sf::Vector2f pos, sf::Vector2f maxVel)
+Player::Player(sf::Vector2f pos, sf::Vector2f maxVel)
 {
 	mTexture = ResourceLoader::instance()->getplayershipTexture();
 	mPositon = pos;
@@ -30,7 +30,8 @@ Player::Player( sf::Vector2f pos, sf::Vector2f maxVel)
 	collisionRect.setOutlineColor(sf::Color::Red);
 	collisionRect.setFillColor(sf::Color::Transparent);
 	collisionRect.setOutlineThickness(2);
-	collisionRect.setPosition(mPositon);	
+	collisionRect.setPosition(mPositon);
+
 }
 
 void Player::Update()
@@ -168,13 +169,12 @@ void Player::MoveRight()
 }
 
 void Player::Shoot()
-{	
+{
 	if (canShoot == true)
 	{
 		bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, velocity));
 		shotTimer = 0;
-		resource->shoot.play();
-	}	
+	}
 }
 
 void Player::Flip()
@@ -196,14 +196,19 @@ void Player::Flip()
 
 	/*if (playerFacingUp == true)
 	{
-		if (mScale.y > -1)
-			mScale.y -= flipSpeed;
+	if (mScale.y > -1)
+	mScale.y -= flipSpeed;
 	}
 	else if (playerFacingUp == false)
 	{
-		if (mScale.y < 1)
-			mScale.y += flipSpeed;
+	if (mScale.y < 1)
+	mScale.y += flipSpeed;
 	}*/
+}
+
+sf::Vector2f Player::getVelocity()
+{
+	return velocity;
 }
 
 sf::Vector2f Player::getPosition()

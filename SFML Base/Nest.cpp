@@ -1,9 +1,9 @@
 #include "Nest.h"
 
-Nest::Nest( sf::Vector2f pos)
+Nest::Nest(sf::Vector2f pos)
 {
 	mTexture = ResourceLoader::instance()->getnestTexture();
-	
+
 	if (pos.y > 0)
 	{
 		mPositon = pos;
@@ -17,7 +17,7 @@ Nest::Nest( sf::Vector2f pos)
 
 	mSprite.setTexture(mTexture);
 	mSprite.setPosition(mPositon);
-	mSprite.setOrigin(sf::Vector2f(mSprite.getLocalBounds().width / 2,mSprite.getLocalBounds().height / 2));
+	mSprite.setOrigin(sf::Vector2f(mSprite.getLocalBounds().width / 2, mSprite.getLocalBounds().height / 2));
 
 	currentBehaviour = Behaviour::Wander;
 	range = 700;
@@ -29,7 +29,7 @@ Nest::Nest( sf::Vector2f pos)
 	shotdelay = 2;
 
 	spawnTimer = 0;
-	
+
 
 	collisionRect.setOrigin(mSprite.getGlobalBounds().width / 2, mSprite.getGlobalBounds().height / 2);
 	collisionRect.setSize(sf::Vector2f(mSprite.getGlobalBounds().width, mSprite.getGlobalBounds().height));
@@ -55,7 +55,7 @@ Nest::~Nest()
 
 sf::Vector2f Nest::FindNewPoint()
 {
-	sf::Vector2f newPoint =sf::Vector2f(rand() % (1920 * 9) + 1, rand() % (700) + 1);
+	sf::Vector2f newPoint = sf::Vector2f(rand() % (1920 * 9) + 1, rand() % (700) + 1);
 	return  newPoint;
 }
 
@@ -79,7 +79,7 @@ void Nest::Wandering(std::vector<Obstacles*>& obstacles)
 
 
 	velocity.x += seperation.x * 2 + Direction.x;
-	velocity.y +=  seperation.y * 2 + Direction.y;
+	velocity.y += seperation.y * 2 + Direction.y;
 
 	velocity = CollisionManager::instance()->NormaliseVector(velocity);
 	velocity.x = velocity.x * 10;
@@ -89,9 +89,9 @@ void Nest::Wandering(std::vector<Obstacles*>& obstacles)
 	//mPositon += sf::Vector2f(Direction.x * velocity.x, Direction.y * velocity.y);
 	mSprite.setPosition(mPositon);
 
-	if (CollisionManager::instance()->CheckRange(10,seekPoint, mPositon) == true)
+	if (CollisionManager::instance()->CheckRange(10, seekPoint, mPositon) == true)
 	{
-		seekPoint=FindNewPoint();
+		seekPoint = FindNewPoint();
 	}
 
 }
@@ -106,7 +106,7 @@ void Nest::Evading()
 	{
 		velocity = sf::Vector2f(5, 0);
 	}
-	
+
 	mPositon += velocity;
 	mSprite.setPosition(mPositon);
 
@@ -127,23 +127,23 @@ void Nest::Update(sf::RectangleShape  player, std::vector<Abductor*> &abductors,
 	{
 		canShoot = false;
 	}
-	if (CollisionManager::instance()->CheckRange(400, playerPosition, mPositon)==true)
+	if (CollisionManager::instance()->CheckRange(400, playerPosition, mPositon) == true)
 	{
 		//currentBehaviour = Behaviour::Evade;
-		
+
 	}
 	else
 	{
 		currentBehaviour = Behaviour::Wander;
-		
+
 	}
-	if (CollisionManager::instance()->CheckRange(range, playerPosition, mPositon) == true && missileList.size() <3 && canShoot == true )
+	if (CollisionManager::instance()->CheckRange(range, playerPosition, mPositon) == true && missileList.size() <3 && canShoot == true)
 	{
-		
+
 		missileList.push_back(new InterceptorMissile(mPositon));
 		shotTimer = 0;
 	}
-	
+
 
 	for (int i = 0; i< missileList.size(); i++)
 	{
@@ -182,7 +182,7 @@ void Nest::Draw(sf::RenderWindow & window)
 
 void Nest::SpawnAbductors(std::vector<Abductor*> &abductors)
 {
-	
+
 	spawnTimer += spawnClock.getElapsedTime().asSeconds();
 	spawnClock.restart();
 	if (spawnTimer > spawnDelay)

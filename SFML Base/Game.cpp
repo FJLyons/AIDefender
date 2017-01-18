@@ -185,7 +185,7 @@ void Game::update()
 	// Abductors
 	for (int i = 0; i < abductors.size(); i++)
 	{
-		abductors[i]->Update(abductors, i,meteors,humans);
+		abductors[i]->Update(abductors, i,meteors,humans,player->getPosition());
 
 		// Create Mutant
 		if (abductors[i]->getAlive() == false)//if an abductor has successfully abducted a human
@@ -281,7 +281,7 @@ void Game::update()
 	//Mutants
 	for (int i = 0; i < mutants.size(); i++)
 	{
-		mutants[i]->Update(mutants,i, meteors, player->getPosition());
+		mutants[i]->Update(mutants,i, meteors, player->getPosition(),player->getVelocity());
 
 		// Collisions
 		// Player

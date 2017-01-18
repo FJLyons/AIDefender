@@ -81,6 +81,12 @@
     <ClCompile Include="Mutant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AbductorBullet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MutantBullet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SplashScreen.h">
@@ -144,6 +150,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Mutant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AbductorBullet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MutantBullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
