@@ -29,9 +29,12 @@ void OptionsMenu::init()
 
 	text[0].setString("test");
 
+
+	text[0].setString("Collision Box Off");
+	text[1].setString("Music Volume = " + std::to_string(volume));
+
 	for (int i = 0; i < OPTIONS_MENU_INDEX; i++)
 	{
-		text[i].setString("test");
 		text[i].setFont(font);
 		text[i].setPosition((screenSize.x / 2) - text[i].getLocalBounds().width / 3.5f, (screenSize.y / 2) + (48.0f * i) - text[i].getLocalBounds().height / 2.0f);
 		text[i].setCharacterSize(18);
@@ -74,6 +77,53 @@ void OptionsMenu::input(sf::Event Event)
 		moveDown();
 		resource->menuMove.play();
 	}
+
+	if (inputManager->KeyPressed(sf::Keyboard::Right))
+	{
+		std::cout << "Right" << std::endl;
+		resource->menuMove.play();
+
+		if (getPressedItem() == 0)
+		{
+			text[0].setString("Collision Box On");
+			myGlobalOptions->drawCollisionBox = true;
+		}
+
+		if (getPressedItem() == 1)
+		{
+			if (volume != 100)
+			{
+				volume += 10;
+				resource->musicMenu.setVolume(volume);
+				resource->musicGame.setVolume(volume);
+				text[1].setString("Music Volume = " + std::to_string(volume));
+			}
+		}
+	}
+
+	if (inputManager->KeyPressed(sf::Keyboard::Left))
+	{
+		std::cout << "Left" << std::endl;
+		resource->menuMove.play();
+
+		if (getPressedItem() == 0)
+		{
+			text[0].setString("Collision Box Off");
+			myGlobalOptions->drawCollisionBox = false;
+		}
+
+		if (getPressedItem() == 1)
+		{
+			if (volume != 0)
+			{
+				volume -= 10;
+				resource->musicMenu.setVolume(volume);
+				resource->musicGame.setVolume(volume);
+				text[1].setString("Music Volume = " + std::to_string(volume));
+			}
+		}
+	}
+
 }
 
 void OptionsMenu::draw(sf::RenderWindow &window)

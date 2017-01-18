@@ -53,5 +53,7 @@ private:
 		OPTION1,
 		OPTION2
 	};
+
+	int volume = 50;
 };
 

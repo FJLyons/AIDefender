@@ -438,7 +438,6 @@ void Game::input(sf::Event Event)
 
 	if (inputManager->KeyPressed(sf::Keyboard::Num0))
 	{
-		myGlobalOptions->drawCollisionBox = !myGlobalOptions->drawCollisionBox;
 	}
 
 	controller(Event);
