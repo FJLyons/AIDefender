@@ -7,6 +7,7 @@
 
 #include "GlobalVariables.h"
 #include "InputManager.h"
+#include "ResourceLoader.h"
 
 #define OPTIONS_MENU_INDEX 2
 
@@ -15,6 +16,7 @@ class OptionsMenu
 private:
 	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
 	InputManager* inputManager = InputManager::getInstance();
+	ResourceLoader* resource = ResourceLoader::instance();
 
 public:
 	OptionsMenu();

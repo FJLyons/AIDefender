@@ -37,6 +37,7 @@ void InstructionsScreen::input(sf::Event Event)
 	{
 		std::cout << "Back Space" << std::endl;
 		goToScene(myGlobalOptions->MAINMENU);
+		resource->back.play();
 	}
 }
 

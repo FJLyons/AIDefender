@@ -6,6 +6,7 @@
 
 #include "GlobalVariables.h"
 #include "InputManager.h"
+#include "ResourceLoader.h"
 
 #define FULL_COLOUR 255
 
@@ -14,6 +15,7 @@ class SplashScreen
 private:
 	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
 	InputManager* inputManager = InputManager::getInstance();
+	ResourceLoader* resource = ResourceLoader::instance();
 
 public:
 	SplashScreen();

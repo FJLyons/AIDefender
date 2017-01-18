@@ -67,23 +67,27 @@ void MainMenu::input(sf::Event Event)
 	{
 		std::cout << "Back Space" << std::endl;
 		goToScene(myGlobalOptions->SPLASH);
+		resource->back.play();
 	}
 
 	if (inputManager->KeyPressed(sf::Keyboard::Return))
 	{
 		swapScreen();
+		resource->menuSelect.play();
 	}
 
 	if (inputManager->KeyPressed(sf::Keyboard::Up))
 	{
 		std::cout << "Up" << std::endl;
 		moveUp();
+		resource->menuMove.play();
 	}
 
 	if (inputManager->KeyPressed(sf::Keyboard::Down))
 	{
 		std::cout << "Down" << std::endl;
 		moveDown();
+		resource->menuMove.play();
 	}
 }
 
@@ -92,7 +96,9 @@ void MainMenu::swapScreen()
 	if (getPressedItem() == GAME)
 	{
 		myGlobalOptions->setCurrentScene(myGlobalOptions->GAME);
-		std::cout << "New Game" << std::endl;
+		std::cout << "Play Game" << std::endl;
+		resource->musicMenu.pause();
+		resource->musicGame.play();
 	}
 
 	else if (getPressedItem() == LOAD)

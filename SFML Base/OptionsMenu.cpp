@@ -52,23 +52,27 @@ void OptionsMenu::input(sf::Event Event)
 	{
 		std::cout << "Back Space" << std::endl;
 		goToScene(myGlobalOptions->MAINMENU);
+		resource->back.play();
 	}
 
 	if (inputManager->KeyPressed(sf::Keyboard::Return))
 	{
-		// swapScreen(); // Toggle option
+		// Toggle option
+		resource->menuSelect.play();
 	}
 
 	if (inputManager->KeyPressed(sf::Keyboard::Up))
 	{
 		std::cout << "Up" << std::endl;
 		moveUp();
+		resource->menuMove.play();
 	}
 
 	if (inputManager->KeyPressed(sf::Keyboard::Down))
 	{
 		std::cout << "Down" << std::endl;
 		moveDown();
+		resource->menuMove.play();
 	}
 }
 

@@ -195,7 +195,6 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="InstructionsScreen.h" />
     <ClInclude Include="LoadScreen.h" />
-    <ClInclude Include="Main.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="GlobalVariables.h" />
     <ClInclude Include="OptionsMenu.h" />

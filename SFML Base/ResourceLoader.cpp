@@ -42,8 +42,14 @@ ResourceLoader::ResourceLoader()
 		if (!bufferLevelUp.loadFromFile("assets/audio/Levelup.ogg")) {}
 		levelUp.setBuffer(bufferLevelUp);
 
-		if (!musicMenu.openFromFile("assets/audio/THEME OF TATA.ogg")) {}
+		if (!bufferBack.loadFromFile("assets/audio/Blip_Back.ogg")) {}
+		back.setBuffer(bufferBack);
+
+		if (!musicMenu.openFromFile("assets/audio/THEME OF TARA.ogg")) {}
 		if (!musicGame.openFromFile("assets/audio/RED ALERT.ogg")) {}
+
+		musicMenu.setVolume(50);
+		musicGame.setVolume(50);
 		
 }
 

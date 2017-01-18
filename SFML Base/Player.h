@@ -6,6 +6,7 @@
 
 #include "GlobalVariables.h"
 #include "InputManager.h"
+#include "ResourceLoader.h"
 
 #include "Bullet.h"
 #include "ResourceLoader.h"
@@ -16,6 +17,7 @@ class Player
 
 private:
 	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
+	ResourceLoader* resource = ResourceLoader::instance();
 
 private:
 	sf::Texture mTexture;

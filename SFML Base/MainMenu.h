@@ -7,6 +7,7 @@
 
 #include "GlobalVariables.h"
 #include "InputManager.h"
+#include "ResourceLoader.h"
 
 #define MENU_INDEX 5
 
@@ -15,6 +16,7 @@ class MainMenu
 private:
 	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
 	InputManager* inputManager = InputManager::getInstance();
+	ResourceLoader* resource = ResourceLoader::instance();
 
 public:
 	MainMenu();
@@ -55,6 +57,5 @@ private:
 		INSTRUCTIONS,
 		QUIT
 	};
-
 };
 

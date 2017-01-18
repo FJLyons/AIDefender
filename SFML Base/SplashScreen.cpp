@@ -42,6 +42,8 @@ void SplashScreen::init()
 	printed = false;
 	textAlphaFade = 255;
 	fading = false;
+	
+	resource->musicMenu.play();
 }
 
 void SplashScreen::update()
@@ -61,6 +63,7 @@ void SplashScreen::input(sf::Event Event)
 	{
 		std::cout << Event.key.code << std::endl;
 		goToScene(myGlobalOptions->MAINMENU);
+		resource->menuSelect.play();
 	}
 }
 

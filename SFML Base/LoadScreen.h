@@ -8,12 +8,14 @@
 
 #include "GlobalVariables.h"
 #include "InputManager.h"
+#include "ResourceLoader.h"
 
 class LoadScreen
 {
 private:
 	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
 	InputManager* inputManager = InputManager::getInstance();
+	ResourceLoader* resource = ResourceLoader::instance();
 
 public:
 	LoadScreen();

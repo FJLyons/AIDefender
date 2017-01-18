@@ -30,8 +30,7 @@ Player::Player( sf::Vector2f pos, sf::Vector2f maxVel)
 	collisionRect.setOutlineColor(sf::Color::Red);
 	collisionRect.setFillColor(sf::Color::Transparent);
 	collisionRect.setOutlineThickness(2);
-	collisionRect.setPosition(mPositon);
-	
+	collisionRect.setPosition(mPositon);	
 }
 
 void Player::Update()
@@ -174,6 +173,7 @@ void Player::Shoot()
 	{
 		bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, velocity));
 		shotTimer = 0;
+		resource->shoot.play();
 	}	
 }
 

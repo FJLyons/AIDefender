@@ -95,9 +95,6 @@
     <ClInclude Include="OptionsMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LoadScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>

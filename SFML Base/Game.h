@@ -12,6 +12,7 @@
 #include "GlobalVariables.h"
 #include "InputManager.h"
 #include "CollisionManager.h"
+#include "ResourceLoader.h"
 
 #include "Camera.h"
 #include "Player.h"
@@ -28,6 +29,7 @@ private:
 	GlobalVariables* myGlobalOptions = GlobalVariables::getInstance();
 	InputManager* inputManager = InputManager::getInstance();
 	CollisionManager* collisionManager = new CollisionManager();
+	ResourceLoader* resource = ResourceLoader::instance();
 
 public:
 	Game(Camera* camera);
@@ -63,7 +65,7 @@ private:
 	void clearVectors();
 	void spawn();
 	void nextLevel();
-	void gameOver();
+	void gameOver(bool winLose);
 
 protected:
 	Camera* camera;
@@ -80,5 +82,6 @@ protected:
 	std::vector<Obstacles*> meteorsToDelete = std::vector<Obstacles*>();
 	std::vector<Abductor*> abductorsToDelete = std::vector<Abductor*>();
 	std::vector<Nest*> nestsToDelete = std::vector<Nest*>();
+	std::vector<Mutant*> mutantsToDelete = std::vector<Mutant*>();
 };
 

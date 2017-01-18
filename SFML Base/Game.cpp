@@ -27,7 +27,14 @@ void Game::update()
 {
 	camera->update(player);
 	player->Update();
+	if (player->health <= 0) 
+	{
+		resource->explosion.play();
+		gameOver(false); 
+		player->health += 1;
+	}
 
+	// Human
 	for (int i = 0; i < humans.size(); i++)
 	{
 		humans[i]->Update(player->getPosition());
@@ -36,16 +43,17 @@ void Game::update()
 		// Player
 		if (collisionManager->RectangleCollision(player->getRect(), humans[i]->getRect()))
 		{
+			resource->menuSelect.play();
+
 			humansToDelete.push_back(humans[i]); // For Memory Clean up
 			humans.erase(humans.begin() + i);
 
 			i--;
 			continue;
 		}
-
-		// Abductor
 	}
 
+	// Meteor
 	for (int i = 0; i < meteors.size(); i++)
 	{
 		meteors[i]->Update();
@@ -53,6 +61,8 @@ void Game::update()
 		// Death
 		if (meteors[i]->getPosition().y >= 1080)
 		{
+			resource->hit.play();
+
 			meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
 			meteors.erase(meteors.begin() + i);
 		}
@@ -61,6 +71,10 @@ void Game::update()
 		// Player
 		if (collisionManager->RectangleCollision(player->getRect(), meteors[i]->getRect()))
 		{
+			resource->hit.play();
+
+			player->health--;
+
 			meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
 			meteors.erase(meteors.begin() + i);
 			
@@ -74,6 +88,8 @@ void Game::update()
 		{
 			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), meteors[i]->getRect()))
 			{
+				resource->hit.play();
+
 				player->deleteBullet(j);
 
 				meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
@@ -87,7 +103,9 @@ void Game::update()
 		}
 	}
 
+
 	// Enemies with Health 
+	// Nest
 	for (int i = 0; i < nests.size(); i++)
 	{
 		nests[i]->Update(player->getRect(), abductors,meteors);
@@ -96,6 +114,12 @@ void Game::update()
 		// Player
 		if (collisionManager->RectangleCollision(player->getRect(), nests[i]->getRect()))
 		{
+			resource->hit.play();
+
+			player->health--;
+
+			// Die
+			resource->explosion.play();
 			nestsToDelete.push_back(nests[i]); // For Memory Clean up
 			nests.erase(nests.begin() + i);
 
@@ -109,10 +133,19 @@ void Game::update()
 		{
 			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), nests[i]->getRect()))
 			{
+				resource->hit.play();
+
 				player->deleteBullet(j);
 
-				nestsToDelete.push_back(nests[i]); // For Memory Clean up
-				nests.erase(nests.begin() + i);
+				nests[i]->health--;
+
+				// Die
+				if (nests[i]->health <= 0)
+				{
+					resource->explosion.play();
+					nestsToDelete.push_back(nests[i]); // For Memory Clean up
+					nests.erase(nests.begin() + i);
+				}
 
 				j--;
 				i--;
@@ -126,11 +159,20 @@ void Game::update()
 		{
 			if (collisionManager->RectangleCollision(meteors[j]->getRect(), nests[i]->getRect()))
 			{
+				resource->hit.play();
+
 				meteorsToDelete.push_back(meteors[j]); // For Memory Clean up
 				meteors.erase(meteors.begin() + j);
 
-				nestsToDelete.push_back(nests[i]); // For Memory Clean up
-				nests.erase(nests.begin() + i);
+				nests[i]->health--;
+
+				// Die
+				if (nests[i]->health <= 0)
+				{
+					resource->explosion.play();
+					nestsToDelete.push_back(nests[i]); // For Memory Clean up
+					nests.erase(nests.begin() + i);
+				}
 
 				j--;
 				i--;
@@ -140,38 +182,43 @@ void Game::update()
 		}
 	}
 	
+	// Abductors
 	for (int i = 0; i < abductors.size(); i++)
 	{
 		abductors[i]->Update(abductors, i,meteors,humans);
+
+		// Create Mutant
 		if (abductors[i]->getAlive() == false)//if an abductor has successfully abducted a human
 		{
+			resource->back.play();
+
 			mutants.push_back(new Mutant(abductors[i]->getPosition()));
-			mutants.push_back(new Mutant(abductors[i]->getPosition()));
-			mutants.push_back(new Mutant(abductors[i]->getPosition()));
-			mutants.push_back(new Mutant(abductors[i]->getPosition()));
-			mutants.push_back(new Mutant(abductors[i]->getPosition()));
-			mutants.push_back(new Mutant(abductors[i]->getPosition()));
-			mutants.push_back(new Mutant(abductors[i]->getPosition()));
+			mutants.back()->health = currentLevel * 2;
+
 			abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
 			abductors.erase(abductors.begin() + i);
-
 
 			i--;
 			continue;
 		}
+
 		// Collisions
 		// Player
 		if (collisionManager->RectangleCollision(player->getRect(), abductors[i]->getRect()))
 		{
+			resource->hit.play();
+
+			player->health--;
+
+			// Die
+			resource->explosion.play();
 			abductors[i]->DropHuman(humans);
 			abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
-			abductors.erase(abductors.begin() + i);
-			
+			abductors.erase(abductors.begin() + i);			
 
 			i--;
 			continue;
-		}
-	
+		}	
 
 		// Bullets
 		bool checkNext = true;
@@ -179,10 +226,20 @@ void Game::update()
 		{
 			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), abductors[i]->getRect()))
 			{
+				resource->hit.play();
+
 				player->deleteBullet(j);
-				abductors[i]->DropHuman(humans);
-				abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
-				abductors.erase(abductors.begin() + i);
+
+				abductors[i]->health--;
+
+				// Die
+				if (abductors[i]->health <= 0)
+				{
+					resource->explosion.play();
+					abductors[i]->DropHuman(humans);
+					abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
+					abductors.erase(abductors.begin() + i);
+				}
 
 				j--;
 				i--;
@@ -196,11 +253,22 @@ void Game::update()
 		{
 			if (collisionManager->RectangleCollision(meteors[j]->getRect(), abductors[i]->getRect()))
 			{
+				resource->hit.play();
+
 				meteorsToDelete.push_back(meteors[j]); // For Memory Clean up
 				meteors.erase(meteors.begin() + j);
+
 				abductors[i]->DropHuman(humans);
-				abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
-				abductors.erase(abductors.begin() + i);
+
+				abductors[i]->health--;
+
+				// Die
+				if (abductors[i]->health <= 0)
+				{
+					resource->explosion.play();
+					abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
+					abductors.erase(abductors.begin() + i);
+				}
 
 				j--;
 				i--;
@@ -214,9 +282,83 @@ void Game::update()
 	for (int i = 0; i < mutants.size(); i++)
 	{
 		mutants[i]->Update(mutants,i, meteors, player->getPosition());
+
+		// Collisions
+		// Player
+		if (collisionManager->RectangleCollision(player->getRect(), mutants[i]->getRect()))
+		{
+			resource->hit.play();
+
+			player->health--;
+
+			// Die
+			resource->explosion.play();
+			mutantsToDelete.push_back(mutants[i]); // For Memory Clean up
+			mutants.erase(mutants.begin() + i);
+
+			i--;
+			continue;
+		}
+
+		// Bullets
+		bool checkNext = true;
+		for (int j = 0; checkNext && j < player->getBullets().size(); j++)
+		{
+			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), mutants[i]->getRect()))
+			{
+				resource->hit.play();
+
+				player->deleteBullet(j);
+
+				mutants[i]->health--;
+
+				// Die
+				if (mutants[i]->health <= 0)
+				{
+					resource->explosion.play();
+					mutantsToDelete.push_back(mutants[i]); // For Memory Clean up
+					mutants.erase(mutants.begin() + i);
+				}
+
+				j--;
+				i--;
+				checkNext = false;
+				continue;
+			}
+		}
+
+		// Meteor
+		for (int j = 0; checkNext && j < meteors.size(); j++)
+		{
+			if (collisionManager->RectangleCollision(meteors[j]->getRect(), mutants[i]->getRect()))
+			{
+				resource->hit.play();
+
+				meteorsToDelete.push_back(meteors[j]); // For Memory Clean up
+				meteors.erase(meteors.begin() + j);
+
+				mutants[i]->health--;
+
+				// Die
+				if (mutants[i]->health <= 0)
+				{
+					resource->explosion.play();
+					mutantsToDelete.push_back(mutants[i]); // For Memory Clean up
+					mutants.erase(mutants.begin() + i);
+				}
+
+				j--;
+				i--;
+				checkNext = false;
+				continue;
+			}
+		}
 	}
-	if (humans.empty() && abductors.empty() && nests.empty())
+
+	if (mutants.empty() && abductors.empty() && nests.empty())
 	{
+		resource->levelUp.play();
+		humans.clear();
 		nextLevel();
 	}
 
@@ -290,6 +432,8 @@ void Game::input(sf::Event Event)
 		camera->resetView();
 		std::cout << "Back Space" << std::endl;
 		goToScene(myGlobalOptions->MAINMENU);
+		resource->musicMenu.play();
+		resource->musicGame.pause();
 	}
 
 	if (inputManager->KeyPressed(sf::Keyboard::Num0))
@@ -405,27 +549,15 @@ void Game::MeteorSpawn()
 
 void Game::spawn()
 {
-
-
 	for (int i = 0; i < currentLevel; i++)
 	{
 		humans.push_back(new Human(terrain->getPoints()));
 		nests.push_back(new Nest(sf::Vector2f(rand() % (1920 * 9) + 1, rand() % (500) + 1)));
-	//	abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
-	//	abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
+		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
+		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
+		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
+		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
 	}
-	abductors.push_back(new Abductor(sf::Vector2f(350, 50)));
-	abductors.push_back(new Abductor(sf::Vector2f(350, 100)));//uncomment to test abductors;
-	abductors.push_back(new Abductor(sf::Vector2f(350, 150)));
-	abductors.push_back(new Abductor(sf::Vector2f(350, 200)));
-	abductors.push_back(new Abductor(sf::Vector2f(350, 250)));
-	abductors.push_back(new Abductor(sf::Vector2f(350, 300)));
-	abductors.push_back(new Abductor(sf::Vector2f(350, 350)));
-	abductors.push_back(new Abductor(sf::Vector2f(350, 400)));
-	abductors.push_back(new Abductor(sf::Vector2f(350, 450)));
-	abductors.push_back(new Abductor(sf::Vector2f(350, 500)));
-	abductors.push_back(new Abductor(sf::Vector2f(350, 550)));
-	abductors.push_back(new Abductor(sf::Vector2f(350, 600)));
 }
 
 void Game::clearVectors()
@@ -453,6 +585,12 @@ void Game::clearVectors()
 		delete *it;
 	}
 	nestsToDelete.clear();
+
+	for (std::vector<Mutant*>::iterator it = mutantsToDelete.begin(); it != mutantsToDelete.end(); ++it)
+	{
+		delete *it;
+	}
+	mutantsToDelete.clear();
 }
 
 void Game::nextLevel()
@@ -473,4 +611,9 @@ void Game::nextLevel()
 	{
 		nests[i]->health = currentLevel + (currentLevel / 2);
 	}
+}
+
+void Game::gameOver(bool win)
+{
+
 }
