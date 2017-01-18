@@ -33,7 +33,7 @@ public:
 
 private:
 	static ResourceLoader* _instance;
-	sf::Texture playershipTexture, backgroundTexture, bulletTexture, humanTexture, nestTexture, interceptorTexture, abductorTexture, obstacleTexture,indicatorTexture,mutantTexture;
+	sf::Texture health, playershipTexture, backgroundTexture, bulletTexture, humanTexture, nestTexture, interceptorTexture, abductorTexture, obstacleTexture,indicatorTexture,mutantTexture;
 
 	// Sounds
 	sf::SoundBuffer bufferMenuMove, bufferMenuSelect, bufferExplosion, bufferShoot, bufferHit, bufferLevelUp, bufferStart, bufferBack;
