@@ -33,11 +33,11 @@ public:
 	sf::RectangleShape collisionRect;
 	bool mfacingRight;
 	bool alive;
-	float ttl = 3;
+	float ttl = 1;
 	sf::Clock deltaClock;
 
 	Bullet();
-	Bullet(sf::Vector2f pos, sf::Texture& tex, bool facingRight, sf::Vector2f playerVelocity);
+	Bullet(sf::Vector2f pos, sf::Texture& tex, bool facingRight, sf::Vector2f direction);
 	bool Update();
 	void Draw(sf::RenderWindow &window);
 

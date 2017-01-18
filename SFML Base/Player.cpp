@@ -9,6 +9,7 @@ Player::Player()
 Player::Player(sf::Vector2f pos, sf::Vector2f maxVel)
 {
 	mTexture = ResourceLoader::instance()->getplayershipTexture();
+	powerupTex = ResourceLoader::instance()->getenemyPowerTexture();
 	mPositon = pos;
 	maxVelocity = maxVel;
 
@@ -17,7 +18,15 @@ Player::Player(sf::Vector2f pos, sf::Vector2f maxVel)
 	mSprite.setTexture(mTexture);
 	mSprite.setPosition(mPositon);
 	mSprite.setOrigin(sf::Vector2f(mSprite.getLocalBounds().width / 2, mSprite.getLocalBounds().height / 2));
+
+
+	powerupPos.x = 0;
+	powerupPos.y = -1000;
+	powerupSprite.setTexture(powerupTex);
+	powerupSprite.setPosition(powerupPos);
+	powerupSprite.setOrigin(sf::Vector2f(mSprite.getLocalBounds().width / 2, mSprite.getLocalBounds().height / 2));
 	mScale = sf::Vector2f(1.f, 1.f);
+
 	bombLoaded = true;
 	bombfired = false;
 	warping = false;
@@ -29,6 +38,7 @@ Player::Player(sf::Vector2f pos, sf::Vector2f maxVel)
 	canShoot = true;
 	shotTimer = 0;
 	shotdelay = 0.3;
+	powerupScale = 1;
 
 	collisionRect.setOrigin(mSprite.getGlobalBounds().width / 2, mSprite.getGlobalBounds().height / 2);
 	collisionRect.setSize(sf::Vector2f(mSprite.getGlobalBounds().width, mSprite.getGlobalBounds().height));
@@ -37,6 +47,12 @@ Player::Player(sf::Vector2f pos, sf::Vector2f maxVel)
 	collisionRect.setOutlineThickness(2);
 	collisionRect.setPosition(mPositon);
 
+	powerupCollisionRect.setOrigin(powerupSprite.getGlobalBounds().width / 2, powerupSprite.getGlobalBounds().height / 2);
+	powerupCollisionRect.setSize(sf::Vector2f(powerupSprite.getGlobalBounds().width, powerupSprite.getGlobalBounds().height));
+	powerupCollisionRect.setOutlineColor(sf::Color::Red);
+	powerupCollisionRect.setFillColor(sf::Color::Transparent);
+	powerupCollisionRect.setOutlineThickness(2);
+	powerupCollisionRect.setPosition(powerupPos);
 
 	bombrectSize = sf::Vector2f(0, 0);
 	bombRectangle.setOrigin(mSprite.getGlobalBounds().width / 2, mSprite.getGlobalBounds().height / 2);
@@ -47,6 +63,10 @@ Player::Player(sf::Vector2f pos, sf::Vector2f maxVel)
 	bombRectangle.setPosition(mPositon);
 
 	bombTimer = 0;
+	powerLevel = 1;
+	powertimer = 0;
+	powerupdelay = rand() % (20) + 5;
+	powercollected = false;
 }
 
 void Player::Update()
@@ -71,6 +91,18 @@ void Player::Update()
 		{
 			warpReady = true;
 			warptimer = 0;
+		}
+	}
+	if (powercollected == false)
+	{
+		powertimer += shotClock.getElapsedTime().asSeconds();
+		if (powertimer > powerupdelay)
+		{
+			powertimer = 0;
+			powerupdelay = rand() % (20) + 5;
+			powerupPos.x = rand() % (MAP_WIDTH_PIXEL)+1;
+			powerupPos.y = rand() % (500)+1;
+			powercollected == true;
 		}
 	}
 
@@ -124,8 +156,21 @@ void Player::Update()
 	{
 		Warp();
 	}
+	
+	if (CollisionManager::instance()->RectangleCollision(powerupCollisionRect,collisionRect)==true)
+	{
+		powerLevel++;
+		powerupPos.x = 0;
+		powerupPos.y = -1000;
+		powercollected = false;
+	}
+
 	bombRectangle.setPosition(mPositon);
 	collisionRect.setPosition(mPositon);
+	updatePowerup();
+	powerupCollisionRect.setPosition(powerupPos);
+	powerupSprite.setPosition(powerupPos);
+	
 }
 
 void Player::Draw(sf::RenderWindow &window)
@@ -135,8 +180,10 @@ void Player::Draw(sf::RenderWindow &window)
 	if (myGlobalOptions->drawCollisionBox)
 	{
 		window.draw(collisionRect);
+		window.draw(powerupCollisionRect);
 	}
 	window.draw(bombRectangle);
+	window.draw(powerupSprite);
 	for (int i = 0; i < bulletList.size(); i++)
 	{
 		bulletList[i]->Draw(window);
@@ -245,9 +292,32 @@ void Player::Shoot()
 {
 	if (canShoot == true)
 	{
-		bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, velocity));
-		shotTimer = 0;
-		resource->shoot.play();
+		if (powerLevel == 1)
+		{
+		
+			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight,  sf::Vector2f(0,0)));
+
+			shotTimer = 0;
+			resource->shoot.play();
+		}
+		else if (powerLevel == 2)
+		{
+			bulletList.push_back(new Bullet(mPositon + sf::Vector2f(0,20), ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 0)));
+			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 0)));
+			bulletList.push_back(new Bullet(mPositon+sf::Vector2f(0, -20), ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 0)));
+			shotTimer = 0;
+			resource->shoot.play();
+		}
+		else if (powerLevel == 3)
+		{
+			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 5)));
+			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 0)));
+			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, -5)));
+			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 10)));
+			shotTimer = 0;
+			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, -10)));
+		}
+		
 	}
 }
 
@@ -382,6 +452,16 @@ void Player::setWarp(bool warp)
 void Player::Decelerate()
 {
 	if (velocity.x != 0) { velocity.x *= 0.9f; }
+}
+
+void Player::updatePowerup()
+{
+	powerupScale -= 0.05;
+	if (powerupScale <= -1)
+	{
+		powerupScale = 1;
+	}
+	powerupSprite.setScale(powerupScale, 1);
 }
 
 std::vector<Bullet*> Player::getBullets()

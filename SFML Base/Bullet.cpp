@@ -6,14 +6,14 @@ Bullet::Bullet()
 }
 
 
-Bullet::Bullet(sf::Vector2f pos, sf::Texture& tex, bool facingRight,sf::Vector2f playerVelocity)
+Bullet::Bullet(sf::Vector2f pos, sf::Texture& tex, bool facingRight,sf::Vector2f direction)
 {
 	mPositon = pos;
 	mTexture = tex;
 	mSprite.setTexture(mTexture);
 	mSprite.setPosition(mPositon);
 	mSprite.setOrigin(sf::Vector2f(mSprite.getLocalBounds().width / 2, mSprite.getLocalBounds().height / 2));
-
+	mVelocity = sf::Vector2f(50, 0) + direction;
 	collisionRect.setOrigin(mSprite.getGlobalBounds().width / 2, mSprite.getGlobalBounds().height / 2);
 	collisionRect.setSize(sf::Vector2f(mSprite.getGlobalBounds().width, mSprite.getGlobalBounds().height));
 	collisionRect.setOutlineColor(sf::Color::Red);
@@ -23,13 +23,9 @@ Bullet::Bullet(sf::Vector2f pos, sf::Texture& tex, bool facingRight,sf::Vector2f
 
 	alive = true;
 
-	if (facingRight == true)
+	if (facingRight == false)
 	{
-		mVelocity = sf::Vector2f(10 + playerVelocity.x,0);
-	}
-	else
-	{
-		mVelocity = sf::Vector2f(-10+ playerVelocity.x, 0);
+		mVelocity.x = -mVelocity.x;
 	}
 
 }

@@ -36,8 +36,12 @@ ResourceLoader::ResourceLoader()
 
 	mutantTexture.loadFromFile("assets/enemies/mutant.png");
 	mutantTexture.setSmooth(true);
+
 	enemyBulletTexture.loadFromFile("assets/enemies/enemyBullet.png");
 	enemyBulletTexture.setSmooth(true);
+
+	powerTexture.loadFromFile("assets/player/powerup.png");
+	powerTexture.setSmooth(true);
 
 	// Sounds
 	if (!bufferMenuMove.loadFromFile("assets/audio/Blip_Move.ogg")) {}
@@ -162,6 +166,11 @@ sf::Texture & ResourceLoader::getmutantTexture()
 sf::Texture & ResourceLoader::getenemyBulletTexture()
 {
 	return enemyBulletTexture;
+}
+
+sf::Texture & ResourceLoader::getenemyPowerTexture()
+{
+	return powerTexture;
 }
 
 

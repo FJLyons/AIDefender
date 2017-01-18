@@ -9,6 +9,7 @@
 
 #include "Bullet.h"
 #include "ResourceLoader.h"
+#include "CollisionManager.h"
 
 
 class Player
@@ -25,7 +26,11 @@ private:
 	sf::Vector2f maxVelocity;
 	sf::Vector2f velocity;
 	sf::Vector2f mScale;
+	sf::Texture powerupTex;
+	sf::Vector2f powerupPos;
+	sf::Sprite powerupSprite;
 	sf::RectangleShape collisionRect;
+	sf::RectangleShape powerupCollisionRect;
 	sf::RectangleShape bombRectangle;
 	std::vector<Bullet*> bulletList;
 	sf::Vector2f bombrectSize;
@@ -36,12 +41,17 @@ private:
 	float flipSpeed;
 	float shotdelay;
 	float shotTimer;
+	float powerupScale;
 	float bombTimer;
 	float warptimer;
 	bool warpReady;
 	bool invisible;
 	sf::Clock shotClock;
 	bool bombfired;
+	float powerupdelay;
+	int powerLevel;
+	bool powercollected;
+	float powertimer;
 
 public:
 	Player();
@@ -56,7 +66,7 @@ public:
 	void MoveRight();
 	void ShootBomb();
 	void Decelerate();
-
+	void updatePowerup();
 	void Shoot();
 	void Warp();
 	void Update();
