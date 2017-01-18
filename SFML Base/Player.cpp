@@ -20,8 +20,12 @@ Player::Player(sf::Vector2f pos, sf::Vector2f maxVel)
 	mScale = sf::Vector2f(1.f, 1.f);
 	bombLoaded = true;
 	bombfired = false;
+	warping = false;
+	warpReady = true;
+	invisible = false;
 	flipSpeed = 0.15f;
 	playerFacingRight = true;
+	warptimer = 0;
 	canShoot = true;
 	shotTimer = 0;
 	shotdelay = 0.3;
@@ -57,6 +61,16 @@ void Player::Update()
 		{
 			bombLoaded = true;
 			bombTimer = 0;
+		}
+	}
+
+	if (warpReady == false)
+	{
+		warptimer += shotClock.getElapsedTime().asSeconds();
+		if (warptimer > 5)
+		{
+			warpReady = true;
+			warptimer = 0;
 		}
 	}
 	
@@ -106,7 +120,10 @@ void Player::Update()
 	{
 		ShootBomb();
 	}
-
+	if (warping == true && warpReady == true)
+	{
+		Warp();
+	}
 	bombRectangle.setPosition(mPositon);
 	collisionRect.setPosition(mPositon);
 }
@@ -236,6 +253,42 @@ void Player::Shoot()
 	}
 }
 
+void Player::Warp()
+{
+	if (mScale.x >= 0 && mScale.y >=0  && invisible == false )
+	{
+		mScale.x -= 0.2;
+		mScale.y -= 0.2;
+	}
+	else
+	{
+		invisible = true;
+	}
+
+
+	if (invisible == true)
+	{
+		mPositon.x = rand() % (MAP_WIDTH_PIXEL)+1;
+
+		mScale.y += 0.2;
+	
+		if (  mScale.y >= 1)
+		{
+			mScale = sf::Vector2f(1, 1);
+			warping = false; 
+			warpReady = false;
+			invisible = false;
+		}
+	
+	}
+
+	if ( mScale.y <= 1 && invisible == true)
+	{
+		mScale.y += 0.2;
+	}
+	
+}
+
 void Player::Flip()
 {
 	if (playerFacingRight == false)
@@ -315,6 +368,16 @@ void Player::setBombfired(bool fire)
 bool Player::getbombLoaded()
 {
 	return bombLoaded;
+}
+
+bool Player::getwarpready()
+{
+	return warpReady;
+}
+
+void Player::setWarp(bool warp)
+{
+	warping = warp;
 }
 
 

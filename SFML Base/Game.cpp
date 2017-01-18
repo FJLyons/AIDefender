@@ -503,6 +503,11 @@ void Game::controller(sf::Event Event)
 		player->setBombfired(true);
 		
 	}
+	if (inputManager->KeyHeld(sf::Keyboard::Num2) && player->getwarpready() == true )
+	{
+		player->setWarp(true);
+
+	}
 }
 
 void Game::teleport()
@@ -556,7 +561,7 @@ void Game::spawn()
 	for (int i = 0; i < currentLevel; i++)
 	{
 		humans.push_back(new Human(terrain->getPoints()));
-		nests.push_back(new Nest(sf::Vector2f(rand() % (1920 * 9) + 1, rand() % (500) + 1)));
+		nests.push_back(new Nest(sf::Vector2f(rand() % (SCREEN_WIDTH_PIXEL) + 1, rand() % (500) + 1)));
 		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
 		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
 		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));

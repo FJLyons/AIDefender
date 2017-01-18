@@ -31,10 +31,14 @@ private:
 	bool playerFacingRight;
 	bool canShoot;
 	bool bombLoaded;
+	bool warping;
 	float flipSpeed;
 	float shotdelay;
 	float shotTimer;
 	float bombTimer;
+	float warptimer;
+	bool warpReady;
+	bool invisible;
 	sf::Clock shotClock;
 	bool bombfired;
 
@@ -53,7 +57,7 @@ public:
 	void Decelerate();
 
 	void Shoot();
-
+	void Warp();
 	void Update();
 	void Draw(sf::RenderWindow &window);
 	void Flip();
@@ -65,6 +69,8 @@ public:
 	bool getBombfired();
 	void setBombfired(bool fire);
 	bool getbombLoaded();
+	bool getwarpready();
+	void setWarp(bool warp);
 	std::vector<Bullet*> getBullets();
 
 	void deleteBullet(int index);
