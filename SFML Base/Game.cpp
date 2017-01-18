@@ -4,6 +4,13 @@ Game::Game(Camera* cam)
 {
 	camera = cam;
 	init();
+
+	font.loadFromFile("content\\fonts\\kenvector_future.TTF");
+
+	gameOverText.setFont(font);
+	gameOverText.setString("    Press Enter to Play Again! \n\n\nPress BackSpace to Restart");
+	gameOverText.setPosition(player->getPosition().x - gameOverText.getLocalBounds().width / 2.0f, screenSize.y / 2);
+	gameOverText.setCharacterSize(32);
 }
 
 Game::~Game()
@@ -12,10 +19,15 @@ Game::~Game()
 
 void Game::init()
 {
-	font.loadFromFile("content\\fonts\\kenvector_future.TTF");
-
 	terrain = new Terrain();
 	player = new Player(screenSize * 0.5f, sf::Vector2f(30, 30));//set up player
+	player->health = 3;
+
+	isGameOver = false;
+	currentLevel = 1;
+
+	score = 0;
+	scoreTimer = 0;
 
 	spawn();
 
@@ -27,345 +39,431 @@ void Game::init()
 
 void Game::update()
 {
-	camera->update(player);
-	player->Update();
-	if (player->health <= 0) 
+	if (isGameOver == false)
 	{
-		resource->explosion.play();
-		gameOver(false); 
-		player->health += 1;
-	}
+		camera->update(player);
+		player->Update();
 
-	// Human
-	for (int i = 0; i < humans.size(); i++)
-	{
-		humans[i]->Update(player->getPosition());
-
-		// Collisions
-		// Player
-		if (collisionManager->RectangleCollision(player->getRect(), humans[i]->getRect()))
+		// Power Level
+		if (player->powerLevel > 3)
 		{
-			resource->menuSelect.play();
-
-			humansToDelete.push_back(humans[i]); // For Memory Clean up
-			humans.erase(humans.begin() + i);
-
-			i--;
-			continue;
-		}
-	}
-
-	// Meteor
-	for (int i = 0; i < meteors.size(); i++)
-	{
-		meteors[i]->Update();
-
-		// Death
-		if (meteors[i]->getPosition().y >= 1080)
-		{
-			resource->hit.play();
-
-			meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
-			meteors.erase(meteors.begin() + i);
+			player->powerLevel = 3;
+			score += 1000 * currentLevel;
 		}
 
-		// Collisions
-		// Player
-		if (collisionManager->RectangleCollision(player->getRect(), meteors[i]->getRect()))
+		// Human
+		for (int i = 0; i < humans.size(); i++)
 		{
-			resource->hit.play();
+			humans[i]->Update(player->getPosition());
 
-			player->health--;
+			bool target = false;
 
-			meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
-			meteors.erase(meteors.begin() + i);
-			
-			i--;
-			continue;
+			// Collisions
+			// Player
+			if (collisionManager->RectangleCollision(player->getRect(), humans[i]->getRect()))
+			{
+				resource->menuSelect.play();
+
+				humansToDelete.push_back(humans[i]); // For Memory Clean up
+				humans.erase(humans.begin() + i);
+
+				score += 1000 * currentLevel;
+
+				i--;
+				continue;
+			}
+
+			if (humans[i]->getPosition().y < 0)
+			{
+				humansToDelete.push_back(humans[i]); // For Memory Clean up
+				humans.erase(humans.begin() + i);
+			}
 		}
 
-		// Bullets
-		bool checkNext = true;
-		for (int j = 0; checkNext && j < player->getBullets().size(); j++)
+		// Meteor
+		for (int i = 0; i < meteors.size(); i++)
 		{
-			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), meteors[i]->getRect()))
+			meteors[i]->Update();
+
+			// Death
+			if (meteors[i]->getPosition().y >= 1080)
 			{
 				resource->hit.play();
 
-				player->deleteBullet(j);
+				meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
+				meteors.erase(meteors.begin() + i);
+			}
+
+			// Collisions
+			// Player
+			if (collisionManager->RectangleCollision(player->getRect(), meteors[i]->getRect()))
+			{
+				resource->hit.play();
+
+				player->health--;
+				player->powerLevel = 1;
 
 				meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
 				meteors.erase(meteors.begin() + i);
 
-				j--;
 				i--;
-				checkNext = false;
 				continue;
 			}
-		}
-	}
 
+			// Bullets
+			bool checkNext = true;
+			for (int j = 0; checkNext && j < player->getBullets().size(); j++)
+			{
+				if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), meteors[i]->getRect()))
+				{
+					resource->hit.play();
 
-	// Enemies with Health 
-	// Nest
-	for (int i = 0; i < nests.size(); i++)
-	{
-		nests[i]->Update(player->getRect(), abductors,meteors);
+					player->deleteBullet(j);
 
-		// Collisions
-		// Player
-		if (collisionManager->RectangleCollision(player->getRect(), nests[i]->getRect()))
-		{
-			resource->hit.play();
+					meteorsToDelete.push_back(meteors[i]); // For Memory Clean up
+					meteors.erase(meteors.begin() + i);
 
-			player->health--;
+					score += 10 * currentLevel;
 
-			// Die
-			resource->explosion.play();
-			nestsToDelete.push_back(nests[i]); // For Memory Clean up
-			nests.erase(nests.begin() + i);
-
-			i--;
-			continue;
+					j--;
+					i--;
+					checkNext = false;
+					continue;
+				}
+			}
 		}
 
-		// Bullets
-		bool checkNext = true;
-		for (int j = 0; checkNext && j < player->getBullets().size(); j++)
+
+		// Enemies with Health 
+		// Nest
+		for (int i = 0; i < nests.size(); i++)
 		{
-			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), nests[i]->getRect()))
+			nests[i]->Update(player->getRect(), abductors, meteors);
+
+			// Collisions
+			// Player
+			if (collisionManager->RectangleCollision(player->getRect(), nests[i]->getRect()))
 			{
 				resource->hit.play();
 
-				player->deleteBullet(j);
-
-				nests[i]->health--;
+				player->health--;
+				player->powerLevel = 1;
 
 				// Die
-				if (nests[i]->health <= 0)
-				{
-					resource->explosion.play();
-					nestsToDelete.push_back(nests[i]); // For Memory Clean up
-					nests.erase(nests.begin() + i);
-				}
+				resource->explosion.play();
+				nestsToDelete.push_back(nests[i]); // For Memory Clean up
+				nests.erase(nests.begin() + i);
 
-				j--;
 				i--;
-				checkNext = false;
 				continue;
+			}
+
+			// Bullets
+			bool checkNext = true;
+			for (int j = 0; checkNext && j < player->getBullets().size(); j++)
+			{
+				if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), nests[i]->getRect()))
+				{
+					resource->hit.play();
+
+					player->deleteBullet(j);
+
+					nests[i]->health--;
+
+					// Die
+					if (nests[i]->health <= 0)
+					{
+						resource->explosion.play();
+						nestsToDelete.push_back(nests[i]); // For Memory Clean up
+						nests.erase(nests.begin() + i);
+						score += 150 * currentLevel;
+					}
+
+					j--;
+					i--;
+					checkNext = false;
+					continue;
+				}
+			}
+
+			// Meteor
+			for (int j = 0; checkNext && j < meteors.size(); j++)
+			{
+				if (collisionManager->RectangleCollision(meteors[j]->getRect(), nests[i]->getRect()))
+				{
+					resource->hit.play();
+
+					meteorsToDelete.push_back(meteors[j]); // For Memory Clean up
+					meteors.erase(meteors.begin() + j);
+
+					nests[i]->health--;
+
+					// Die
+					if (nests[i]->health <= 0)
+					{
+						resource->explosion.play();
+						nestsToDelete.push_back(nests[i]); // For Memory Clean up
+						nests.erase(nests.begin() + i);
+					}
+
+					j--;
+					i--;
+					checkNext = false;
+					continue;
+				}
+			}
+
+			// Bullet - Enemy
+			for (int j = 0; checkNext &&  j < nests[i]->missileList.size(); j++)
+			{
+				if (collisionManager->RectangleCollision(nests[i]->missileList[j]->getRect(), player->getRect()))
+				{
+					resource->hit.play();
+
+					player->health--;
+
+					nests[i]->missileList.erase(nests[i]->missileList.begin() + j);
+
+					j--;
+					i--;
+					checkNext = false;
+					continue;
+				}
 			}
 		}
 
-		// Meteor
-		for (int j = 0; checkNext && j < meteors.size(); j++)
+		// Abductors
+		for (int i = 0; i < abductors.size(); i++)
 		{
-			if (collisionManager->RectangleCollision(meteors[j]->getRect(), nests[i]->getRect()))
+			abductors[i]->Update(abductors, i, meteors, humans, player->getPosition());
+
+			// Create Mutant
+			if (abductors[i]->getAlive() == false)//if an abductor has successfully abducted a human
+			{
+				resource->back.play();
+
+				mutants.push_back(new Mutant(abductors[i]->getPosition()));
+				mutants.back()->health = currentLevel * 2;
+
+				abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
+				abductors.erase(abductors.begin() + i);
+
+				i--;
+				continue;
+			}
+
+			// Collisions
+			// Player
+			if (collisionManager->RectangleCollision(player->getRect(), abductors[i]->getRect()))
 			{
 				resource->hit.play();
 
-				meteorsToDelete.push_back(meteors[j]); // For Memory Clean up
-				meteors.erase(meteors.begin() + j);
-
-				nests[i]->health--;
+				player->health--;
+				player->powerLevel = 1;
 
 				// Die
-				if (nests[i]->health <= 0)
-				{
-					resource->explosion.play();
-					nestsToDelete.push_back(nests[i]); // For Memory Clean up
-					nests.erase(nests.begin() + i);
-				}
-
-				j--;
-				i--;
-				checkNext = false;
-				continue;
-			}
-		}
-	}
-	
-	// Abductors
-	for (int i = 0; i < abductors.size(); i++)
-	{
-		abductors[i]->Update(abductors, i,meteors,humans,player->getPosition());
-
-		// Create Mutant
-		if (abductors[i]->getAlive() == false)//if an abductor has successfully abducted a human
-		{
-			resource->back.play();
-
-			mutants.push_back(new Mutant(abductors[i]->getPosition()));
-			mutants.back()->health = currentLevel * 2;
-
-			abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
-			abductors.erase(abductors.begin() + i);
-
-			i--;
-			continue;
-		}
-
-		// Collisions
-		// Player
-		if (collisionManager->RectangleCollision(player->getRect(), abductors[i]->getRect()))
-		{
-			resource->hit.play();
-
-			player->health--;
-
-			// Die
-			resource->explosion.play();
-			abductors[i]->DropHuman(humans);
-			abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
-			abductors.erase(abductors.begin() + i);			
-
-			i--;
-			continue;
-		}	
-
-		// Bullets
-		bool checkNext = true;
-		for (int j = 0; checkNext && j < player->getBullets().size(); j++)
-		{
-			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), abductors[i]->getRect()))
-			{
-				resource->hit.play();
-
-				player->deleteBullet(j);
-
-				abductors[i]->health--;
-
-				// Die
-				if (abductors[i]->health <= 0)
-				{
-					resource->explosion.play();
-					abductors[i]->DropHuman(humans);
-					abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
-					abductors.erase(abductors.begin() + i);
-				}
-
-				j--;
-				i--;
-				checkNext = false;
-				continue;
-			}
-		}
-
-		// Meteor
-		for (int j = 0; checkNext && j < meteors.size(); j++)
-		{
-			if (collisionManager->RectangleCollision(meteors[j]->getRect(), abductors[i]->getRect()))
-			{
-				resource->hit.play();
-
-				meteorsToDelete.push_back(meteors[j]); // For Memory Clean up
-				meteors.erase(meteors.begin() + j);
-
+				resource->explosion.play();
 				abductors[i]->DropHuman(humans);
+				abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
+				abductors.erase(abductors.begin() + i);
 
-				abductors[i]->health--;
-
-				// Die
-				if (abductors[i]->health <= 0)
-				{
-					resource->explosion.play();
-					abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
-					abductors.erase(abductors.begin() + i);
-				}
-
-				j--;
 				i--;
-				checkNext = false;
 				continue;
 			}
+
+			// Bullets
+			bool checkNext = true;
+			for (int j = 0; checkNext && j < player->getBullets().size(); j++)
+			{
+				if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), abductors[i]->getRect()))
+				{
+					resource->hit.play();
+
+					player->deleteBullet(j);
+
+					abductors[i]->health--;
+
+					// Die
+					if (abductors[i]->health <= 0)
+					{
+						resource->explosion.play();
+						abductors[i]->DropHuman(humans);
+						abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
+						abductors.erase(abductors.begin() + i);
+						score += 50 * currentLevel;
+					}
+
+					j--;
+					i--;
+					checkNext = false;
+					continue;
+				}
+			}
+
+			// Meteor
+			for (int j = 0; checkNext && j < meteors.size(); j++)
+			{
+				if (collisionManager->RectangleCollision(meteors[j]->getRect(), abductors[i]->getRect()))
+				{
+					resource->hit.play();
+
+					meteorsToDelete.push_back(meteors[j]); // For Memory Clean up
+					meteors.erase(meteors.begin() + j);
+
+					abductors[i]->DropHuman(humans);
+
+					abductors[i]->health--;
+
+					// Die
+					if (abductors[i]->health <= 0)
+					{
+						resource->explosion.play();
+						abductorsToDelete.push_back(abductors[i]); // For Memory Clean up
+						abductors.erase(abductors.begin() + i);
+					}
+
+					j--;
+					i--;
+					checkNext = false;
+					continue;
+				}
+			}
+
+			// Bullet - Enemy
+			for (int j = 0; checkNext && j < abductors[i]->bullets.size(); j++)
+			{
+				if (collisionManager->RectangleCollision(abductors[i]->bullets[j]->getRect(), player->getRect()))
+				{
+					resource->hit.play();
+
+					player->health--;
+
+					abductors[i]->bullets.erase(abductors[i]->bullets.begin() + j);
+
+					j--;
+					i--;
+					checkNext = false;
+					continue;
+				}
+			}
 		}
-	}
 
-	//Mutants
-	for (int i = 0; i < mutants.size(); i++)
-	{
-		mutants[i]->Update(mutants,i, meteors, player->getPosition(),player->getVelocity());
-
-		// Collisions
-		// Player
-		if (collisionManager->RectangleCollision(player->getRect(), mutants[i]->getRect()))
+		//Mutants
+		for (int i = 0; i < mutants.size(); i++)
 		{
-			resource->hit.play();
+			mutants[i]->Update(mutants, i, meteors, player->getPosition(), player->getVelocity());
 
-			player->health--;
+			// Collisions
+			// Player
+			if (collisionManager->RectangleCollision(player->getRect(), mutants[i]->getRect()))
+			{
+				resource->hit.play();
 
-			// Die
+				player->health--;
+				player->powerLevel = 1;
+
+				// Die
+				resource->explosion.play();
+				mutantsToDelete.push_back(mutants[i]); // For Memory Clean up
+				mutants.erase(mutants.begin() + i);
+
+				i--;
+				continue;
+			}
+
+			// Bullets
+			bool checkNext = true;
+			for (int j = 0; checkNext && j < player->getBullets().size(); j++)
+			{
+				if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), mutants[i]->getRect()))
+				{
+					resource->hit.play();
+
+					player->deleteBullet(j);
+
+					mutants[i]->health--;
+
+					// Die
+					if (mutants[i]->health <= 0)
+					{
+						resource->explosion.play();
+						mutantsToDelete.push_back(mutants[i]); // For Memory Clean up
+						mutants.erase(mutants.begin() + i);
+						score += 250 * currentLevel;
+					}
+
+					j--;
+					i--;
+					checkNext = false;
+					continue;
+				}
+			}
+
+			// Meteor
+			for (int j = 0; checkNext && j < meteors.size(); j++)
+			{
+				if (collisionManager->RectangleCollision(meteors[j]->getRect(), mutants[i]->getRect()))
+				{
+					resource->hit.play();
+
+					meteorsToDelete.push_back(meteors[j]); // For Memory Clean up
+					meteors.erase(meteors.begin() + j);
+
+					mutants[i]->health--;
+
+					// Die
+					if (mutants[i]->health <= 0)
+					{
+						resource->explosion.play();
+						mutantsToDelete.push_back(mutants[i]); // For Memory Clean up
+						mutants.erase(mutants.begin() + i);
+					}
+
+					j--;
+					i--;
+					checkNext = false;
+					continue;
+				}
+			}
+
+			// Bullet - Enemy
+			for (int j = 0; checkNext && j < mutants[i]->bullets.size(); j++)
+			{
+				if (collisionManager->RectangleCollision(mutants[i]->bullets[j]->getRect(), player->getRect()))
+				{
+					resource->hit.play();
+
+					player->health--;
+
+					mutants[i]->bullets.erase(mutants[i]->bullets.begin() + j);
+
+					j--;
+					i--;
+					checkNext = false;
+					continue;
+				}
+			}
+		}
+
+		if (mutants.empty() && abductors.empty() && nests.empty() && player->health != 0)
+		{
+			resource->levelUp.play();
+			humans.clear();
+			nextLevel();
+			score += 1000 * currentLevel;
+		}
+
+		teleport();
+		MeteorSpawn();
+		scoreCounter();
+
+		// Game over
+		if (player->health <= 0)
+		{
 			resource->explosion.play();
-			mutantsToDelete.push_back(mutants[i]); // For Memory Clean up
-			mutants.erase(mutants.begin() + i);
-
-			i--;
-			continue;
-		}
-
-		// Bullets
-		bool checkNext = true;
-		for (int j = 0; checkNext && j < player->getBullets().size(); j++)
-		{
-			if (collisionManager->RectangleCollision(player->getBullets().at(j)->getRect(), mutants[i]->getRect()))
-			{
-				resource->hit.play();
-
-				player->deleteBullet(j);
-
-				mutants[i]->health--;
-
-				// Die
-				if (mutants[i]->health <= 0)
-				{
-					resource->explosion.play();
-					mutantsToDelete.push_back(mutants[i]); // For Memory Clean up
-					mutants.erase(mutants.begin() + i);
-				}
-
-				j--;
-				i--;
-				checkNext = false;
-				continue;
-			}
-		}
-
-		// Meteor
-		for (int j = 0; checkNext && j < meteors.size(); j++)
-		{
-			if (collisionManager->RectangleCollision(meteors[j]->getRect(), mutants[i]->getRect()))
-			{
-				resource->hit.play();
-
-				meteorsToDelete.push_back(meteors[j]); // For Memory Clean up
-				meteors.erase(meteors.begin() + j);
-
-				mutants[i]->health--;
-
-				// Die
-				if (mutants[i]->health <= 0)
-				{
-					resource->explosion.play();
-					mutantsToDelete.push_back(mutants[i]); // For Memory Clean up
-					mutants.erase(mutants.begin() + i);
-				}
-
-				j--;
-				i--;
-				checkNext = false;
-				continue;
-			}
+			gameOver();
 		}
 	}
-
-	if (mutants.empty() && abductors.empty() && nests.empty())
-	{
-		resource->levelUp.play();
-		humans.clear();
-		nextLevel();
-	}
-
-	teleport();
-	MeteorSpawn();
 }
 
 void Game::draw(sf::RenderWindow &window)
@@ -375,48 +473,62 @@ void Game::draw(sf::RenderWindow &window)
 	terrain->draw(window);
 	player->Draw(window);
 
-	for (int i = 0; i < meteors.size(); i++)
+	if (isGameOver == false)
 	{
-		meteors[i]->Draw(window);
-	}
-	for (int i = 0; i < humans.size(); i++)
-	{
-		humans[i]->Draw(window, false);
-	}
-	for (int i = 0; i < nests.size(); i++)
-	{
-		nests[i]->Draw(window);
-	}
-	for (int i = 0; i < abductors.size(); i++)
-	{
-		abductors[i]->Draw(window);
-	}
-	for (int i = 0; i < mutants.size(); i++)
-	{
-		mutants[i]->Draw(window);
-	}
-	//UI
-	UIDraw(window);
+		for (int i = 0; i < meteors.size(); i++)
+		{
+			if(meteors[i]->getPosition().x < player->getPosition().x + SCREEN_WIDTH_PIXEL && meteors[i]->getPosition().x > player->getPosition().x - SCREEN_WIDTH_PIXEL)
+				meteors[i]->Draw(window);
+		}
+		for (int i = 0; i < humans.size(); i++)
+		{
+			if (humans[i]->getPosition().x < player->getPosition().x + SCREEN_WIDTH_PIXEL && humans[i]->getPosition().x > player->getPosition().x - SCREEN_WIDTH_PIXEL)
+				humans[i]->Draw(window, false);
+		}
+		for (int i = 0; i < nests.size(); i++)
+		{
+			if (nests[i]->getPosition().x < player->getPosition().x + SCREEN_WIDTH_PIXEL && nests[i]->getPosition().x > player->getPosition().x - SCREEN_WIDTH_PIXEL)
+				nests[i]->Draw(window);
+		}
+		for (int i = 0; i < abductors.size(); i++)
+		{
+			if (abductors[i]->getPosition().x < player->getPosition().x + SCREEN_WIDTH_PIXEL && abductors[i]->getPosition().x > player->getPosition().x - SCREEN_WIDTH_PIXEL)
+				abductors[i]->Draw(window);
+		}
+		for (int i = 0; i < mutants.size(); i++)
+		{
+			if (mutants[i]->getPosition().x < player->getPosition().x + SCREEN_WIDTH_PIXEL && mutants[i]->getPosition().x > player->getPosition().x - SCREEN_WIDTH_PIXEL)
+				mutants[i]->Draw(window);
+		}
 
-	// Mini Map
-	camera->drawRadar(window);
-	terrain->draw(window);
-	player->Draw(window);
-	for (int i = 0; i < meteors.size(); i++)
-	{
-		meteors[i]->Draw(window);
+		//UI
+		UIDraw(window);
+
+		// Mini Map
+		camera->drawRadar(window);
+		terrain->draw(window);
+		player->Draw(window);
+		for (int i = 0; i < meteors.size(); i++)
+		{
+			meteors[i]->Draw(window);
+		}
+		for (int i = 0; i < humans.size(); i++)
+		{
+			humans[i]->Draw(window, true);
+		}
+		for (int i = 0; i < nests.size(); i++)
+		{
+			nests[i]->Draw(window);
+		}
+		for (int i = 0; i < abductors.size(); i++)
+		{
+			abductors[i]->Draw(window);
+		}
 	}
-	for (int i = 0; i < humans.size(); i++)
+	else
 	{
-		humans[i]->Draw(window, true);
-	}
-	for (int i = 0; i < nests.size(); i++)
-	{
-		nests[i]->Draw(window);
-	}
-	for (int i = 0; i < abductors.size(); i++)
-	{
-		abductors[i]->Draw(window);
+		window.draw(gameOverText);
+		gameOverText.setPosition(player->getPosition().x - gameOverText.getLocalBounds().width / 2.0f, screenSize.y / 2);
 	}
 }
 
@@ -432,13 +544,36 @@ void Game::input(sf::Event Event)
 		std::cout << Event.key.code << std::endl;
 	}
 
-	if (inputManager->KeyPressed(sf::Keyboard::BackSpace))
+	if (isGameOver == false)
 	{
-		camera->resetView();
-		std::cout << "Back Space" << std::endl;
-		goToScene(myGlobalOptions->MAINMENU);
-		resource->musicMenu.play();
-		resource->musicGame.pause();
+		if (inputManager->KeyPressed(sf::Keyboard::BackSpace))
+		{
+			camera->resetView();
+			std::cout << "Back Space" << std::endl;
+			goToScene(myGlobalOptions->MAINMENU);
+			resource->musicMenu.play();
+			resource->musicGame.pause();
+		}
+	}
+
+	else
+	{
+		if (inputManager->KeyPressed(sf::Keyboard::BackSpace))
+		{
+			myGlobalOptions->restart = true;
+			camera->resetView();
+			std::cout << "Back Space" << std::endl;
+			goToScene(myGlobalOptions->SPLASH);
+			init();
+		}
+
+		if (inputManager->KeyPressed(sf::Keyboard::Return))
+		{
+			camera->resetView();
+			std::cout << "Enter" << std::endl;
+			init();
+			resource->musicGame.play();
+		}
 	}
 
 	controller(Event);
@@ -560,8 +695,11 @@ void Game::spawn()
 {
 	for (int i = 0; i < currentLevel; i++)
 	{
+
 		humans.push_back(new Human(terrain->getPoints()));
+
 		nests.push_back(new Nest(sf::Vector2f(rand() % (1920 * 9) + 1, rand() % (500) + 1)));
+
 		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
 		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
 		abductors.push_back(new Abductor(sf::Vector2f(rand() % (1920 * 8), 50)));
@@ -622,9 +760,45 @@ void Game::nextLevel()
 	}
 }
 
-void Game::gameOver(bool win)
+void Game::gameOver()
 {
+	isGameOver = true;
 
+	clearVectors();
+
+	// Clear what is on screen
+	for (std::vector<Human*>::iterator it = humans.begin(); it != humans.end(); ++it)
+	{
+		delete *it;
+	}
+	humans.clear();
+
+	for (std::vector<Obstacles*>::iterator it = meteors.begin(); it != meteors.end(); ++it)
+	{
+		delete *it;
+	}
+	meteors.clear();
+
+	for (std::vector<Abductor*>::iterator it = abductors.begin(); it != abductors.end(); ++it)
+	{
+		delete *it;
+	}
+	abductors.clear();
+
+	for (std::vector<Nest*>::iterator it = nests.begin(); it != nests.end(); ++it)
+	{
+		delete *it;
+	}
+	nests.clear();
+
+	for (std::vector<Mutant*>::iterator it = mutants.begin(); it != mutants.end(); ++it)
+	{
+		delete *it;
+	}
+	mutants.clear();
+
+	resource->musicMenu.stop();
+	resource->musicGame.stop();
 }
 
 void Game::UI()
@@ -671,6 +845,11 @@ void Game::UI()
 	int size = abductors.size() + nests.size() + mutants.size();
 	enemyText.setString(std::to_string(size));
 	enemyText.setPosition(sf::Vector2f(enemySprite.getPosition().x + 25, 50));
+
+	// score
+	scoreText.setFont(font);
+	scoreText.setString(std::to_string(score));
+	scoreText.setPosition(sf::Vector2f(960, 50));
 }
 
 void Game::UIDraw(sf::RenderWindow &window)
@@ -711,4 +890,20 @@ void Game::UIDraw(sf::RenderWindow &window)
 		int size = abductors.size() + nests.size() + mutants.size();
 		enemyText.setString(std::to_string(size));
 		enemyText.setPosition(sf::Vector2f(enemySprite.getPosition().x + 25, 50));
+
+		// Score
+		window.draw(scoreText);
+		scoreText.setString(std::to_string(score));
+		scoreText.setPosition(sf::Vector2f(player->getPosition().x, 50));
+}
+
+void Game::scoreCounter()
+{
+	scoreTimer += 1.0f;
+
+	if (scoreTimer >= 60)
+	{
+		score += currentLevel;
+		scoreTimer -= 60;
+	}
 }

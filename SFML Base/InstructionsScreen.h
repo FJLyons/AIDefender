@@ -34,5 +34,7 @@ private:
 
 	sf::Font font;
 	sf::Text text;
+
+	sf::Sprite sprite;
 };
 

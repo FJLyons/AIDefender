@@ -214,6 +214,12 @@ void Nest::SpawnAbductors(std::vector<Abductor*> &abductors)
 //		}
 //	}
 //}
+
+sf::Vector2f Nest::getPosition()
+{
+	return mPositon;
+}
+
 sf::Vector2f Nest::ComputeObsticleSeperation(std::vector<Obstacles*>& obstacles)
 {
 	sf::Vector2f m_Seperation;

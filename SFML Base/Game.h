@@ -52,7 +52,7 @@ private:
 
 	void teleport();
 
-	int currentLevel = 1;
+	int currentLevel;
 
 	void MeteorSpawn();
 	sf::Clock meteorSpawnClock;
@@ -62,9 +62,16 @@ private:
 	void clearVectors();
 	void spawn();
 	void nextLevel();
-	void gameOver(bool winLose);
+	void gameOver();
 	void UI();
 	void UIDraw(sf::RenderWindow &window);
+
+	void scoreCounter();
+	int score;
+	int scoreTimer;
+
+	bool isGameOver;
+	sf::Text gameOverText;
 
 protected:
 	Camera* camera;
@@ -96,5 +103,7 @@ private:
 
 	sf::Text enemyText;
 	sf::Sprite enemySprite;
+
+	sf::Text scoreText;
 };
 

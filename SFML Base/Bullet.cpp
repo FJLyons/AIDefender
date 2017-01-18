@@ -6,7 +6,7 @@ Bullet::Bullet()
 }
 
 
-Bullet::Bullet(sf::Vector2f pos, sf::Texture& tex, bool facingRight,sf::Vector2f direction)
+Bullet::Bullet(sf::Vector2f pos, sf::Texture& tex, bool facingRight, sf::Vector2f direction)
 {
 	mPositon = pos;
 	mTexture = tex;
@@ -35,7 +35,7 @@ bool Bullet::Update()
 	ttl -= deltaClock.getElapsedTime().asSeconds();
 	sf::Time dt = deltaClock.restart();
 
-	
+
 	if (ttl <= 0)
 	{
 		alive = false;

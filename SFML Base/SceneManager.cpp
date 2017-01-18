@@ -35,7 +35,7 @@ void SceneManager::update()
 
 void SceneManager::draw(sf::RenderWindow &window)
 {
-	if (myGlobalOptions->getCurrentScene() == myGlobalOptions->SPLASH) { splashScreen->draw(window); }
+	if (myGlobalOptions->getCurrentScene() == myGlobalOptions->SPLASH) { splashScreen->draw(window); camera->drawGame(window); }
 	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->MAINMENU) { mainMenu->draw(window); camera->drawGame(window); }
 	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->GAME) { game->draw(window); }
 	else if (myGlobalOptions->getCurrentScene() == myGlobalOptions->LOAD) { load->draw(window); }

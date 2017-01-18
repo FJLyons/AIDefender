@@ -19,6 +19,9 @@ void InstructionsScreen::init()
 	text.setString("Instructions");
 	text.setPosition(screenSize.x / 2, screenSize.y / 2);
 	text.setCharacterSize(18);
+
+	sprite.setTexture(resource->getinstructionsTexture());
+	sprite.setPosition(sf::Vector2f(0, 0));
 }
 
 void InstructionsScreen::update()
@@ -28,7 +31,7 @@ void InstructionsScreen::update()
 
 void InstructionsScreen::draw(sf::RenderWindow &window)
 {
-	window.draw(text);
+	window.draw(sprite);
 }
 
 void InstructionsScreen::input(sf::Event Event)

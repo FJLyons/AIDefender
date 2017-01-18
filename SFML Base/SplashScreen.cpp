@@ -49,6 +49,12 @@ void SplashScreen::init()
 void SplashScreen::update()
 {
 	fade(); // Fade in image
+
+	if (myGlobalOptions->restart == true)
+	{
+		myGlobalOptions->restart = false;
+		init();
+	}
 }
 
 void SplashScreen::draw(sf::RenderWindow &window)

@@ -49,7 +49,6 @@ private:
 	sf::Clock shotClock;
 	bool bombfired;
 	float powerupdelay;
-	int powerLevel;
 	bool powercollected;
 	float powertimer;
 
@@ -86,7 +85,9 @@ public:
 
 	void deleteBullet(int index);
 
-	int health = 1;
+	int health = 3;
+
+	int powerLevel;
 };
 
 #endif

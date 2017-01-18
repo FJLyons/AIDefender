@@ -49,6 +49,7 @@ public:
 	sf::RenderWindow* windowReference;
 
 	bool drawCollisionBox = false;
+	bool restart = false;
 
 private:
 

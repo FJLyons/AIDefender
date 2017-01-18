@@ -29,7 +29,7 @@ void MainMenu::init()
 	//Text
 	font.loadFromFile("content\\fonts\\kenvector_future.TTF");
 
-	text[0].setString("New Game");
+	text[0].setString("Play Game");
 	text[1].setString("Load Game");
 	text[2].setString("Options");
 	text[3].setString("Instructions");

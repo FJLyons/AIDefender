@@ -42,7 +42,6 @@ private:
 	int myIndex;
 	int humanindex;
 	bool abducting;
-	std::vector<MutantBullet*> bullets;
 
 public:
 	Mutant();
@@ -64,9 +63,9 @@ public:
 	sf::RectangleShape getFOVRect();
 	void setPosition(sf::Vector2f vec);
 
-
-
 	int health = 1;
+
+	std::vector<MutantBullet*> bullets;
 };
 
 #endif

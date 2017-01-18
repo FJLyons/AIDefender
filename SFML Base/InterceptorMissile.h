@@ -6,7 +6,7 @@
 #include "CollisionManager.h"
 #include "ResourceLoader.h"
 
-class InterceptorMissile : Bullet
+class InterceptorMissile : public Bullet
 {
 
 private:
@@ -14,14 +14,12 @@ private:
 
 private:
 
-	
 
 public:
 
 	 InterceptorMissile(sf::Vector2f pos);
 	 bool Update(sf::RectangleShape  player);
 	 void Draw(sf::RenderWindow &window);
-
 };
 
 #endif

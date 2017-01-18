@@ -12,6 +12,9 @@ ResourceLoader::ResourceLoader()
 	warp.loadFromFile("assets/other/warp.png");
 	warp.setSmooth(true);
 
+	power.loadFromFile("assets/other/powerup.png");
+	power.setSmooth(true);
+
 	playershipTexture.loadFromFile("assets/player/PlayerShip.png");
 	playershipTexture.setSmooth(true);
 
@@ -36,12 +39,10 @@ ResourceLoader::ResourceLoader()
 
 	mutantTexture.loadFromFile("assets/enemies/mutant.png");
 	mutantTexture.setSmooth(true);
-
 	enemyBulletTexture.loadFromFile("assets/enemies/enemyBullet.png");
 	enemyBulletTexture.setSmooth(true);
 
-	powerTexture.loadFromFile("assets/player/powerup.png");
-	powerTexture.setSmooth(true);
+	instructions.loadFromFile("assets/other/instructions.png");
 
 	// Sounds
 	if (!bufferMenuMove.loadFromFile("assets/audio/Blip_Move.ogg")) {}
@@ -72,8 +73,7 @@ ResourceLoader::ResourceLoader()
 	musicGame.setVolume(50);
 
 	musicMenu.setLoop(true);
-	musicGame.setLoop(true);
-		
+	musicGame.setLoop(true);		
 }
 
 ResourceLoader::~ResourceLoader()
@@ -168,13 +168,14 @@ sf::Texture & ResourceLoader::getenemyBulletTexture()
 	return enemyBulletTexture;
 }
 
-sf::Texture & ResourceLoader::getenemyPowerTexture()
+sf::Texture & ResourceLoader::getinstructionsTexture()
 {
-	return powerTexture;
+	return instructions;
 }
 
-
-
-
+sf::Texture & ResourceLoader::getpowerTexture()
+{
+	return power;
+}
 
 

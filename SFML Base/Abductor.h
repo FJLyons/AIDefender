@@ -47,7 +47,6 @@ private:
 	bool alive;
 	int humanindex;
 	bool abducting;
-	std::vector<AbductorBullet*> bullets;
 
 public:
 	Abductor();
@@ -77,6 +76,9 @@ public:
 
 
 	int health = 1;
+
+
+	std::vector<AbductorBullet*> bullets;
 };
 
 #endif

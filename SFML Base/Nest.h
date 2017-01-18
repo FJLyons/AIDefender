@@ -30,7 +30,6 @@ private:
 	sf::Vector2f seperation;
 	sf::RectangleShape collisionRect;
 	sf::Vector2f seekPoint;
-	std::vector<InterceptorMissile*> missileList;
 	bool canShoot;
 	float shotdelay;
 	float shotTimer;
@@ -56,9 +55,13 @@ public:
 	void Draw(sf::RenderWindow &window);
 	void SpawnAbductors(std::vector<Abductor*> &abductors);
 	//void calculateDrift();
+	sf::Vector2f getPosition();
 
 	sf::RectangleShape getRect();
 	int health = 2;
+
+
+	std::vector<InterceptorMissile*> missileList;
 };
 
 #endif

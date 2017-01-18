@@ -9,7 +9,7 @@ Player::Player()
 Player::Player(sf::Vector2f pos, sf::Vector2f maxVel)
 {
 	mTexture = ResourceLoader::instance()->getplayershipTexture();
-	powerupTex = ResourceLoader::instance()->getenemyPowerTexture();
+	powerupTex = ResourceLoader::instance()->getpowerTexture();
 	mPositon = pos;
 	maxVelocity = maxVel;
 
@@ -101,7 +101,7 @@ void Player::Update()
 			powertimer = 0;
 			powerupdelay = rand() % (20) + 5;
 			powerupPos.x = rand() % (MAP_WIDTH_PIXEL)+1;
-			powerupPos.y = rand() % (500)+1;
+			powerupPos.y = rand() % (500) + 1;
 			powercollected == true;
 		}
 	}
@@ -156,8 +156,8 @@ void Player::Update()
 	{
 		Warp();
 	}
-	
-	if (CollisionManager::instance()->RectangleCollision(powerupCollisionRect,collisionRect)==true)
+
+	if (CollisionManager::instance()->RectangleCollision(powerupCollisionRect, collisionRect) == true)
 	{
 		powerLevel++;
 		powerupPos.x = 0;
@@ -170,7 +170,7 @@ void Player::Update()
 	updatePowerup();
 	powerupCollisionRect.setPosition(powerupPos);
 	powerupSprite.setPosition(powerupPos);
-	
+
 }
 
 void Player::Draw(sf::RenderWindow &window)
@@ -294,30 +294,29 @@ void Player::Shoot()
 	{
 		if (powerLevel == 1)
 		{
-		
-			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight,  sf::Vector2f(0,0)));
+
+			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 0)));
 
 			shotTimer = 0;
 			resource->shoot.play();
 		}
 		else if (powerLevel == 2)
 		{
-			bulletList.push_back(new Bullet(mPositon + sf::Vector2f(0,20), ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 0)));
+			bulletList.push_back(new Bullet(mPositon + sf::Vector2f(0, 20), ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 0)));
 			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 0)));
-			bulletList.push_back(new Bullet(mPositon+sf::Vector2f(0, -20), ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 0)));
+			bulletList.push_back(new Bullet(mPositon + sf::Vector2f(0, -20), ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 0)));
 			shotTimer = 0;
 			resource->shoot.play();
 		}
-		else if (powerLevel == 3)
+		else
 		{
-			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 5)));
+			bulletList.push_back(new Bullet(mPositon + sf::Vector2f(0, 20), ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 0)));
 			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 0)));
-			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, -5)));
-			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 10)));
+			bulletList.push_back(new Bullet(mPositon + sf::Vector2f(0, -20), ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, 0)));
+			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), !playerFacingRight, sf::Vector2f(0, 0)));
 			shotTimer = 0;
-			bulletList.push_back(new Bullet(mPositon, ResourceLoader::instance()->getbulletTexture(), playerFacingRight, sf::Vector2f(0, -10)));
+			resource->shoot.play();
 		}
-		
 	}
 }
 

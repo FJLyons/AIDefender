@@ -122,10 +122,9 @@ sf::Vector2f Abductor::ComputeAlignment(std::vector<Abductor*>& abductors)
 				m_alignment += abductors[i]->getVelocity();
 				neighbourcount++;
 			}
-
 		}
-
 	}
+
 	if (neighbourcount == 0)
 	{
 
@@ -138,10 +137,8 @@ sf::Vector2f Abductor::ComputeAlignment(std::vector<Abductor*>& abductors)
 		m_alignment = CollisionManager::instance()->NormaliseVector(m_alignment);
 		return m_alignment;
 	}
-
-
-
 }
+
 sf::Vector2f Abductor::ComputeCohesion(std::vector<Abductor*>& abductors)
 {
 	sf::Vector2f m_Cohesion;
@@ -258,46 +255,52 @@ void Abductor::Abducting(std::vector<Human*>& humans)
 	if (mPositon.y < -30)
 	{
 		alive = false;
-
 	}
+
 	if (abducting == false)
 	{
-		Direction = humans[humanindex]->getPosition() - mPositon;
-		Direction = CollisionManager::instance()->NormaliseVector(Direction);
-		velocity.x += Direction.x;
-		velocity.y += Direction.y;
-
-		velocity = CollisionManager::instance()->NormaliseVector(velocity);
-		velocity.x = velocity.x * 2;
-		velocity.y = velocity.y * 2;
-
-		mPositon += velocity;
-
-		if (CollisionManager::instance()->CheckRange(2, humans[humanindex]->getPosition(), mPositon) == true)//RectangleCollision(humans[humanindex]->getRext(),collisionRect) == true)
+		if (humanindex < humans.size())
 		{
-			abducting = true;
-			humans[humanindex]->setAbducted(true);
+			Direction = humans[humanindex]->getPosition() - mPositon;
+			Direction = CollisionManager::instance()->NormaliseVector(Direction);
+			velocity.x += Direction.x;
+			velocity.y += Direction.y;
 
+			velocity = CollisionManager::instance()->NormaliseVector(velocity);
+			velocity.x = velocity.x * 2;
+			velocity.y = velocity.y * 2;
+
+			mPositon += velocity;
+
+			if (CollisionManager::instance()->CheckRange(2, humans[humanindex]->getPosition(), mPositon) == true)//RectangleCollision(humans[humanindex]->getRext(),collisionRect) == true)
+			{
+				abducting = true;
+				humans[humanindex]->setAbducted(true);
+			}
+		}
+		else
+		{
+			CheckForHuman(humans);
 		}
 	}
+
 	else
 	{
 		velocity = sf::Vector2f(0, -2);
 		mPositon += velocity;
 	}
+
 	mSprite.setPosition(mPositon);
 }
 void Abductor::Update(std::vector<Abductor*>& abductors, int indexofCurrentAbductor, std::vector<Obstacles*>& obstacles, std::vector<Human*>& humans, sf::Vector2f playerpos)
 {
-
-
-
 	myIndex = indexofCurrentAbductor;
 
 	if (currentBehaviour == Behaviour::Wander)
 	{
 		Wandering(abductors, obstacles, humans);
 	}
+
 	else if (currentBehaviour == Behaviour::Abduct)
 	{
 		Abducting(humans);
@@ -312,8 +315,8 @@ void Abductor::Update(std::vector<Abductor*>& abductors, int indexofCurrentAbduc
 		angle = atan2(playerpos.y - mPositon.y, playerpos.x - mPositon.x);
 		angle = angle * (180 / 3.14);
 		Shoot(playerpos);
-
 	}
+
 	else
 	{
 		angle = atan2(velocity.y, velocity.x);
@@ -331,9 +334,7 @@ void Abductor::Update(std::vector<Abductor*>& abductors, int indexofCurrentAbduc
 		{
 			bullets.erase(bullets.begin() + i);
 		}
-
 	}
-
 }
 void Abductor::Shoot(sf::Vector2f playerpos)
 {
@@ -369,8 +370,15 @@ void Abductor::DropHuman(std::vector<Human*>& humans)
 {
 	if (currentBehaviour == Behaviour::Abduct)
 	{
-		humans[humanindex]->setFalling(true);
-		humans[humanindex]->setAbducted(false);
+		if (humanindex < humans.size())
+		{
+			humans[humanindex]->setFalling(true);
+			humans[humanindex]->setAbducted(false);
+		}
+		else
+		{
+			CheckForHuman(humans);
+		}
 	}
 }
 sf::Vector2f Abductor::getVelocity()
