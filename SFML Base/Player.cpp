@@ -18,7 +18,8 @@ Player::Player(sf::Vector2f pos, sf::Vector2f maxVel)
 	mSprite.setPosition(mPositon);
 	mSprite.setOrigin(sf::Vector2f(mSprite.getLocalBounds().width / 2, mSprite.getLocalBounds().height / 2));
 	mScale = sf::Vector2f(1.f, 1.f);
-
+	bombLoaded = true;
+	bombfired = false;
 	flipSpeed = 0.15f;
 	playerFacingRight = true;
 	canShoot = true;
@@ -32,13 +33,33 @@ Player::Player(sf::Vector2f pos, sf::Vector2f maxVel)
 	collisionRect.setOutlineThickness(2);
 	collisionRect.setPosition(mPositon);
 
+
+	bombrectSize = sf::Vector2f(0, 0);
+	bombRectangle.setOrigin(mSprite.getGlobalBounds().width / 2, mSprite.getGlobalBounds().height / 2);
+	bombRectangle.setSize(bombrectSize);
+	bombRectangle.setOutlineColor(sf::Color::Magenta);
+	bombRectangle.setFillColor(sf::Color::Transparent);
+	bombRectangle.setOutlineThickness(4);
+	bombRectangle.setPosition(mPositon);
+
+	bombTimer = 0;
 }
 
 void Player::Update()
 {
 	shotTimer += shotClock.getElapsedTime().asSeconds();
-	sf::Time dt = shotClock.restart();
+	
 
+	if (bombLoaded == false)
+	{
+		bombTimer += shotClock.getElapsedTime().asSeconds();
+		if (bombTimer > 5)
+		{
+			bombLoaded = true;
+			bombTimer = 0;
+		}
+	}
+	
 	if (shotTimer > shotdelay)
 	{
 		canShoot = true;
@@ -47,7 +68,7 @@ void Player::Update()
 	{
 		canShoot = false;
 	}
-
+	sf::Time dt = shotClock.restart();
 	Flip();
 
 	mSprite.setScale(mScale);
@@ -80,7 +101,13 @@ void Player::Update()
 		velocity.y = 0;
 		mPositon.y = 1080;
 	}
+	
+	if (bombfired == true)
+	{
+		ShootBomb();
+	}
 
+	bombRectangle.setPosition(mPositon);
 	collisionRect.setPosition(mPositon);
 }
 
@@ -92,7 +119,7 @@ void Player::Draw(sf::RenderWindow &window)
 	{
 		window.draw(collisionRect);
 	}
-
+	window.draw(bombRectangle);
 	for (int i = 0; i < bulletList.size(); i++)
 	{
 		bulletList[i]->Draw(window);
@@ -168,6 +195,38 @@ void Player::MoveRight()
 	}
 }
 
+void Player::ShootBomb()
+{
+	
+	if (bombLoaded == true)
+	{
+		velocity = sf::Vector2f(0, 0);
+		if (bombrectSize.x <= SCREEN_WIDTH_PIXEL +10)
+		{
+			bombrectSize.x +=100;
+		}
+		if (bombrectSize.y <= SCREEN_HEIGHT_PIXEL +10)
+		{
+			bombrectSize.y +=100;
+		}
+		bombRectangle.setOrigin(bombrectSize.x / 2, bombrectSize.y / 2);
+		bombRectangle.setSize(sf::Vector2f(bombrectSize.x, bombrectSize.y));
+
+		if (bombrectSize.x >= SCREEN_WIDTH_PIXEL &&bombrectSize.y >= SCREEN_HEIGHT_PIXEL)
+		{
+			bombLoaded = false;
+			bombfired = false;
+			bombrectSize.x = 0;
+			bombrectSize.y = 0;
+		
+		}
+
+
+	}
+	bombRectangle.setOrigin(bombrectSize.x / 2, bombrectSize.y / 2);
+	bombRectangle.setSize(sf::Vector2f(bombrectSize.x, bombrectSize.y));
+}
+
 void Player::Shoot()
 {
 	if (canShoot == true)
@@ -241,6 +300,21 @@ bool Player::teleport()
 	{
 		return false;
 	}
+}
+
+bool Player::getBombfired()
+{
+	return bombfired;
+}
+
+void Player::setBombfired(bool fire)
+{
+	bombfired = fire;
+}
+
+bool Player::getbombLoaded()
+{
+	return bombLoaded;
 }
 
 

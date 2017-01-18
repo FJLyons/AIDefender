@@ -25,14 +25,18 @@ private:
 	sf::Vector2f velocity;
 	sf::Vector2f mScale;
 	sf::RectangleShape collisionRect;
+	sf::RectangleShape bombRectangle;
 	std::vector<Bullet*> bulletList;
+	sf::Vector2f bombrectSize;
 	bool playerFacingRight;
 	bool canShoot;
-
+	bool bombLoaded;
 	float flipSpeed;
 	float shotdelay;
 	float shotTimer;
+	float bombTimer;
 	sf::Clock shotClock;
+	bool bombfired;
 
 public:
 	Player();
@@ -45,7 +49,7 @@ public:
 	void MoveDown(bool pressed);
 	void MoveLeft();
 	void MoveRight();
-
+	void ShootBomb();
 	void Decelerate();
 
 	void Shoot();
@@ -58,7 +62,9 @@ public:
 	sf::RectangleShape getRect();
 	bool teleport();
 	bool teleportLeft = true;
-
+	bool getBombfired();
+	void setBombfired(bool fire);
+	bool getbombLoaded();
 	std::vector<Bullet*> getBullets();
 
 	void deleteBullet(int index);

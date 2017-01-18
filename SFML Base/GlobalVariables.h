@@ -13,6 +13,8 @@
 #define MAP_WIDTH_PIXEL  1920 * 9
 #define FULL_WIDTH_PIXEL  1920 * 10
 #define SCREEN_WIDTH_PIXEL 1920
+#define SCREEN_HEIGHT_PIXEL 1080
+
 #define HALF_SCREEN_WIDTH_PIXEL 1920 / 2
 
 class GlobalVariables

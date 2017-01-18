@@ -498,6 +498,11 @@ void Game::controller(sf::Event Event)
 	{
 		player->Shoot();
 	}
+	if (inputManager->KeyHeld(sf::Keyboard::Num1)&& player->getbombLoaded() == true&& player->getBombfired() == false)
+	{
+		player->setBombfired(true);
+		
+	}
 }
 
 void Game::teleport()
